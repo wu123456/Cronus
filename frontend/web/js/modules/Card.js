@@ -9,14 +9,12 @@ class Outer extends Component {
 	render() {
 		return (<div className="panel">
 			<GameBoard name="123"/>
-			<Card fatherName="" color="#666666"/>
 		</div>)
 	}
 
 }
 
 class GameBoard extends Component{
-
 	constructor(props) {
 		super(props);
         this.state = {
@@ -43,7 +41,6 @@ class GameBoard extends Component{
 
 		let a = <Card  key={new Date() - 0} {...moveElement.props} fatherName={this.props.name} x={event.pageX - this.refs.t.offsetLeft - moveElement._x} y={event.pageY - this.refs.t.offsetTop - moveElement._y}/>;
 		
-
 		this.setState(function(oldState){
 			oldState.cards.push(a);
 			return oldState;
@@ -93,17 +90,13 @@ class Card extends Component{
 		console.log(5)
 	}
 
-	handleDrag(event) {
-		// console.log(event.pageY)
-	}
 
 	handleDragLeave() {
 		console.log(2)
 	}
 
 	handleDragStart(event) {
-	    this.setState({opacity:0.2})
-	    console.log("start", event.pageX , this.refs.s.offsetLeft, event.pageY , this.refs.s.pageY);
+	    this.setState({opacity:0.2});
 	    this._x = event.pageX - this.refs.s.offsetLeft;
 	    this._y = event.pageY - this.refs.s.offsetTop;
 	    moveElement = this;
@@ -111,8 +104,6 @@ class Card extends Component{
 
 	handleDragEnd() {
 	    this.setState({opacity:1})
-		console.log(3)
-		// this.setState({x: event.pageX, y: event.pageY});
 	}
 
 

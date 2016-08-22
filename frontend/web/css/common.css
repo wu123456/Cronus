@@ -2,4 +2,4 @@ body {padding: 0;}
 .panel { background: #999; width: 1400px; height: 900px; top:50%; left: 50%; margin-left: -700px; margin-top: -450px; position: absolute;}
 .game-board { background: green;width: 1200px; height: 700px; position: relative; margin-left: 100px; margin-top: 100px;}
 .card { width: 100px; height: 100px; background: red; }
-.card2 { position: absolute; width: 100px; height: 100px; } 
+.card2 { position: absolute; width: 100px; height: 100px; }
