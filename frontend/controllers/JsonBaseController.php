@@ -9,6 +9,8 @@ use yii\web\Controller;
 
 class JsonBaseController extends Controller{
 
+	const CODE_NOLOGIN = 1002;
+
     public function init(){
 
         if ($this->request->get('callback')) {
