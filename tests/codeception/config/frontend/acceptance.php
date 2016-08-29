@@ -13,6 +13,7 @@ return yii\helpers\ArrayHelper::merge(
     require(dirname(__DIR__) . '/config-local.php'),
     require(dirname(__DIR__) . '/acceptance.php'),
     require(__DIR__ . '/config.php'),
+    require(YII_APP_BASE_PATH . '/environments/' . YII_ENV . '/common/config/main-local.php'),
     [
     ]
 );

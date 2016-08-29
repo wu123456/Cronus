@@ -9,6 +9,7 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
+use mdm\admin\components\MenuHelper;
 
 AppAsset::register($this);
 ?>
@@ -34,11 +35,40 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'About', 'url' => ['/site/about']],
-        ['label' => 'Contact', 'url' => ['/site/contact']],
-    ];
+    // $menuItems = [
+    //     ['label' => 'Home', 'url' => ['/site/index']],
+    //     ['label' => 'About', 'url' => ['/site/about']],
+    //     ['label' => 'Contact', 'url' => ['/site/contact']],
+    // ];
+    $menuItems = [];
+
+    $menuItems = array_merge($menuItems, MenuHelper::getAssignedMenu(Yii::$app->user->id, null, function($m) {
+        $item = [
+            'label' => $m['name'],
+            'url' => MenuHelper::parseRoute($m['route']),
+        ];
+
+        if ($m['children'] != []) {
+            $item['items'] = $m['children'];
+        }
+
+        if(!empty($m['data'])) {
+            $opt = json_decode($m['data'], true);
+            if(!empty($opt)) {
+                if(isset($opt['params']) && !empty($opt['params'])) {
+                    if(is_array($item)) {
+                        $item['url'][0] .= '?' . $opt['params'];
+                    } else {
+                        $item['url'] .= '?' . $opt['params'];
+                    }
+                }
+            }
+        }
+
+        return $item;
+    }));
+
+
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];

@@ -33,3 +33,4 @@ phpunit.phar
 /.vagrant
 
 sftp-config.json
+/environments/dev/common/config/main-local.php
