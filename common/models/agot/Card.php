@@ -16,8 +16,6 @@ use yii\db\ActiveRecord;
  * @property string $update_time
  */
 class Card extends AgotBase{
-    const STATUS_DELETED = 1;
-    const STATUS_ACTIVE = 0;
 
     /**
      * @inheritdoc
@@ -27,6 +25,14 @@ class Card extends AgotBase{
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return '{{%card}}';
     }
 
 
