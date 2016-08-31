@@ -1,5 +1,5 @@
 <?php
-namespace common\models;
+namespace common\models\agot;
 
 use Yii;
 use common\behaviors\MyTimestampBehavior;

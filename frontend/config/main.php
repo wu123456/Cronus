@@ -1,6 +1,7 @@
 <?php
 $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
+    require(__DIR__ . '/../../environments/' . YII_ENV . '/common/config/params-local.php'),
     require(__DIR__ . '/params.php')
 );
 
@@ -11,7 +12,9 @@ return [
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
         'request' => [
-            'csrfParam' => '_csrf-frontend',
+            'enableCookieValidation' => true,
+            'enableCsrfValidation' => false,
+            'cookieValidationKey' => 'crouns',
         ],
         'user' => [
             'identityClass' => 'common\models\User',

@@ -1,8 +1,11 @@
 <?php
 
-$config = [];
-$config['params'] = [
+$p = [
 	'tables' => [1, 2, 3],
+	'games' => [0],
+	'game_sides' => [
+		0 => [0, 1],
+	]
 ];
 
-return $config;
+return $p;
