@@ -43,5 +43,10 @@ return [
         ],
         */
     ],
+    'modules' => [
+        'document' => [
+            'class' => 'backend\module\document\Module',
+        ],
+    ],
     'params' => $params,
 ];

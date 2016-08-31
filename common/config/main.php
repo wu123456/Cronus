@@ -10,6 +10,9 @@ $config = [
         ],
     ],
 ];
+$params = require(__DIR__ . '/params.php');
+
+$config['params'] = $params;
 
 if (YII_DEBUG) {
     $config['bootstrap'][] = 'debug';
