@@ -20,6 +20,9 @@ use yii\db\ActiveRecord;
  */
 class DeckCard extends AgotBase{
 
+    const SNAP = 1;
+    const DETAIL = 0;
+
     /**
      * @inheritdoc
      */
@@ -38,7 +41,7 @@ class DeckCard extends AgotBase{
         return '{{%deck_card}}';
     }
 
-    public static function getCards($deck_id){
+    public static function getCards($deck_id, $type){
         $deck_cards = self::find()->where(['deck_id' => $deck_id, 'status' => self::STATUS_ACTIVE])->all();
 
         $card_ids = array_filter($deck_cards, function($item){
@@ -54,11 +57,20 @@ class DeckCard extends AgotBase{
 
         $result = [];
 
-        foreach ($deck_cards as $key => $value) {
-            $count = $value->count;
-            while($count > 0){
-                $count--;
-                $result[] = clone $card_hash[$value->card_id];
+        if ($type == self::DETAIL) {
+            foreach ($deck_cards as $key => $value) {
+                $count = $value->count;
+                while($count > 0){
+                    $count--;
+                    $result[] = clone $card_hash[$value->card_id];
+                }
+            }
+        }else if($type == self::SNAP){
+            foreach ($deck_cards as $key => $value) {
+                $result[] = [
+                    'count' => $value->count,
+                    'card_id' => $value->id,
+                ];
             }
         }
 

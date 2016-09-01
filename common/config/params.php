@@ -8,5 +8,9 @@ return [
             "class" => "frontend\controllers\TableController",
             "label" => "桌子接口",
         ],
+        [
+            "class" => "frontend\controllers\DeckController",
+            "label" => "牌组接口",
+        ],
     ]
 ];

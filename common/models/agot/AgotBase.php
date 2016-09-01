@@ -46,5 +46,13 @@ class AgotBase extends ActiveRecord{
         return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
+    public function delete(){
+        if ($this->status == self::STATUS_ACTIVE) {
+            $this->status = self::STATUS_DELETED;
+            return $this->save();
+        }
+        return false;
+    }
+
 
 }
