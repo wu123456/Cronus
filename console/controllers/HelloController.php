@@ -12,9 +12,11 @@ class HelloController extends \yii\console\Controller {
 
     public function actionIndex() {
         $tables = Yii::$app->params['tables'];
+        $game_sides = Yii::$app->params['game_sides'];
         foreach ($tables as $key => $value) {
             $table = new Table($value);
-            var_dump($table->start());
+            echo $value . "\t";
+            var_dump($table->start($game_sides));
         }
     }
 

@@ -11,11 +11,15 @@ use yii\db\ActiveRecord;
  * Card model
  *
  * @property integer $id
+ * @property integer $type
  * @property integer $status
  * @property string $create_time
  * @property string $update_time
  */
 class Card extends AgotBase{
+
+    const TYPE_PLOT = 1;
+    const TYPE_NORMAL = 2;
 
     /**
      * @inheritdoc
@@ -34,6 +38,8 @@ class Card extends AgotBase{
     {
         return '{{%card}}';
     }
+
+
 
 
 

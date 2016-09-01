@@ -59,7 +59,6 @@ class TableController extends JsonBaseController{
      * @method POST
      * @param    int            id   桌号
      * @param    int            side 在桌子的哪一边 0 1 ...
-     * @param    int            game_id  游戏id(默认0，代表冰火)
      * @author wolfbian
      * @date 2016-08-31
      */
@@ -71,14 +70,9 @@ class TableController extends JsonBaseController{
 
         $table_id = intval(Yii::$app->request->post("id"));
         $side = intval(Yii::$app->request->post("side"));
-        $game_id = intval(Yii::$app->request->post("game_id", 0));
 
         if (!in_array($table_id, Yii::$app->params['tables'])) {
             return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "不合法的桌号"];
-        }
-
-        if (!in_array($game_id, Yii::$app->params['games'])) {
-            return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "不合法的游戏ID"];
         }
 
         if (!in_array($side, Yii::$app->params['game_sides'][$game_id])) {
@@ -87,7 +81,7 @@ class TableController extends JsonBaseController{
 
         $table = new Table($table_id);
 
-        if( !$table->unready(['user_id' => $user_id, 'game_id' => $game_id,  'side' => $side]) ){
+        if( !$table->unready(['user_id' => $user_id,  'side' => $side]) ){
             return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "系统错误"];
         }
 

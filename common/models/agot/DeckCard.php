@@ -55,10 +55,11 @@ class DeckCard extends AgotBase{
         $result = [];
 
         foreach ($deck_cards as $key => $value) {
-            $result[] = [
-                'count' => $value->count,
-                'card' => $card_hash[$value->card_id]
-            ];
+            $count = $value->count;
+            while($count > 0){
+                $count--;
+                $result[] = clone $card_hash[$value->card_id];
+            }
         }
 
         return $result;

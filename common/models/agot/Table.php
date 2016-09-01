@@ -74,16 +74,11 @@ class Table extends Model{
      * @name  取消准备
      * @param    int            user_id   玩家id
      * @param    int            side 在桌子的哪一边 0 1 ...
-     * @param    int            game_id  游戏id(默认0，代表冰火)
      * @author wolfbian
      * @date 2016-08-31
      */
     public function unready($params){
         $info = $this->info;
-
-        if (!isset($info['game_id'])) {
-            return false;
-        }
 
         if (!isset($info['side'])) {
             return false;
@@ -111,7 +106,7 @@ class Table extends Model{
      * @author wolfbian
      * @date 2016-08-31
      */
-    public function start(){
+    public function start($game_sides){
         $info = $this->info;
 
         if (isset($info['start']) && $info['start']) {
@@ -124,17 +119,33 @@ class Table extends Model{
             return false;
         } 
 
-        if (!isset($info['side'][$params['side']])) {
+        if (!isset($game_sides[$info['game_id']])) {
             return false;
+        } 
+
+        foreach ($game_sides[$info['game_id']] as $value) {
+            if (!isset($info['side'][$value])) {
+                return false;
+            }
+            $deck = Deck::findById($info['side'][$value]['deck_id']);
+            if (empty($deck)) {
+                return false;
+            }
+
+            $info['side'][$value]['plots'] =  $deck->getPlots();
+            $info['side'][$value]['discard'] =  [];
+            $info['side'][$value]['dead'] =  [];
+            list($info['side'][$value]['hands'], $info['side'][$value]['library']) = Table::shuffleAndDivideCards($deck->getNormalCards());
         }
 
-        if (isset($info['side'][$params['side']]) != $params['user_id']) {
-            return false;
-        }
-
-        unset($info['side'][$params['side']]);
+        $info['playground'] = [];
 
         return $this->info = $info;
+    }
+
+    public function static shuffleAndDivideCards($cards, $l = 7){
+        $cards = shuffle($cards);
+        return [array_slice($cards, 0, $l), array_slice($cards, $l)];
     }
 
 }

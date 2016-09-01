@@ -47,6 +47,33 @@ class Deck extends AgotBase{
         return $this->_cards;
     }
 
+    public function getPlots(){
+        $cards = $this->cards;
+        $plots = [];
+        foreach ($cards as $card) {
+            if ($card->type == Card::TYPE_PLOT) {
+                $plot[] = $card;
+            }
+        }
+        return $plot;
+    }
+
+    public function getNormalCards(){
+        $cards = $this->cards;
+        $normal = [];
+        foreach ($cards as $card) {
+            if ($card->type != Card::TYPE_PLOT) {
+                $normal[] = $card;
+            }
+        }
+        return $normal;
+    }
+
+
+    public static function findById($id){
+        return Deck::find()->where(['id' => $info['side'][$value]['deck_id']], 'status' => Deck::STATUS_ACTIVE)->one();
+    }
+
 
 
 }
