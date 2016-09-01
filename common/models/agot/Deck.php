@@ -83,11 +83,11 @@ class Deck extends AgotBase{
             'name' => $this->name,
             'house' => $this->house,
             'agenda' => $this->agenda,
-        ]
+        ];
     }
 
     public static function findById($id){
-        return Deck::find()->where(['id' => $id, 'status' => Deck::STATUS_ACTIVE)->one();
+        return Deck::find()->where(['id' => $id, 'status' => Deck::STATUS_ACTIVE])->one();
     }
 
 
@@ -100,8 +100,8 @@ class Deck extends AgotBase{
         $deck = new Deck();
         $deck->name = $params['name'];
         $deck->user_id = $params['user_id'];
-        $deck->agenda_id = $params['agenda'];
-        $deck->house_id = $params['house_id'];
+        $deck->agenda = $params['agenda'];
+        $deck->house = $params['house'];
         $deck->game_id = $params['game_id'];
 
         if (!$deck->save()) {

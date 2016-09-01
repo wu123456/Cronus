@@ -48,7 +48,7 @@ class DeckCard extends AgotBase{
             return $item->card_id;
         });
 
-        $cards = Card::find()->where(['id' => $card_ids, 'status' => Card::STATUS_ACTIVE)->all();
+        $cards = Card::find()->where(['id' => $card_ids, 'status' => Card::STATUS_ACTIVE])->all();
 
         $card_hash = [];
         foreach ($cards as $key => $value) {

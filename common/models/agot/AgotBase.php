@@ -2,7 +2,7 @@
 namespace common\models\agot;
 
 use Yii;
-use common\behaviors\MyTimestampBehavior;
+use common\behavior\MyTimestampBehavior;
 use yii\db\ActiveRecord;
 
 /**

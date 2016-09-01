@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace common\behaviors;
+namespace common\behavior;
 
 use yii\db\BaseActiveRecord;
 use yii\db\Expression;
