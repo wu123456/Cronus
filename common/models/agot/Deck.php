@@ -86,8 +86,21 @@ class Deck extends AgotBase{
         ];
     }
 
+    public function changeBasicInfo($params){
+        foreach ($params as $key => $value) {
+            $this->$key = $value;
+        }
+        return $this->save();
+    }
+
+    public function changeCards($cards){
+        $ret = DeckCard::changeCards($this->id, $cards);
+        return $ret;
+    }
+
+
     public static function findById($id){
-        return Deck::find()->where(['id' => $id, 'status' => Deck::STATUS_ACTIVE])->one();
+        return self::find()->where(['id' => $id, 'status' => self::STATUS_ACTIVE])->one();
     }
 
 
@@ -112,9 +125,13 @@ class Deck extends AgotBase{
     }
 
     public static function getDeck($id, $user_id){
-        $deck = Deck::findById($id);
+        $deck = self::findById($id);
 
-        if ($deck->user_id == $user_id || $deck->type == Deck::TYPE_PUBLIC) {
+        if (empty($deck)) {
+            return $deck;
+        }
+
+        if ($deck->user_id == $user_id || $deck->type == self::TYPE_PUBLIC) {
             return $deck;
         }
 
@@ -122,11 +139,19 @@ class Deck extends AgotBase{
     }
 
     public static function deleteDeck($id, $user_id){
-        $deck = Deck::findById($id);
+        $deck = self::findById($id);
         if ($deck->user_id != $user_id ) {
             return false;
         }
         return $deck->delete();
+    }
+
+    public static function getDeckArray($user_id){
+        $decks = self::find()->where(['user_id' => $user_id, 'status' => self::STATUS_ACTIVE])->asArray()->all();
+        if (empty($decks)) {
+            return [];
+        }
+        return $decks;
     }
 
 
