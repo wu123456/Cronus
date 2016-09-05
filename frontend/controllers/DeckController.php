@@ -155,7 +155,7 @@ class DeckController extends JsonBaseController{
         }
 
         if ($cards != -1) {
-            $ret2 = $deck->changeCards(json_decode($cards,true));
+            $ret2 = $deck->changeCards($cards);
         }
 
         if (!$ret1 || !$ret2) {

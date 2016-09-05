@@ -141,6 +141,11 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
+    public function actionVtables()
+    {
+        return $this->render('tables');
+    }
+
     /**
      * Signs user up.
      *

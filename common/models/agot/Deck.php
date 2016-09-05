@@ -59,10 +59,10 @@ class Deck extends AgotBase{
         $plots = [];
         foreach ($cards as $card) {
             if ($card->type == Card::TYPE_PLOT) {
-                $plot[] = $card;
+                $plots[] = $card->id;
             }
         }
-        return $plot;
+        return $plots;
     }
 
     public function getNormalCards(){
@@ -70,7 +70,7 @@ class Deck extends AgotBase{
         $normal = [];
         foreach ($cards as $card) {
             if ($card->type != Card::TYPE_PLOT) {
-                $normal[] = $card;
+                $normal[] = $card->id;
             }
         }
         return $normal;

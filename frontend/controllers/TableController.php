@@ -11,6 +11,16 @@ use common\models\agot\Table;
  */
 class TableController extends JsonBaseController{
 
+    public function actionTables(){
+        $tables = Yii::$app->params['tables'];
+        $data = [];
+        foreach ($tables as $key => $value) {
+            $t = new Table($value);
+            $data[] =  $t->getTableInfo();
+        }
+        return ['code' => self::CODE_SUCCESS, 'data' => $data];
+    }
+
     
     /**
      * @name  准备
@@ -75,10 +85,6 @@ class TableController extends JsonBaseController{
             return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "不合法的桌号"];
         }
 
-        if (!in_array($side, Yii::$app->params['game_sides'][$game_id])) {
-            return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "不合法的桌边"];
-        }
-
         $table = new Table($table_id);
 
         if( !$table->unready(['user_id' => $user_id,  'side' => $side]) ){
@@ -87,7 +93,5 @@ class TableController extends JsonBaseController{
 
         return ['code' => self::CODE_SUCCESS];
     }
-
-
 
 }

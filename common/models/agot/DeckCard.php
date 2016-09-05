@@ -44,9 +44,11 @@ class DeckCard extends AgotBase{
     public static function getCards($deck_id, $type){
         $deck_cards = self::find()->where(['deck_id' => $deck_id, 'status' => self::STATUS_ACTIVE])->all();
 
-        $card_ids = array_filter($deck_cards, function($item){
-            return $item->card_id;
-        });
+        $card_ids = [];
+
+        foreach ($deck_cards as $key => $value) {
+            $card_ids[] = $value->card_id;
+        }
 
         $cards = Card::find()->where(['id' => $card_ids, 'status' => Card::STATUS_ACTIVE])->all();
 
@@ -69,7 +71,7 @@ class DeckCard extends AgotBase{
             foreach ($deck_cards as $key => $value) {
                 $result[] = [
                     'count' => $value->count,
-                    'card_id' => $value->id,
+                    'card_id' => $value->card_id,
                 ];
             }
         }

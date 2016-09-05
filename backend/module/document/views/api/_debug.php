@@ -19,7 +19,7 @@ use yii\helpers\Url;
 		    	<a href="javascript:void(0);" id="get-sign"> 点击获取签名</a>
 		    	<?php endif; ?>
 		    </label>
-		    <input type="text" class="form-control" name="<?php echo trim($param['name'], '$'); ?>" value="<?php echo $model->getParamDefaultValue(trim($param['name'], '$')); ?>">
+		    <input type="text" class="form-control <?php echo $param['type']; ?>" name="<?php echo trim($param['name'], '$'); ?>" value="<?php echo $model->getParamDefaultValue(trim($param['name'], '$')); ?>">
 		  </div>
 		  <?php endforeach; ?>
 		  <?php else: ?>
@@ -41,7 +41,11 @@ $(function(){
 		var data = {};
 		$('.form-control').each(function(){
 			if ($(this).val() != '') {
-				data[$(this).attr('name')] = $(this).val();
+				if ($(this).hasClass("array") || $(this).hasClass("Array")) {
+					data[$(this).attr('name')] = JSON.parse($(this).val());
+				}else{
+					data[$(this).attr('name')] = $(this).val();
+				}
 			}
 		});
 		$.ajax({

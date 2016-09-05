@@ -143,8 +143,16 @@ class Table extends Model{
         return $this->info = $info;
     }
 
-    public function static shuffleAndDivideCards($cards, $l = 7){
-        $cards = shuffle($cards);
+    public function getTableInfo(){
+        $info = $this->info;
+
+        $info['name'] = "第".$this->_table_id."桌";
+
+        return $info;
+    }
+
+    public static function shuffleAndDivideCards($cards, $l = 7){
+        shuffle($cards);
         return [array_slice($cards, 0, $l), array_slice($cards, $l)];
     }
 

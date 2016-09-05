@@ -12,5 +12,9 @@ return [
             "class" => "frontend\controllers\DeckController",
             "label" => "牌组接口",
         ],
+        [
+            "class" => "frontend\controllers\CardController",
+            "label" => "卡牌接口",
+        ],
     ]
 ];

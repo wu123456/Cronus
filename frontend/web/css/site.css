@@ -109,3 +109,10 @@ a.desc:after {
 .nav > li > form > button:hover {
     text-decoration: none;
 }
+
+.tables {width: 1000px;}
+
+.table { width: 200px; height: 300px; background: green; position: relative; float: left; margin-left: 20px;}
+.table .table-top { width: 180px; height: 50px; background: red; position: absolute; top: 5px; left: 10px; }
+.table .table-bottom { width: 180px; height: 50px; background: red; position: absolute; bottom: 5px; left: 10px; }
+.table .table-name { width: 180px; height: 60px; color: white; position: absolute; top: 120px; left: 10px; line-height: 60px; text-align: center; font-size: 18px; }

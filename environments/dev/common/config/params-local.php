@@ -1,7 +1,7 @@
 <?php
 
 $p = [
-	'tables' => [1, 2, 3],
+	'tables' => [1, 2, 3, 4],
 	'games' => [0],
 	'game_sides' => [
 		0 => [0, 1],

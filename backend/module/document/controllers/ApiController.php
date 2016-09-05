@@ -142,6 +142,7 @@ class ApiController extends Controller
 		} catch (\Exception $e) {
 			return '无对应的Controller或Action，请检测route参数是否正确';
 		}
+
 		
 		$debugUrl = str_replace('backend', 'frontend', $this->request->getBaseUrl()) . '/' . $route;
 		return $this->render('_debug', [
