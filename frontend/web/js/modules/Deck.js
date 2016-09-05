@@ -35,27 +35,21 @@ class Player extends Component {
 
 }
 
-class Table extends Component {
+class Deck extends Component {
 
 	render() {
-		let side = this.props.side;
+		let side = this.props.name;
 		let side0 = (side && side[0]) || {};
 		let side1 = (side && side[1]) || {};
 		console.log(side0);
-		return (<div className="ctable">
-			<div className="ctable-top" onClick={this.handleJoinIn}><Player {...side0}/></div>
-			<div className="ctable-name">{this.props.name}</div>
-			<div className="ctable-bottom"><Player {...side1}/></div>
+		return (<div className="cdeck">
 		</div>)
 	}
 
-	handleJoinIn() {
-
-	}
 
 }
 
-class Tables extends Component {
+class Decks extends Component {
 
 	constructor(props) {
 		super(props);
@@ -92,4 +86,4 @@ class Tables extends Component {
 
 
 
-export default Tables
+export default Decks

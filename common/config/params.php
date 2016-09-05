@@ -16,5 +16,9 @@ return [
             "class" => "frontend\controllers\CardController",
             "label" => "卡牌接口",
         ],
+        [
+            "class" => "frontend\controllers\UserController",
+            "label" => "用户接口",
+        ],
     ]
 ];
