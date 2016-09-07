@@ -11,6 +11,12 @@ use common\models\agot\Table;
  */
 class TableController extends JsonBaseController{
 
+    /**
+     * @name  获取桌子情况
+     * @method GET
+     * @author wolfbian
+     * @date 2016-09-07
+     */
     public function actionTables(){
         $tables = Yii::$app->params['tables'];
         $data = [];

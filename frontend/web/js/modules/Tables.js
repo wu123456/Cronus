@@ -1,5 +1,6 @@
 import React  from 'react'
 import $  from 'jquery'
+import showMessage  from './Dialog'
 
 const Component = React.Component;
 
@@ -14,7 +15,7 @@ class Player extends Component {
 
 	render() {
 		let name = this.state.username || this.props.user_id || "-";
-		return <div>{name}</div>
+		return <div onClick={this.handleJoinIn.bind(this)}>{name}</div>
 	}
 
 	componentDidMount() {
@@ -33,7 +34,30 @@ class Player extends Component {
 		)
 	}
 
+	handleJoinIn() {
+			showMessage("该位置已有玩家");
+		if (this.props.user_id) {
+			showMessage("该位置已有玩家");
+			return;
+		}
+
+		$.post(
+			'/table/ready',
+			{
+				id	 :  this.props.t_id,
+				side :  this.props.side,
+				deck_id	: 3
+			},
+			function(ret){
+				console.log(ret);
+			},
+			'json'
+		)
+	}
+
 }
+
+
 
 class Table extends Component {
 
@@ -43,14 +67,10 @@ class Table extends Component {
 		let side1 = (side && side[1]) || {};
 		console.log(side0);
 		return (<div className="ctable">
-			<div className="ctable-top" onClick={this.handleJoinIn}><Player {...side0}/></div>
+			<div className="ctable-top"><Player {...side0} t_id = {this.props.id} side={0} /></div>
 			<div className="ctable-name">{this.props.name}</div>
-			<div className="ctable-bottom"><Player {...side1}/></div>
+			<div className="ctable-bottom"><Player {...side1}  t_id = {this.props.id} side={1}/></div>
 		</div>)
-	}
-
-	handleJoinIn() {
-
 	}
 
 }
@@ -80,7 +100,7 @@ class Tables extends Component {
 				}
 				var tables = [];
 				for(var i in ret.data){
-					tables.push(<Table key={i} name={ret.data[i]['name']} side={ret.data[i]['side']} />);
+					tables.push(<Table key={i} {...ret.data[i]} />);
 				}
 
 				self.setState({tables: tables});

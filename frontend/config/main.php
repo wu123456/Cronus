@@ -52,4 +52,13 @@ return [
         ],
     ],
     'params' => $params,
+    'as access' => [
+        'class' => 'mdm\admin\components\AccessControl',
+        // 'defaultRoles' => ['role_guest'],
+        'allowActions' => [
+            'site/index',
+            'site/login',
+            'site/signup',
+        ]
+    ],
 ];

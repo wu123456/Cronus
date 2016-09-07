@@ -147,6 +147,7 @@ class Table extends Model{
         $info = $this->info;
 
         $info['name'] = "第".$this->_table_id."桌";
+        $info['id'] = $this->_table_id;
 
         return $info;
     }

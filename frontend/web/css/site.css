@@ -115,4 +115,61 @@ a.desc:after {
 .ctable { width: 200px; height: 300px; background: green; position: relative; float: left; margin-left: 20px; color: white;}
 .ctable .ctable-top { width: 180px; height: 50px; background: red; position: absolute; top: 5px; left: 10px; line-height: 50px; text-align: center; font-size: 18px; }
 .ctable .ctable-bottom { width: 180px; height: 50px; background: red; position: absolute; bottom: 5px; left: 10px; line-height: 50px; text-align: center; font-size: 18px;}
+
 .ctable .ctable-name { width: 180px; height: 60px; color: white; position: absolute; top: 120px; left: 10px; line-height: 60px; text-align: center; font-size: 18px; }
+
+
+/* 弹窗样式 */
+.dialog { position: fixed; border-radius: 10px; font-size: 16px; }
+.dialog .title { border-radius: 10px 10px 0px 0px; background-color: #ff5951; color: #F7F7F7; text-align: center; height: 40px; line-height: 40px; margin: 0px; font-weight: normal; }
+.dialog .content { width: 100%; height: 100%; box-sizing: border-box; border-radius: 0px 0px 10px 10px; background-color: #F7F7F7; color: #999999; padding: 20px 10px; min-height: 104px; }
+.mask { position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; background-color: black; filter:alpha(opacity=50); /*IE滤镜，透明度50%*/ -moz-opacity: 0.5; /*Firefox私有，透明度50%*/ opacity: 0.5;/*其他，透明度50%*/ }
+.dialog .message { padding: 10px; margin: 0px; margin-bottom: 10px; text-align: center; }
+.dialog .buttons { text-align: center; margin-bottom: 10px; margin-top: 20px;}
+.dialog .buttons .confirm{ background-color: #ff5951; !important;}
+.dialog .buttons .cancel{ background-color: #346EB7; !important;}
+.dialog .btn { padding: 0; cursor: pointer; height: 32px; line-height: 32px; width: 135px; margin-left: 20px; border: 0px; border-radius: 3px;  font-size: 16px; color: #F7F7F7;}
+.dialog .btn:first-child { margin-left: 0px; }
+.dialog .grey-btn { background-color: #999 !important;}
+.dialog .captcha_errmsg{
+  color: red;
+  font-size: 14px;
+  line-height: 0px;
+  margin: 26px 21px 0px;
+  text-align: left;
+}
+.img_captcha .captcha-input{
+  height: 40px;
+  width: 200px;
+  margin: 10px 10px 0px 15px;
+}
+
+.img_captcha .captcha-image {
+  margin: 15px 20px;
+  float: right;
+}
+
+.dialog .left{
+    margin-right: 25px;
+}
+
+.dialog .right{
+    /*margin: 0px;*/
+}
+
+.bg-color-white { background-color: #ffffff !important; }
+.bg-color-red { background-color: #ff5f91 !important; }
+.bg-color-red-dark { background-color: #ff5951 !important; }
+.bg-color-red-light { background-color: #fd899c !important; }
+.bg-color-gray { background-color: #eeeeee !important; }
+.bg-color-gray-light { background-color: #f7f7f7 !important; }
+.bg-color-gray-dark { background-color: #cccccc !important; }
+.bg-color-green { background-color: #92cf68 !important; }
+
+.bg-color-blue { background-color: #5090B4 !important; }
+
+.text-color-white { color: #ffffff !important; }
+.text-color-red-light { color: #fd899c !important; }
+.text-color-gray { color: #999999 !important; }
+.text-color-gray-light { color: #f7f7f7 !important; }
+.text-color-gray-dark { color: #666666 !important; }

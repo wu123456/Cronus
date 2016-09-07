@@ -43,6 +43,7 @@ class Deck extends Component {
 		let side1 = (side && side[1]) || {};
 		console.log(side0);
 		return (<div className="cdeck">
+			
 		</div>)
 	}
 
@@ -54,30 +55,50 @@ class Decks extends Component {
 	constructor(props) {
 		super(props);
         this.state = {
-            tables: []
+            decks: []
         }
     }
 
 	render() {
-		return <div className="ctables">{this.state.tables}</div>
+		return <div className="cdecks">{this.state.decks}</div>
 	}
 
 	componentDidMount() {
 		var self = this;
 		$.getJSON(
-			"/table/tables",
+			"/deck/decks",
 			function(ret){
 				console.log(ret)
 				if (ret.code != 0) {
 					alert(ret.msg);
 					return;
 				}
-				var tables = [];
-				for(var i in ret.data){
-					tables.push(<Table key={i} name={ret.data[i]['name']} side={ret.data[i]['side']} />);
-				}
-
-				self.setState({tables: tables});
+				let decks = ret.data;
+				// "data": [{
+			 //        "id": "2",
+			 //        "user_id": "3",
+			 //        "name": "tttadsf",
+			 //        "house": "3",
+			 //        "agenda": "3",
+			 //        "game_id": "0",
+			 //        "type": "0",
+			 //        "status": "0",
+			 //        "create_time": "2016-09-02 21:33:53",
+			 //        "update_time": "2016-09-02 21:41:23"
+			 //    },
+			 //    {
+			 //        "id": "3",
+			 //        "user_id": "3",
+			 //        "name": "3333333333",
+			 //        "house": "3",
+			 //        "agenda": "3",
+			 //        "game_id": "0",
+			 //        "type": "0",
+			 //        "status": "0",
+			 //        "create_time": "2016-09-05 16:01:01",
+			 //        "update_time": "2016-09-05 16:01:01"
+			 //    }]
+				console.log(decks);
 
 			}
 		)
