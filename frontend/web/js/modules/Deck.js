@@ -38,12 +38,9 @@ class Player extends Component {
 class Deck extends Component {
 
 	render() {
-		let side = this.props.name;
-		let side0 = (side && side[0]) || {};
-		let side1 = (side && side[1]) || {};
-		console.log(side0);
+		let name = this.props.name;
 		return (<div className="cdeck">
-			
+			{name}
 		</div>)
 	}
 
@@ -64,7 +61,7 @@ class Decks extends Component {
 	}
 
 	componentDidMount() {
-		var self = this;
+		let self = this;
 		$.getJSON(
 			"/deck/decks",
 			function(ret){
@@ -73,7 +70,6 @@ class Decks extends Component {
 					alert(ret.msg);
 					return;
 				}
-				let decks = ret.data;
 				// "data": [{
 			 //        "id": "2",
 			 //        "user_id": "3",
@@ -99,6 +95,13 @@ class Decks extends Component {
 			 //        "update_time": "2016-09-05 16:01:01"
 			 //    }]
 				console.log(decks);
+
+				let decks = [];
+				for(let i in ret.data){
+					decks.push(<Deck key={i} {...ret.data[i]} />);
+				}
+
+				self.setState({decks: decks});
 
 			}
 		)

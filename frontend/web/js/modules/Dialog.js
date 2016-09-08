@@ -3,6 +3,19 @@ import React  from 'react'
 
 const Component = React.Component;
 
+class Dbutton extends Component {
+	render() {
+		let content = this.props.content || '确认';
+		return (
+			<button className="btn bg-color-red-dark text-color-white clickable" onClick={this.handleClick.bind(this)}>{content}</button>
+		);
+	}
+
+	handleClick() {
+		return typeof this.props.click === "function" && this.props.click();
+	}
+}
+
 class Dialog extends Component {
 	constructor(props) {
 		super(props);
@@ -45,6 +58,13 @@ class Dialog extends Component {
 function showMessage(config){
 	let p=document.createElement("div");
 	document.body.appendChild(p);
+
+	if (typeof config === "string") {
+		config = {
+			message : config
+		};
+	}
+
 	render(<Dialog close={function(){
 		document.body.removeChild(p);
 	}} {...config}/>, p)

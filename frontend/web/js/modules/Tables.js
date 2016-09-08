@@ -1,6 +1,7 @@
 import React  from 'react'
 import $  from 'jquery'
 import showMessage  from './Dialog'
+import Decks  from './Deck'
 
 const Component = React.Component;
 
@@ -35,24 +36,33 @@ class Player extends Component {
 	}
 
 	handleJoinIn() {
-			showMessage("该位置已有玩家");
+
+		let self = this;
+
 		if (this.props.user_id) {
 			showMessage("该位置已有玩家");
 			return;
 		}
 
-		$.post(
-			'/table/ready',
-			{
-				id	 :  this.props.t_id,
-				side :  this.props.side,
-				deck_id	: 3
-			},
-			function(ret){
-				console.log(ret);
-			},
-			'json'
-		)
+		showMessage({
+			title : "请选择牌组",
+			message: <Decks />
+		}).then(function(deck_id){
+			$.post(
+				'/table/ready',
+				{
+					id	 :  self.props.t_id,
+					side :  self.props.side,
+					deck_id	: deck_id
+				},
+				function(ret){
+					console.log(ret);
+				},
+				'json'
+			)
+		})
+
+		
 	}
 
 }
@@ -89,17 +99,17 @@ class Tables extends Component {
 	}
 
 	componentDidMount() {
-		var self = this;
+		let self = this;
 		$.getJSON(
 			"/table/tables",
 			function(ret){
 				console.log(ret)
 				if (ret.code != 0) {
-					alert(ret.msg);
+					showMessage(ret.msg);
 					return;
 				}
-				var tables = [];
-				for(var i in ret.data){
+				let tables = [];
+				for(let i in ret.data){
 					tables.push(<Table key={i} {...ret.data[i]} />);
 				}
 
