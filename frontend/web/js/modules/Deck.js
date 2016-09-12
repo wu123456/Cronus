@@ -39,9 +39,13 @@ class Deck extends Component {
 
 	render() {
 		let name = this.props.name;
-		return (<div className="cdeck">
+		return (<div className="cdeck" onClick={this.handleClick.bind(this)}>
 			{name}
 		</div>)
+	}
+
+	handleClick() {
+		this.props.handleClick(this.props.id);
 	}
 
 
@@ -52,12 +56,17 @@ class Decks extends Component {
 	constructor(props) {
 		super(props);
         this.state = {
-            decks: []
+            decks: [],
+            selected: -1
         }
     }
 
 	render() {
 		return <div className="cdecks">{this.state.decks}</div>
+	}
+
+	selected() {
+		return this.state.selected;
 	}
 
 	componentDidMount() {
@@ -98,7 +107,10 @@ class Decks extends Component {
 
 				let decks = [];
 				for(let i in ret.data){
-					decks.push(<Deck key={i} {...ret.data[i]} />);
+					decks.push(<Deck key={i} {...ret.data[i]} handleClick={function(deck_id){
+						console.log("deck_id:",deck_id);
+						this.setState({selected: deck_id});
+					}.bind(this)} />);
 				}
 
 				self.setState({decks: decks});

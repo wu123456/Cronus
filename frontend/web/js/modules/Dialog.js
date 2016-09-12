@@ -51,12 +51,12 @@ class Dialog extends Component {
 	}
 
 	close() {
-		this.props.close();
+		return this.props.close();
 	}
 }
 
 function showMessage(config){
-	let p=document.createElement("div");
+	let p = document.createElement("div");
 	document.body.appendChild(p);
 
 	if (typeof config === "string") {
@@ -65,9 +65,14 @@ function showMessage(config){
 		};
 	}
 
-	render(<Dialog close={function(){
-		document.body.removeChild(p);
-	}} {...config}/>, p)
+	return new Promise(function(resolve, reject) {
+	  	render(<Dialog {...config} close={
+	  		function(){
+				resolve(typeof config.close === 'function' && config.close());
+	  			document.body.removeChild(p);
+	  		}
+		} />, p)
+	});
 }
 
 export default showMessage

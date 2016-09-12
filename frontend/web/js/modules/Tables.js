@@ -44,10 +44,16 @@ class Player extends Component {
 			return;
 		}
 
+		let decks = <Decks />;
+
 		showMessage({
 			title : "请选择牌组",
-			message: <Decks />
+			message: decks,
+			close : function(){
+				return decks.selected();
+			}
 		}).then(function(deck_id){
+			console.log(deck_id);
 			$.post(
 				'/table/ready',
 				{
