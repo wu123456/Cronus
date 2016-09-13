@@ -39,12 +39,13 @@ class Deck extends Component {
 
 	render() {
 		let name = this.props.name;
-		return (<div className="cdeck" onClick={this.handleClick.bind(this)}>
+		return (<div className={"cdeck " + (this.props.active ? "cactive" : "")} onClick={this.handleClick.bind(this)}>
 			{name}
 		</div>)
 	}
 
 	handleClick() {
+		console.log(this.props.id);
 		this.props.handleClick(this.props.id);
 	}
 
@@ -62,11 +63,16 @@ class Decks extends Component {
     }
 
 	render() {
-		return <div className="cdecks">{this.state.decks}</div>
-	}
+		let decks = [];
+		for(let i in this.state.decks){
+			let active = i == this.state.selected;
+			decks.push(<Deck key={i} {...this.state.decks[i]} handleClick={function(deck_id){
+				this.setState({selected : i});
+				typeof this.props.selected === "function" && this.props.selected(deck_id);
+			}.bind(this)} active={active} />);
+		}
 
-	selected() {
-		return this.state.selected;
+		return <div className="cdecks">{decks}</div>
 	}
 
 	componentDidMount() {
@@ -103,17 +109,9 @@ class Decks extends Component {
 			 //        "create_time": "2016-09-05 16:01:01",
 			 //        "update_time": "2016-09-05 16:01:01"
 			 //    }]
-				console.log(decks);
+				
 
-				let decks = [];
-				for(let i in ret.data){
-					decks.push(<Deck key={i} {...ret.data[i]} handleClick={function(deck_id){
-						console.log("deck_id:",deck_id);
-						this.setState({selected: deck_id});
-					}.bind(this)} />);
-				}
-
-				self.setState({decks: decks});
+				self.setState({decks: ret.data});
 
 			}
 		)

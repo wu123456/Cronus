@@ -5,6 +5,8 @@ import Decks  from './Deck'
 
 const Component = React.Component;
 
+const EventManage = $("<div></div>");
+
 class Player extends Component {
 
 	constructor(props) {
@@ -40,20 +42,20 @@ class Player extends Component {
 		let self = this;
 
 		if (this.props.user_id) {
-			showMessage("该位置已有玩家");
-			return;
+			return showMessage("该位置已有玩家");
 		}
 
-		let decks = <Decks />;
+		let select_deck_id = 0;
 
 		showMessage({
 			title : "请选择牌组",
-			message: decks,
+			message: <Decks select={function(deck_id){
+				select_deck_id = deck_id;
+			}}/>,
 			close : function(){
-				return decks.selected();
+				return select_deck_id;
 			}
 		}).then(function(deck_id){
-			console.log(deck_id);
 			$.post(
 				'/table/ready',
 				{
@@ -63,6 +65,13 @@ class Player extends Component {
 				},
 				function(ret){
 					console.log(ret);
+					if (ret.code != 0) {
+						return showMessage(ret.msg);
+					}
+
+					return showMessage("加入座位成功").then(function(){
+						EventManage.trigger("tables_change");
+					});
 				},
 				'json'
 			)
@@ -105,6 +114,11 @@ class Tables extends Component {
 	}
 
 	componentDidMount() {
+		this.refreshTables();
+		EventManage.on("tables_change", this.refreshTables.bind(this));
+	}
+
+	refreshTables() {
 		let self = this;
 		$.getJSON(
 			"/table/tables",
@@ -116,7 +130,7 @@ class Tables extends Component {
 				}
 				let tables = [];
 				for(let i in ret.data){
-					tables.push(<Table key={i} {...ret.data[i]} />);
+					tables.push(<Table key={i+":"+new Date()} {...ret.data[i]} />);
 				}
 
 				self.setState({tables: tables});
