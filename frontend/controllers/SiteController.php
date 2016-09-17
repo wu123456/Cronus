@@ -141,9 +141,12 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
-    public function actionVtables()
-    {
+    public function actionVtables(){
         return $this->render('tables');
+    }
+
+    public function actionVgame(){
+        return $this->render('game');
     }
 
     /**
