@@ -45,3 +45,59 @@ class GameBoard extends Component {
 
 
 }
+
+
+class Card extends Component{
+
+	constructor(props) {
+		super(props);
+        this.state = {
+            opacity: 1
+        }
+    }
+
+	render() {
+		let x = this.state.x || this.props.x || 0;
+		let y = this.state.y || this.props.y || 0;
+		if (x || y) {
+			return (<div className="card2" draggable="true" ref="s"
+						onClick = {this.handleClick}
+						onDragStart = {this.handleDragStart.bind(this)}
+						onDragEnd = {this.handleDragEnd.bind(this)}
+						onDrag = {this.handleDrag.bind(this)}
+						style={{opacity:this.state.opacity, background:this.props.color, top: y , left: x }}
+						> 
+				</div>)
+		}
+		return (<div className="card" draggable="true" ref="s"
+						onClick = {this.handleClick}
+						onDragStart = {this.handleDragStart.bind(this)}
+						onDragEnd = {this.handleDragEnd.bind(this)}
+						onDrag = {this.handleDrag.bind(this)}
+						style={{opacity:this.state.opacity, background:this.props.color}}
+						> 
+				</div>)
+	}
+
+	handleClick() {
+		console.log(5)
+	}
+
+
+	handleDragLeave() {
+		console.log(2)
+	}
+
+	handleDragStart(event) {
+	    this.setState({opacity:0.2});
+	    this._x = event.pageX - this.refs.s.offsetLeft;
+	    this._y = event.pageY - this.refs.s.offsetTop;
+	    moveElement = this;
+	}
+
+	handleDragEnd() {
+	    this.setState({opacity:1})
+	}
+
+
+}
