@@ -56,6 +56,10 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+    public static function findByIds($ids){
+        return static::find()->where(['id' => $ids, 'status' => self::STATUS_ACTIVE])->all();
+    }
+
     /**
      * @inheritdoc
      */
