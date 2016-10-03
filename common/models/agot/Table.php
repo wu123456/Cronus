@@ -14,6 +14,10 @@ class Table extends Model{
 
     private $_table_id;
 
+    public static function getTableIdByUserId($user_id){
+        return 4;
+    }
+
     public function __construct($table_id) {
         $this->_table_id = $table_id;
     }

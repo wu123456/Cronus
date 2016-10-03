@@ -4,13 +4,14 @@ import showMessage  from './Dialog'
 
 const Component = React.Component;
 const EventManage = $("<div></div>");
+let moveElement;
 
 class GameBoard extends Component {
 
 	constructor(props) {
 		super(props);
         this.state = {
-            cards: []
+            cards: [<Card key="0"/>],
         };
     }
 
@@ -22,6 +23,32 @@ class GameBoard extends Component {
 					>
 					{cards}
 				</div>);
+	}
+
+	componentDidMount() {
+		this.getCards();
+	}
+
+	getCards() {
+		let my_side = 0;
+		let self = this;
+		$.getJSON(
+			'/table/table',
+			{},
+			function(ret){
+				if(ret.code != 0){
+					showMessage(ret.msg);
+				}
+				let my_hand = ret.data.side[my_side]['hands'];
+				let my_hand_cards = [];
+				for(let i in my_hand){
+					let x = 20 + 110 * i;
+					let y = 580;
+					my_hand_cards.push(<Card x={x} y={y} key={i} name={my_hand[i]} />);
+				}
+				self.setState({cards: my_hand_cards});
+			}
+		)
 	}
 
 	handleDrop(event) {
@@ -59,6 +86,7 @@ class Card extends Component{
 	render() {
 		let x = this.state.x || this.props.x || 0;
 		let y = this.state.y || this.props.y || 0;
+		let name = this.state.name || this.props.name || "";
 		if (x || y) {
 			return (<div className="card2" draggable="true" ref="s"
 						onClick = {this.handleClick}
@@ -67,6 +95,7 @@ class Card extends Component{
 						onDrag = {this.handleDrag.bind(this)}
 						style={{opacity:this.state.opacity, background:this.props.color, top: y , left: x }}
 						> 
+						{name}
 				</div>)
 		}
 		return (<div className="card" draggable="true" ref="s"
@@ -99,12 +128,16 @@ class Card extends Component{
 	    this.setState({opacity:1})
 	}
 
+	handleDrag() {
+
+	}
+
 
 }
 
 class Board extends Component {
 	render() {
-		return <div><GameBoard/><Hands/></div>;
+		return <div><GameBoard/></div>;
 	}
 }
 
@@ -118,9 +151,7 @@ class Hands extends Component {
 
     render() {
     	let cards = this.state.cards;
-		return (<div className="game-hands" ref="t"
-					onDrop = {this.handleDrop.bind(this)}
-					onDragOver={this.handDragover.bind(this)}
+		return (<div className={"game-hands " + this.props.type} ref="t"
 					>
 					{cards}
 				</div>);

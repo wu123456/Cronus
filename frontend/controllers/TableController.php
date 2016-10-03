@@ -12,7 +12,7 @@ use common\models\agot\Table;
 class TableController extends JsonBaseController{
 
     /**
-     * @name  获取桌子情况
+     * @name  获取桌子列表情况
      * @method GET
      * @author wolfbian
      * @date 2016-09-07
@@ -25,6 +25,26 @@ class TableController extends JsonBaseController{
             $data[] =  $t->getTableInfo();
         }
         return ['code' => self::CODE_SUCCESS, 'data' => $data];
+    }
+
+    /**
+     * @name  获取桌子详情
+     * @method GET
+     * @author wolfbian
+     * @date 2016-10-03
+     */
+    public function actionTable(){
+
+        $user_id = Yii::$app->user->id;
+        if (empty($user_id)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+        $table_id = Table::getTableIdByUserId($user_id);
+
+        $t = new Table($table_id);
+
+
+        return ['code' => self::CODE_SUCCESS, 'data' => $t->info];
     }
 
     
