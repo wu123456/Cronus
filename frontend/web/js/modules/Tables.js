@@ -49,7 +49,7 @@ class Player extends Component {
 
 		showMessage({
 			title : "请选择牌组",
-			message: <Decks select={function(deck_id){
+			message: <Decks selected={function(deck_id){
 				select_deck_id = deck_id;
 			}}/>,
 			close : function(){
