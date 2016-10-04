@@ -26,7 +26,14 @@ class GameBoard extends Component {
 	}
 
 	componentDidMount() {
+		this.bindEvent();
 		this.getCards();
+	}
+
+	bindEvent(){
+		EventManage.on('card_move', function(event, params){
+			console.log(event, params);
+		})
 	}
 
 	getCards() {
@@ -44,7 +51,7 @@ class GameBoard extends Component {
 				for(let i in my_hand){
 					let x = 20 + 110 * i;
 					let y = 580;
-					my_hand_cards.push(<Card x={x} y={y} key={i} name={my_hand[i]} />);
+					my_hand_cards.push(<Card x={x} y={y} key={i} id={my_hand[i]} name={my_hand[i]} />);
 				}
 				self.setState({cards: my_hand_cards});
 			}
@@ -52,12 +59,14 @@ class GameBoard extends Component {
 	}
 
 	handleDrop(event) {
+
 		if (moveElement.props.fatherName == this.props.name) {
+			EventManage.trigger("card_move", {id : moveElement._id, from : {x : moveElement._x, y : moveElement._y}, to : {x : event.pageX - moveElement._x, y : event.pageY - moveElement._y}});
 			moveElement.setState({x: event.pageX - moveElement._x, y: event.pageY - moveElement._y});
 			return;
 		}
 
-		let a = <Card  key={new Date() - 0} {...moveElement.props} fatherName={this.props.name} x={event.pageX - this.refs.t.offsetLeft - moveElement._x} y={event.pageY - this.refs.t.offsetTop - moveElement._y}/>;
+		let a = <Card key={new Date() - 0} {...moveElement.props} fatherName={this.props.name} x={event.pageX - this.refs.t.offsetLeft - moveElement._x} y={event.pageY - this.refs.t.offsetTop - moveElement._y}/>;
 		
 		this.setState(function(oldState){
 			oldState.cards.push(a);
@@ -69,6 +78,8 @@ class GameBoard extends Component {
 	handDragover(event) {
 		event.preventDefault()
 	}
+
+
 
 
 }
@@ -121,6 +132,7 @@ class Card extends Component{
 	    this.setState({opacity:0.2});
 	    this._x = event.pageX - this.refs.s.offsetLeft;
 	    this._y = event.pageY - this.refs.s.offsetTop;
+	    this._id = this.state.id || this.props.id || "";
 	    moveElement = this;
 	}
 
