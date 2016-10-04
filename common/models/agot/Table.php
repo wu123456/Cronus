@@ -156,6 +156,24 @@ class Table extends Model{
         return $info;
     }
 
+    // type , side
+    public function shuffle($params){
+        $info = $this->info;
+        // type (0：手牌，1：牌库，2：弃牌区，3：死亡牌区)
+        $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead'];
+        if (isset($type2name[$params['type']])) {
+            return [false, '不存在的类型'];
+        }
+        $name = $type2name[$params['type']];
+
+        $cards = $info['side'][$params['side']][$name];
+        shuffle($cards);
+        $info['side'][$params['side']][$name] = $cards;
+
+        return [true, $cards];
+
+    }
+
     public static function shuffleAndDivideCards($cards, $l = 7){
         shuffle($cards);
         return [array_slice($cards, 0, $l), array_slice($cards, $l)];

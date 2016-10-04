@@ -40,11 +40,36 @@ class TableController extends JsonBaseController{
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
         }
         $table_id = Table::getTableIdByUserId($user_id);
-
         $t = new Table($table_id);
 
-
         return ['code' => self::CODE_SUCCESS, 'data' => $t->info];
+    }
+
+    /**
+     * @name  洗卡
+     * @method POST
+     * @author wolfbian
+     * @date 2016-10-04
+     * @param    int            type (0：手牌，1：牌库，2：弃牌区，3：死亡牌区)
+     */
+    public function actionShuttleCard(){
+        $user_id = Yii::$app->user->id;
+        if (empty($user_id)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+        $table_id = Table::getTableIdByUserId($user_id);
+        $table = new Table($table_id);
+
+        $type = intval(Yii::$app->request->post("type"));
+        $side = intval(Yii::$app->request->post("side"));
+
+        $ret = $table->shuttle(['type' => $type, 'side' => $side]);
+
+        if ($ret[0] === true) {
+            return ['code' => self::CODE_SUCCESS, 'data' => $ret[1]];
+        }
+
+        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
     }
 
     
