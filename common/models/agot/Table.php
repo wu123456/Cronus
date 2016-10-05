@@ -139,7 +139,13 @@ class Table extends Model{
             $info['side'][$value]['plots'] =  $deck->getPlots();
             $info['side'][$value]['discard'] =  [];
             $info['side'][$value]['dead'] =  [];
-            list($info['side'][$value]['hands'], $info['side'][$value]['library']) = Table::shuffleAndDivideCards($deck->getNormalCards());
+
+            $normal_temp = $deck->getNormalCards();
+            $normal = [];
+            foreach ($normal_temp as $k => $v) {
+                $normal[] = ['id' => 'c' . $value . $k, 'card_id' => $v];
+            }
+            list($info['side'][$value]['hands'], $info['side'][$value]['library']) = Table::shuffleAndDivideCards($normal);
         }
 
         $info['playground'] = [];

@@ -51,7 +51,7 @@ class GameBoard extends Component {
 				for(let i in my_hand){
 					let x = 20 + 110 * i;
 					let y = 580;
-					my_hand_cards.push(<Card x={x} y={y} key={i} id={my_hand[i]} name={my_hand[i]} />);
+					my_hand_cards.push(<Card x={x} y={y} key={i} id={my_hand[i]['card_id']} name={my_hand[i]['card_id']} />);
 				}
 				self.setState({cards: my_hand_cards});
 			}

@@ -72,6 +72,36 @@ class TableController extends JsonBaseController{
         return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
     }
 
+    /**
+     * @name  洗卡
+     * @method POST
+     * @author wolfbian
+     * @date 2016-10-05
+     * @param    int      id   // 本场比赛，卡牌的id
+     * @param    array    from
+     * @param    array    to
+     */
+    public function actionMoveCard(){
+        $user_id = Yii::$app->user->id;
+        if (empty($user_id)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+        $table_id = Table::getTableIdByUserId($user_id);
+        $table = new Table($table_id);
+
+        $id = intval(Yii::$app->request->post("id"));
+        $from = Yii::$app->request->post("from");
+        $to = Yii::$app->request->post("to");
+
+        $ret = $table->moveCard(['id' => $id, 'from' => $from, 'to' => $to]);
+
+        if ($ret[0] === true) {
+            return ['code' => self::CODE_SUCCESS, 'data' => $ret[1]];
+        }
+
+        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
+    }
+
     
     /**
      * @name  准备
