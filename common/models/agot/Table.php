@@ -37,7 +37,7 @@ class Table extends Model{
     /**
      * @name  准备
      * @param    int            user_id   玩家id
-     * @param    int            deck_id   玩家id
+     * @param    int            deck_id   牌组id
      * @param    int            side 在桌子的哪一边 0 1 ...
      * @param    int            game_id  游戏id(默认0，代表冰火)
      * @author wolfbian
@@ -119,7 +119,7 @@ class Table extends Model{
 
         $info['start'] = true;
 
-        if (!isset($info['side'])) {
+        if (!isset($info['ƒ'])) {
             return false;
         } 
 
@@ -175,9 +175,26 @@ class Table extends Model{
         $cards = $info['side'][$params['side']][$name];
         shuffle($cards);
         $info['side'][$params['side']][$name] = $cards;
+        $ret = $this->setInfo($info);
+        return [$ret, $cards];
 
-        return [true, $cards];
+    }
 
+    /**
+     * @name  移动卡牌
+     * @param    int            id   卡牌的id
+     * @param    array          to
+     * @author caohui
+     * @date 2016-10-08
+     */
+    public function moveCard($params){
+        $id = $params['id'];
+        $to = $params['to'];
+        $info = $this->info;
+        $info['playground'][$id]['x'] = $to['x'];
+        $info['playground'][$id]['y'] = $to['y'];
+        $ret = $this->setInfo($info);
+        return [$ret];
     }
 
     public static function shuffleAndDivideCards($cards, $l = 7){

@@ -90,10 +90,9 @@ class TableController extends JsonBaseController{
         $table = new Table($table_id);
 
         $id = intval(Yii::$app->request->post("id"));
-        $from = Yii::$app->request->post("from");
         $to = Yii::$app->request->post("to");
 
-        $ret = $table->moveCard(['id' => $id, 'from' => $from, 'to' => $to]);
+        $ret = $table->moveCard(['id' => $id, 'to' => $to]);
 
         if ($ret[0] === true) {
             return ['code' => self::CODE_SUCCESS, 'data' => $ret[1]];
