@@ -119,7 +119,7 @@ class Table extends Model{
 
         $info['start'] = true;
 
-        if (!isset($info['ƒ'])) {
+        if (!isset($info['side'])) {
             return false;
         } 
 
