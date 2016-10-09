@@ -11,12 +11,37 @@ class GameBoard extends Component {
 	constructor(props) {
 		super(props);
         this.state = {
-            cards: [<Card key="0"/>],
+            // cards: [<Card key="0"/>],
+            hands: [{id: 101, card_id: 1}],
+            playground: [{id: 102, x: 1, y: 100, card_id: 2}],
+            discard: [{id: 103, card_id: 3}],
+            library: [{id: 111, card_id: 4}],
+            plot: [{id: 112, card_id: 5}],
+            dead: [{id: 104, card_id: 6}]
         };
     }
 
 	render() {
-		let cards = this.state.cards;
+		let cards = [];
+		let hands = this.state.hands;
+		let playground = this.state.playground;
+		let discard = this.state.discard;
+		let library = this.state.library;
+		let plot = this.state.plot;
+		let dead = this.state.dead;
+
+		for(let i in hands){
+			let x = 20 + 110 * i;
+			let y = 580;
+			cards.push(<Card x={x} y={y} key={hands[i]['id']} id={hands[i]['card_id']} name={hands[i]['card_id']} />);
+		}
+
+		for(let i in playground){
+			cards.push(<Card x={playground[i]['x']} y={playground[i]['y']} key={playground[i]['id']} id={playground[i]['card_id']} name={playground[i]['card_id']} />);
+		}
+
+		
+
 		return (<div className="game-board" ref="t"
 					onDrop = {this.handleDrop.bind(this)}
 					onDragOver={this.handDragover.bind(this)}
@@ -36,27 +61,27 @@ class GameBoard extends Component {
 		})
 	}
 
-	getCards() {
-		let my_side = 0;
-		let self = this;
-		$.getJSON(
-			'/table/table',
-			{},
-			function(ret){
-				if(ret.code != 0){
-					showMessage(ret.msg);
-				}
-				let my_hand = ret.data.side[my_side]['hands'];
-				let my_hand_cards = [];
-				for(let i in my_hand){
-					let x = 20 + 110 * i;
-					let y = 580;
-					my_hand_cards.push(<Card x={x} y={y} key={i} id={my_hand[i]['card_id']} name={my_hand[i]['card_id']} />);
-				}
-				self.setState({cards: my_hand_cards});
-			}
-		)
-	}
+	// getCards() {
+	// 	let my_side = 0;
+	// 	let self = this;
+	// 	$.getJSON(
+	// 		'/table/table',
+	// 		{},
+	// 		function(ret){
+	// 			if(ret.code != 0){
+	// 				showMessage(ret.msg);
+	// 			}
+	// 			let my_hand = ret.data.side[my_side]['hands'];
+	// 			let my_hand_cards = [];
+	// 			for(let i in my_hand){
+	// 				let x = 20 + 110 * i;
+	// 				let y = 580;
+	// 				my_hand_cards.push(<Card x={x} y={y} key={i} id={my_hand[i]['card_id']} name={my_hand[i]['card_id']} />);
+	// 			}
+	// 			self.setState({cards: my_hand_cards});
+	// 		}
+	// 	)
+	// }
 
 	handleDrop(event) {
 
@@ -97,7 +122,7 @@ class Card extends Component{
 	render() {
 		let x = this.state.x || this.props.x || 0;
 		let y = this.state.y || this.props.y || 0;
-		let name = this.state.name || this.props.name || "";
+		let name = this.state.name || this.props.name || this.state.id || this.props.id ||"";
 		if (x || y) {
 			return (<div className="card2" draggable="true" ref="s"
 						onClick = {this.handleClick}
