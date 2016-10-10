@@ -12,13 +12,13 @@ $config = [
     ],
 ];
 
-if (YII_DEBUG) {
+// if (YII_DEBUG) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class'      => 'yii\debug\Module',
-        'allowedIPs' => ['*'],
+        // 'allowedIPs' => ['*'],
     ];
-}
+// }
 
 if (YII_ENV_DEV) {
     $config['modules']['gii'] = [

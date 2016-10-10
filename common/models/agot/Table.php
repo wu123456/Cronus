@@ -145,7 +145,17 @@ class Table extends Model{
             foreach ($normal_temp as $k => $v) {
                 $normal[] = ['id' => 'c' . $value . $k, 'card_id' => $v];
             }
-            list($info['side'][$value]['hands'], $info['side'][$value]['library']) = Table::shuffleAndDivideCards($normal);
+            list($hands, $library) = Table::shuffleAndDivideCards($normal);
+
+            $info['side'][$value]['hands'] = [];
+            foreach ($hands as $hand) {
+                $info['side'][$value]['hands'][$hand['id']] = $hand;
+            }
+
+            $info['side'][$value]['library'] = [];
+            foreach ($library as $l) {
+                $info['side'][$value]['library'][$l['id']] = $l;
+            }
         }
 
         $info['playground'] = [];
@@ -167,7 +177,7 @@ class Table extends Model{
         $info = $this->info;
         // type (0：手牌，1：牌库，2：弃牌区，3：死亡牌区)
         $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead'];
-        if (isset($type2name[$params['type']])) {
+        if (!isset($type2name[$params['type']])) {
             return [false, '不存在的类型'];
         }
         $name = $type2name[$params['type']];
@@ -191,6 +201,9 @@ class Table extends Model{
         $id = $params['id'];
         $to = $params['to'];
         $info = $this->info;
+        if (empty($info['playground'][$id])) {
+            return [false, '该牌不在场上'];
+        }
         $info['playground'][$id]['x'] = $to['x'];
         $info['playground'][$id]['y'] = $to['y'];
         $ret = $this->setInfo($info);
@@ -215,7 +228,7 @@ class Table extends Model{
         $info = $this->info;
 
         $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead'];
-        if (isset($type2name[$from])) {
+        if (!isset($type2name[$from])) {
             return [false, '不存在的类型'];
         }
         $name = $type2name[$from];
@@ -228,6 +241,18 @@ class Table extends Model{
         $info['playground'][$id]['y'] = $to['y'];
         $ret = $this->setInfo($info);
         return [$ret];
+    }
+
+    public function getSideByUserId($user_id){
+        $info = $this->info;
+        $sides = $info['side'];
+        foreach ($sides as $key => $side) {
+            if ($side['user_id'] == $user_id) {
+                return $key;
+            }
+        }
+        return -1;
+
     }
 
     

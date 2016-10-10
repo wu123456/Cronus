@@ -12,8 +12,8 @@ class GameBoard extends Component {
 		super(props);
         this.state = {
             // cards: [<Card key="0"/>],
-            hands: [{id: 101, card_id: 1}],
             playground: [{id: 102, x: 1, y: 100, card_id: 2}],
+            hands: [{id: 101, card_id: 1}],
             discard: [{id: 103, card_id: 3}],
             library: [{id: 111, card_id: 4}],
             plot: [{id: 112, card_id: 5}],
@@ -30,17 +30,17 @@ class GameBoard extends Component {
 		let plot = this.state.plot;
 		let dead = this.state.dead;
 
+		let j = 0;
 		for(let i in hands){
-			let x = 20 + 110 * i;
+			let x = 20 + 110 * j;
 			let y = 580;
-			cards.push(<Card x={x} y={y} key={hands[i]['id']} id={hands[i]['card_id']} name={hands[i]['card_id']} />);
+			cards.push(<Card x={x} y={y} key={hands[i]['id']} id={hands[i]['id']} card_id={hands[i]['card_id']} />);
+			j++;
 		}
 
 		for(let i in playground){
-			cards.push(<Card x={playground[i]['x']} y={playground[i]['y']} key={playground[i]['id']} id={playground[i]['card_id']} name={playground[i]['card_id']} />);
+			cards.push(<Card x={playground[i]['x']} y={playground[i]['y']} key={playground[i]['id']} id={playground[i]['id']} card_id={playground[i]['card_id']} />);
 		}
-
-		
 
 		return (<div className="game-board" ref="t"
 					onDrop = {this.handleDrop.bind(this)}
@@ -56,37 +56,76 @@ class GameBoard extends Component {
 	}
 
 	bindEvent(){
+
+		let self = this;
 		EventManage.on('card_move', function(event, params){
 			console.log(event, params);
+			if(inHand(params['from']) && inPlayground(params['to'])){
+				$.post(
+					'/table/play-onto-board',
+					{
+						id : params['id'],
+						from : 0,
+						to : params['to']
+					},
+					function(ret){
+						self.getCards();
+					},
+					'json'
+				)
+			}else if(inPlayground(params['from']) && inPlayground(params['to'])){
+				$.post(
+					'/table/move-card',
+					{
+						id : params['id'],
+						to : params['to']
+					},
+					function(ret){
+						self.getCards();
+					},
+					'json'
+				)
+			}
 		})
+
+		function inHand(p){
+			if(p.y >= 580){
+				return true;
+			}
+			return false;
+		}
+
+		function inPlayground(p){
+			if(p.y >= 120 && p.y <= 580){
+				return true;
+			}
+			return false;
+		}
 	}
 
-	// getCards() {
-	// 	let my_side = 0;
-	// 	let self = this;
-	// 	$.getJSON(
-	// 		'/table/table',
-	// 		{},
-	// 		function(ret){
-	// 			if(ret.code != 0){
-	// 				showMessage(ret.msg);
-	// 			}
-	// 			let my_hand = ret.data.side[my_side]['hands'];
-	// 			let my_hand_cards = [];
-	// 			for(let i in my_hand){
-	// 				let x = 20 + 110 * i;
-	// 				let y = 580;
-	// 				my_hand_cards.push(<Card x={x} y={y} key={i} id={my_hand[i]['card_id']} name={my_hand[i]['card_id']} />);
-	// 			}
-	// 			self.setState({cards: my_hand_cards});
-	// 		}
-	// 	)
-	// }
+	getCards() {
+		let my_side = 0;
+		let self = this;
+		$.getJSON(
+			'/table/table',
+			{},
+			function(ret){
+				if(ret.code != 0){
+					showMessage(ret.msg);
+				}
+				let my_hand = ret.data.side[my_side]['hands'];
+				let playground = ret.data['playground'];
+				self.setState({hands: my_hand, playground: playground});
+			}
+		)
+	}
+
+
 
 	handleDrop(event) {
 
 		if (moveElement.props.fatherName == this.props.name) {
-			EventManage.trigger("card_move", {id : moveElement._id, from : {x : moveElement._x, y : moveElement._y}, to : {x : event.pageX - moveElement._x, y : event.pageY - moveElement._y}});
+			EventManage.trigger("card_move", {id : moveElement._id, from : {x : moveElement.x, y : moveElement.y}, to : {x : event.pageX - moveElement._x, y : event.pageY - moveElement._y}});
 			moveElement.setState({x: event.pageX - moveElement._x, y: event.pageY - moveElement._y});
 			return;
 		}
@@ -107,6 +146,8 @@ class GameBoard extends Component {
 
 
 
+
+
 }
 
 
@@ -122,14 +163,14 @@ class Card extends Component{
 	render() {
 		let x = this.state.x || this.props.x || 0;
 		let y = this.state.y || this.props.y || 0;
-		let name = this.state.name || this.props.name || this.state.id || this.props.id ||"";
+		let name = this.state.card_id || this.props.card_id || this.state.id || this.props.id ||"";
 		if (x || y) {
 			return (<div className="card2" draggable="true" ref="s"
 						onClick = {this.handleClick}
 						onDragStart = {this.handleDragStart.bind(this)}
 						onDragEnd = {this.handleDragEnd.bind(this)}
 						onDrag = {this.handleDrag.bind(this)}
-						style={{opacity:this.state.opacity, background:this.props.color, top: y , left: x }}
+						style={{opacity:this.state.opacity, background:this.props.color, top: y + "px" , left: x + "px"}}
 						> 
 						{name}
 				</div>)
@@ -157,6 +198,8 @@ class Card extends Component{
 	    this.setState({opacity:0.2});
 	    this._x = event.pageX - this.refs.s.offsetLeft;
 	    this._y = event.pageY - this.refs.s.offsetTop;
+	    this.x = this.state.x || this.props.x || 0;
+		this.y = this.state.y || this.props.y || 0;
 	    this._id = this.state.id || this.props.id || "";
 	    moveElement = this;
 	}

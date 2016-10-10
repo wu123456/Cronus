@@ -77,7 +77,7 @@ class TableController extends JsonBaseController{
      * @method POST
      * @author wolfbian
      * @date 2016-10-05
-     * @param    int      id   // 本场比赛，卡牌的id
+     * @param    string      id   // 本场比赛，卡牌的id
      * @param    array    to
      */
     public function actionMoveCard(){
@@ -88,7 +88,7 @@ class TableController extends JsonBaseController{
         $table_id = Table::getTableIdByUserId($user_id);
         $table = new Table($table_id);
 
-        $id = intval(Yii::$app->request->post("id"));
+        $id = Yii::$app->request->post("id");
         $to = Yii::$app->request->post("to");
 
         $ret = $table->moveCard(['id' => $id, 'to' => $to]);
@@ -97,7 +97,7 @@ class TableController extends JsonBaseController{
             return ['code' => self::CODE_SUCCESS, 'data' => []];
         }
 
-        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => ""];
+        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
     }
 
     /**
@@ -105,7 +105,7 @@ class TableController extends JsonBaseController{
      * @method POST
      * @author wolfbian
      * @date 2016-10-09
-     * @param    int      id   // 本场比赛，卡牌的id
+     * @param    string      id   // 本场比赛，卡牌的id
      * @param    int      form // (0：手牌，1：牌库，2：弃牌区，3：死亡牌区)
      * @param    array    to
      */
@@ -117,17 +117,17 @@ class TableController extends JsonBaseController{
         $table_id = Table::getTableIdByUserId($user_id);
         $table = new Table($table_id);
 
-        $id = intval(Yii::$app->request->post("id"));
+        $id = Yii::$app->request->post("id");
         $from = intval(Yii::$app->request->post("from"));
         $to = Yii::$app->request->post("to");
 
-        $ret = $table->playOntoBoard(['id' => $id, 'to' => $to, 'from' => $from]);
+        $ret = $table->playOntoBoard(['id' => $id, 'to' => $to, 'from' => $from, 'side' => $table->getSideByUserId($user_id)]);
 
         if ($ret[0] === true) {
             return ['code' => self::CODE_SUCCESS, 'data' => []];
         }
 
-        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => ""];
+        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
     }
 
     
