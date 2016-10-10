@@ -18,7 +18,7 @@ class GameController extends JsonBaseController{
      * @param    int            to
      */
     public function actionMoveCard(){
-
+        
     }
 
     /**

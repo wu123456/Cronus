@@ -197,6 +197,41 @@ class Table extends Model{
         return [$ret];
     }
 
+    /**
+     * @name  卡牌进场
+     * @param    int            id   卡牌的id
+     * @param    int            side    
+     * @param    int            form // (0：手牌，1：牌库，2：弃牌区，3：死亡牌区)
+     * @param    array          to
+     * @author wolfbian
+     * @date 2016-10-09
+     */
+    public function playOntoBoard($params){
+        $id = $params['id'];
+        $from = $params['from'];
+        $to = $params['to'];
+        $side = $params['side'];
+
+        $info = $this->info;
+
+        $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead'];
+        if (isset($type2name[$from])) {
+            return [false, '不存在的类型'];
+        }
+        $name = $type2name[$from];
+        $cards = $info['side'][$side][$name];
+        $card = $cards[$id];
+        unset($cards[$id]);
+        $info['side'][$side][$name] = $cards;
+        $info['playground'][$id] = $card;
+        $info['playground'][$id]['x'] = $to['x'];
+        $info['playground'][$id]['y'] = $to['y'];
+        $ret = $this->setInfo($info);
+        return [$ret];
+    }
+
+    
+
     public static function shuffleAndDivideCards($cards, $l = 7){
         shuffle($cards);
         return [array_slice($cards, 0, $l), array_slice($cards, $l)];

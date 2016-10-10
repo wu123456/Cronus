@@ -73,12 +73,11 @@ class TableController extends JsonBaseController{
     }
 
     /**
-     * @name  洗卡
+     * @name  卡牌移动
      * @method POST
      * @author wolfbian
      * @date 2016-10-05
      * @param    int      id   // 本场比赛，卡牌的id
-     * @param    array    from
      * @param    array    to
      */
     public function actionMoveCard(){
@@ -95,10 +94,40 @@ class TableController extends JsonBaseController{
         $ret = $table->moveCard(['id' => $id, 'to' => $to]);
 
         if ($ret[0] === true) {
-            return ['code' => self::CODE_SUCCESS, 'data' => $ret[1]];
+            return ['code' => self::CODE_SUCCESS, 'data' => []];
         }
 
-        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
+        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => ""];
+    }
+
+    /**
+     * @name  打入场卡牌
+     * @method POST
+     * @author wolfbian
+     * @date 2016-10-09
+     * @param    int      id   // 本场比赛，卡牌的id
+     * @param    int      form // (0：手牌，1：牌库，2：弃牌区，3：死亡牌区)
+     * @param    array    to
+     */
+    public function actionPlayOntoBoard(){
+        $user_id = Yii::$app->user->id;
+        if (empty($user_id)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+        $table_id = Table::getTableIdByUserId($user_id);
+        $table = new Table($table_id);
+
+        $id = intval(Yii::$app->request->post("id"));
+        $from = intval(Yii::$app->request->post("from"));
+        $to = Yii::$app->request->post("to");
+
+        $ret = $table->playOntoBoard(['id' => $id, 'to' => $to, 'from' => $from]);
+
+        if ($ret[0] === true) {
+            return ['code' => self::CODE_SUCCESS, 'data' => []];
+        }
+
+        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => ""];
     }
 
     
