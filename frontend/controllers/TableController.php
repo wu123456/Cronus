@@ -164,6 +164,10 @@ class TableController extends JsonBaseController{
             return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "不合法的桌边"];
         }
 
+        if (empty($deck_id)) {
+            return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "不合法的牌组"];
+        }
+
         $table = new Table($table_id);
 
         if( !$table->ready(['user_id' => $user_id, 'game_id' => $game_id,  'side' => $side, 'deck_id' => $deck_id]) ){

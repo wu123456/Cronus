@@ -85,6 +85,8 @@ class GameBoard extends Component {
 					},
 					'json'
 				)
+			}else{
+				self.getCards();
 			}
 		})
 
