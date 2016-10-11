@@ -30,8 +30,8 @@ class TableController extends JsonBaseController{
     /**
      * @name  获取桌子详情
      * @method GET
-     * @author wolfbian
-     * @date 2016-10-03
+     * @author wolfbian,chui
+     * @date 2016-10-11
      */
     public function actionTable(){
 
@@ -40,9 +40,33 @@ class TableController extends JsonBaseController{
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
         }
         $table_id = Table::getTableIdByUserId($user_id);
-        $t = new Table($table_id);
+        $table = new Table($table_id);
+        $info = $table->info;
+        $sides = $info['side'];
+        if($sides[0]['user_id'] == $user_id){
+            $side = 0;
+            $self_side = $sides[0];
+            $other_side = $sides[1];
+        }else{
+            $side = 1;
+            $self_side = $sides[1];
+            $other_side = $sides[0];
+        }
+        foreach ($other_side as $key => $value) {
+            if(is_array($value)){
+                $other_side[$key] = count($value);
+            }else{
+                unset($other_side[$key]);
+            }
+        }
+        $data = [   'side' => $side,
+                    'self_side' => $self_side,
+                    'other_side' => $other_side,
+                    'playground' => $info['playground'],
+                ];
 
-        return ['code' => self::CODE_SUCCESS, 'data' => $t->info];
+
+        return ['code' => self::CODE_SUCCESS, 'data' => $data];
     }
 
     /**
