@@ -6,6 +6,9 @@ const Component = React.Component;
 const EventManage = $("<div></div>");
 let moveElement;
 
+let board_high = 700;
+let card_high = 100;
+
 class GameBoard extends Component {
 
 	constructor(props) {
@@ -15,9 +18,17 @@ class GameBoard extends Component {
             playground: [{id: 102, x: 1, y: 100, card_id: 2}],
             hands: [{id: 101, card_id: 1}],
             discard: [{id: 103, card_id: 3}],
-            library: [{id: 111, card_id: 4}],
+            library: 0,
             plot: [{id: 112, card_id: 5}],
-            dead: [{id: 104, card_id: 6}]
+            dead: [{id: 104, card_id: 6}],
+
+            op_hands: 0,
+            op_plot: 0,
+            op_library: 0,
+            op_discard: [{id: 105, card_id: 3}],
+            op_dead: [],
+            side: 0,
+
         };
     }
 
@@ -29,6 +40,9 @@ class GameBoard extends Component {
 		let library = this.state.library;
 		let plot = this.state.plot;
 		let dead = this.state.dead;
+		let op_hands = this.state.op_hands;
+		let side = this.state.side;
+
 
 		let j = 0;
 		for(let i in hands){
@@ -39,8 +53,21 @@ class GameBoard extends Component {
 		}
 
 		for(let i in playground){
-			cards.push(<Card x={playground[i]['x']} y={playground[i]['y']} key={playground[i]['id']} id={playground[i]['id']} card_id={playground[i]['card_id']} />);
+			let y = playground[i]['y'];
+			if(side == 1){
+				y = board_high - card_high - y;
+			}
+
+			cards.push(<Card x={playground[i]['x']} y={y} key={playground[i]['id']} id={playground[i]['id']} card_id={playground[i]['card_id']} />);
 		}
+
+		for(let i = 0; i < op_hands; i++){
+			let x = 20 + 110 * i;
+			let y = 20;
+			cards.push(<Card x={x} y={y} key={"op_hands" + i} id={"unknown"} card_id={"back"}/>);
+		}
+
+
 
 		return (<div className="game-board" ref="t"
 					onDrop = {this.handleDrop.bind(this)}
@@ -61,6 +88,7 @@ class GameBoard extends Component {
 		EventManage.on('card_move', function(event, params){
 			console.log(event, params);
 			if(inHand(params['from']) && inPlayground(params['to'])){
+				params['to'] = opPosition(params['to'], self.state.side);
 				$.post(
 					'/table/play-onto-board',
 					{
@@ -74,6 +102,7 @@ class GameBoard extends Component {
 					'json'
 				)
 			}else if(inPlayground(params['from']) && inPlayground(params['to'])){
+				params['to'] = opPosition(params['to'], self.state.side);
 				$.post(
 					'/table/move-card',
 					{
@@ -103,6 +132,13 @@ class GameBoard extends Component {
 			}
 			return false;
 		}
+
+		function opPosition(p, n){
+			if(n){
+				p.y = board_high - card_high - p.y;
+			}
+			return p;
+		}
 	}
 
 	getCards() {
@@ -115,9 +151,16 @@ class GameBoard extends Component {
 				if(ret.code != 0){
 					showMessage(ret.msg);
 				}
-				let my_hand = ret.data.side[my_side]['hands'];
+				let my_hand = ret.data['self_side']['hands'];
+				let op_hand = ret.data['other_side']['hands'];
 				let playground = ret.data['playground'];
-				self.setState({hands: my_hand, playground: playground});
+				let side = ret.data['side'];
+				self.setState({
+					hands: my_hand, 
+					playground: playground,
+					op_hands: op_hand,
+					side: side
+				});
 			}
 		)
 	}
