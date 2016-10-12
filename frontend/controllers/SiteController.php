@@ -149,6 +149,10 @@ class SiteController extends Controller
         return $this->render('game');
     }
 
+    public function actionVdeck(){
+        return $this->render('deck');
+    }
+
     /**
      * Signs user up.
      *
@@ -218,6 +222,8 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
+
 
 
 }

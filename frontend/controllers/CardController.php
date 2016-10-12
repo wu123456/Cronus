@@ -14,7 +14,7 @@ class CardController extends JsonBaseController{
     /**
      * @name  查询卡牌
      * @method GET
-     * @param  array            condition      条件
+     * @param  array            condition      条件数组
      * @author wolfbian
      * @date 2016-08-24
      */
@@ -31,7 +31,5 @@ class CardController extends JsonBaseController{
         return ['code' => self::CODE_SUCCESS, 'data' => $cards];
 
     }
-
-
 
 }
