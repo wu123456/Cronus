@@ -26,14 +26,35 @@ class GameBoard extends Component {
             op_plot: 0,
             op_library: 0,
             op_discard: [{id: 105, card_id: 3}],
-            op_dead: [],
+            op_dead: [{id: 108, card_id: 6},{id: 109, card_id: 6}],
             side: 0,
 
         };
     }
 
+    showCards(name, cards) {
+    	let message = [];
+    	for(let i in cards){
+    		message.push(<Card margin="5" key={cards[i]['id']} id={cards[i]['id']} card_id={cards[i]['card_id']}/>);
+    	}
+    	showMessage({
+    		title : name,
+			message: <div>{message}<div className="clearfix"></div></div>,
+		});
+    }
+
 	render() {
 		let cards = [];
+		let blocks = [
+			<Block key="my_plot" x={600} y={580} height={100} width={100}/>,
+			<Block key="my_library" x={710} y={580} height={100} width={100}/>,
+			<Block key="my_discard" x={820} y={580} height={45} width={100}/>,
+			<Block key="my_dead" x={820} y={635} height={45} width={100}/>,
+			<Block key="op_plot" x={600} y={20} height={100} width={100}/>,
+			<Block key="op_library" x={710} y={20} height={100} width={100}/>,
+			<Block onClick={this.showCards.bind(this, "对方弃牌堆", this.state.op_discard)} key="op_discard" x={820} y={20} height={45} width={100}/>,
+			<Block onClick={this.showCards.bind(this, "对方死亡牌堆", this.state.op_dead)} key="op_dead" x={820} y={75} height={45} width={100}/>,
+			];
 		let hands = this.state.hands;
 		let playground = this.state.playground;
 		let discard = this.state.discard;
@@ -74,6 +95,7 @@ class GameBoard extends Component {
 					onDragOver={this.handDragover.bind(this)}
 					>
 					{cards}
+					{blocks}
 				</div>);
 	}
 
@@ -208,6 +230,7 @@ class Card extends Component{
 	render() {
 		let x = this.state.x || this.props.x || 0;
 		let y = this.state.y || this.props.y || 0;
+		let margin = this.state.margin || this.props.margin || 0;
 		let name = this.state.card_id || this.props.card_id || this.state.id || this.props.id ||"";
 		if (x || y) {
 			return (<div className="card2" draggable="true" ref="s"
@@ -225,8 +248,9 @@ class Card extends Component{
 						onDragStart = {this.handleDragStart.bind(this)}
 						onDragEnd = {this.handleDragEnd.bind(this)}
 						onDrag = {this.handleDrag.bind(this)}
-						style={{opacity:this.state.opacity, background:this.props.color}}
+						style={{opacity:this.state.opacity, margin:margin + "px", background:this.props.color}}
 						> 
+						{name}
 				</div>)
 	}
 
@@ -266,39 +290,9 @@ class Board extends Component {
 	}
 }
 
-class Hands extends Component {
-	constructor(props) {
-		super(props);
-        this.state = {
-            cards: []
-        };
-    }
-
-    render() {
-    	let cards = this.state.cards;
-		return (<div className={"game-hands " + this.props.type} ref="t"
-					>
-					{cards}
-				</div>);
-    }
-
-    handleDrop(event) {
-		if (moveElement.props.fatherName == this.props.name) {
-			moveElement.setState({x: event.pageX - moveElement._x, y: event.pageY - moveElement._y});
-			return;
-		}
-
-		let a = <Card  key={new Date() - 0} {...moveElement.props} fatherName={this.props.name} x={event.pageX - this.refs.t.offsetLeft - moveElement._x} y={event.pageY - this.refs.t.offsetTop - moveElement._y}/>;
-		
-		this.setState(function(oldState){
-			oldState.cards.push(a);
-			return oldState;
-		});
-
-	}
-
-	handDragover(event) {
-		event.preventDefault()
+class Block extends Component{
+	render() {
+		return <div onClick={this.props.onClick || function(){}} className="block" style={{top: this.props.y, left: this.props.x, height: this.props.height, width: this.props.width}}></div>
 	}
 }
 
