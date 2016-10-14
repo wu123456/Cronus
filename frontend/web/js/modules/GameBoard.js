@@ -11,6 +11,7 @@ let card_high = 100;
 
 class GameBoard extends Component {
 
+
 	constructor(props) {
 		super(props);
         this.state = {
@@ -85,7 +86,7 @@ class GameBoard extends Component {
 		for(let i = 0; i < op_hands; i++){
 			let x = 20 + 110 * i;
 			let y = 20;
-			cards.push(<Card x={x} y={y} key={"op_hands" + i} id={"unknown"} card_id={"back"}/>);
+			cards.push(<Card unmovable={true} x={x} y={y} key={"op_hands" + i} id={"unknown"} card_id={"back"}/>);
 		}
 
 
@@ -220,10 +221,11 @@ class GameBoard extends Component {
 
 class Card extends Component{
 
+
 	constructor(props) {
 		super(props);
         this.state = {
-            opacity: 1
+            opacity: 1,
         }
     }
 
@@ -232,26 +234,35 @@ class Card extends Component{
 		let y = this.state.y || this.props.y || 0;
 		let margin = this.state.margin || this.props.margin || 0;
 		let name = this.state.card_id || this.props.card_id || this.state.id || this.props.id ||"";
-		if (x || y) {
-			return (<div className="card2" draggable="true" ref="s"
-						onClick = {this.handleClick}
-						onDragStart = {this.handleDragStart.bind(this)}
-						onDragEnd = {this.handleDragEnd.bind(this)}
-						onDrag = {this.handleDrag.bind(this)}
-						style={{opacity:this.state.opacity, background:this.props.color, top: y + "px" , left: x + "px"}}
-						> 
-						{name}
-				</div>)
+		let unmovable = this.props.unmovable;
+		let class_name = 'card';
+		let style = {opacity:this.state.opacity, margin:margin + "px", background:this.props.color};
+
+		if(x || y){
+			class_name = 'card2';
+			style.top = y + "px";
+			style.left = x + "px";
 		}
-		return (<div className="card" draggable="true" ref="s"
-						onClick = {this.handleClick}
+
+		if(!unmovable){
+			return (<div className={class_name} draggable="true" ref="s"
 						onDragStart = {this.handleDragStart.bind(this)}
 						onDragEnd = {this.handleDragEnd.bind(this)}
 						onDrag = {this.handleDrag.bind(this)}
-						style={{opacity:this.state.opacity, margin:margin + "px", background:this.props.color}}
+						style={style}
 						> 
 						{name}
-				</div>)
+				</div>);
+		}
+
+		return (<div className={class_name} ref="s"
+						style={style}
+						> 
+						{name}
+				</div>);
+
+		
+		
 	}
 
 	handleClick() {
