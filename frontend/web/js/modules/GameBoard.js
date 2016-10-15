@@ -47,10 +47,10 @@ class GameBoard extends Component {
 	render() {
 		let cards = [];
 		let blocks = [
-			<Block key="my_plot" x={600} y={580} height={100} width={100}/>,
+			<Block onClick={this.showCards.bind(this, "我方战略牌", this.state.plot)} key="my_plot" x={600} y={580} height={100} width={100}/>,
 			<Block key="my_library" x={710} y={580} height={100} width={100}/>,
-			<Block key="my_discard" x={820} y={580} height={45} width={100}/>,
-			<Block key="my_dead" x={820} y={635} height={45} width={100}/>,
+			<Block onClick={this.showCards.bind(this, "我方弃牌堆", this.state.discard)} key="my_discard" x={820} y={580} height={45} width={100}/>,
+			<Block onClick={this.showCards.bind(this, "我方死亡牌堆", this.state.dead)} key="my_dead" x={820} y={635} height={45} width={100}/>,
 			<Block key="op_plot" x={600} y={20} height={100} width={100}/>,
 			<Block key="op_library" x={710} y={20} height={100} width={100}/>,
 			<Block onClick={this.showCards.bind(this, "对方弃牌堆", this.state.op_discard)} key="op_discard" x={820} y={20} height={45} width={100}/>,
@@ -175,13 +175,29 @@ class GameBoard extends Component {
 					showMessage(ret.msg);
 				}
 				let my_hand = ret.data['self_side']['hands'];
+				let my_discard = ret.data['self_side']['discard'];
+				let my_dead = ret.data['self_side']['dead'];
+				let my_library = ret.data['self_side']['library'];
+				let my_plot = ret.data['self_side']['plot'];
 				let op_hand = ret.data['other_side']['hands'];
+				let op_discard = ret.data['other_side']['discard'];
+				let op_dead = ret.data['other_side']['dead'];
+				let op_library = ret.data['other_side']['library'];
+				let op_plot = ret.data['other_side']['plot'];
 				let playground = ret.data['playground'];
 				let side = ret.data['side'];
 				self.setState({
 					hands: my_hand, 
+					discard: my_discard,
+					dead: my_dead,
+					library: my_library,
+					plot: my_plot,
 					playground: playground,
 					op_hands: op_hand,
+					op_discard: op_discard,
+					op_dead: op_dead,
+					op_library: op_library,
+					op_plot: op_plot,
 					side: side
 				});
 			}
