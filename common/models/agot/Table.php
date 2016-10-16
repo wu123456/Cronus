@@ -175,8 +175,8 @@ class Table extends Model{
     // type , side
     public function shuffle($params){
         $info = $this->info;
-        // type (0：手牌，1：牌库，2：弃牌区，3：死亡牌区)
-        $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead'];
+        // type (0：手牌，1：牌库，2：弃牌区，3：死亡牌区， 4：战略牌)
+        $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead', '4' => 'plot'];
         if (!isset($type2name[$params['type']])) {
             return [false, '不存在的类型'];
         }
@@ -208,6 +208,36 @@ class Table extends Model{
         $info['playground'][$id]['y'] = $to['y'];
         $ret = $this->setInfo($info);
         return [$ret];
+    }
+
+    /**
+     * @name  卡牌离场
+     * @param    string             id   卡牌的id
+     * @param    int                to
+     * @author wolfbian
+     * @date 2016-10-16
+     */
+    public function leaveCard($params){
+        $id = $params['id'];
+        $to = $params['to'];
+        $info = $this->info;
+
+        $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead', '4' => 'plot'];
+        if (!isset($type2name[$params['type']])) {
+            return [false, '不存在的类型'];
+        }
+        $name = $type2name[$params['type']];
+
+        if (empty($info['playground'][$id])) {
+            return [false, '该牌不在场上'];
+        }
+
+        $cards = $info['side'][$params['side']][$name];
+        $cards[$id] = $info['playground'][$id];
+        unset($info['playground'][$id]);
+        $info['side'][$params['side']][$name] = $cards;
+        $ret = $this->setInfo($info);
+        return [$ret, $cards];
     }
 
     /**

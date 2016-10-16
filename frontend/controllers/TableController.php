@@ -125,6 +125,35 @@ class TableController extends JsonBaseController{
     }
 
     /**
+     * @name  卡牌离场
+     * @method POST
+     * @author wolfbian
+     * @date 2016-10-16
+     * @param    string      id   // 本场比赛，卡牌的id
+     * @param    array    to  (0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌)
+     */
+    public function actionLeaveCard(){
+        $user_id = Yii::$app->user->id;
+        if (empty($user_id)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+        $table_id = Table::getTableIdByUserId($user_id);
+        $table = new Table($table_id);
+
+        $id = Yii::$app->request->post("id");
+        $to = Yii::$app->request->post("to");
+        $side = intval(Yii::$app->request->post("side"));
+
+        $ret = $table->leaveCard(['id' => $id, 'side' => $side, 'to' => $to]);
+
+        if ($ret[0] === true) {
+            return ['code' => self::CODE_SUCCESS, 'data' => []];
+        }
+
+        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
+    }
+
+    /**
      * @name  打入场卡牌
      * @method POST
      * @author wolfbian
