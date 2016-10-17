@@ -24,10 +24,14 @@ $this->params['breadcrumbs'][] = $this->title;
 		background-color: green;
 	}
 	.card-info {
-		width: 40px;
-		height: 40px;
-		display: inline-block;
-		background-color: bule;
+		width: 80px;
+	    height: 100px;
+	    display: inline-block;
+	    background-color: #ffb100;
+	    float: left;
+	    margin-top: 20px;
+	    margin-left: 20px;
+	    margin-right: 10px;
 	}
 </style>
 <div class="deck">
@@ -36,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		
 	</div>
 
-	<div class="right-block">
+	<div class="right-block" ondrapenter="drapEnter" ondragover="dragOver" ondrop="drop">
 		
 	</div>
 </div>
@@ -60,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			},
 			success: function(result){
         		cardInfo = result.data;
-        		console.log(cardInfo);
+        		//console.log(cardInfo);
         		initView();
       		}
       	});
@@ -69,9 +73,22 @@ $this->params['breadcrumbs'][] = $this->title;
 	function initView(){
 		length = cardInfo.length;
 		for (var i = 0; i < length; i++) {
-			console.log(cardInfo[i]);
-			cardNode = "<div class='card-info'></div>";
+			//console.log(cardInfo[i]);
+			cardNode = "<div draggable='true' class='card-info'></div>";
 			$('.left-block').append(cardNode);
 		};
+	}
+
+	function drapEnter(){
+		console.log(111);
+	}
+
+	function dragOver(e){
+		console.log(222);
+		e.preventDefault();
+	}
+
+	function drop(){
+		console.log(333);
 	}
 </script>
