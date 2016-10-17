@@ -1,16 +1,26 @@
 import React  from 'react'
 import $  from 'jquery'
-import showMessage  from './Dialog'
+import showMessage  from './Dialog' 
+import Util from './Util'
 
 const Component = React.Component;
 const EventManage = $("<div></div>");
 let moveElement;
 
+let board_width = 0;
 let board_high = 700;
+let card_width = 100;
 let card_high = 100;
 
-class GameBoard extends Component {
+let discard_x = -20;
+let library_x = -350;
+let plot_x = -240;
+let dead_x = -130;
+let my_y = 580; 
+let op_y = 20;
 
+
+class GameBoard extends Component {
 
 	constructor(props) {
 		super(props);
@@ -45,17 +55,21 @@ class GameBoard extends Component {
     }
 
 	render() {
+		console.log(this.state);
 		let cards = [];
+		
+
 		let blocks = [
-			<Block onClick={this.showCards.bind(this, "我方战略牌", this.state.plot)} key="my_plot" x={600} y={580} height={100} width={100}/>,
-			<Block key="my_library" x={710} y={580} height={100} width={100}/>,
-			<Block onClick={this.showCards.bind(this, "我方弃牌堆", this.state.discard)} key="my_discard" x={820} y={580} height={45} width={100}/>,
-			<Block onClick={this.showCards.bind(this, "我方死亡牌堆", this.state.dead)} key="my_dead" x={820} y={635} height={45} width={100}/>,
-			<Block key="op_plot" x={600} y={20} height={100} width={100}/>,
-			<Block key="op_library" x={710} y={20} height={100} width={100}/>,
-			<Block onClick={this.showCards.bind(this, "对方弃牌堆", this.state.op_discard)} key="op_discard" x={820} y={20} height={45} width={100}/>,
-			<Block onClick={this.showCards.bind(this, "对方死亡牌堆", this.state.op_dead)} key="op_dead" x={820} y={75} height={45} width={100}/>,
+			<Block onClick={this.showCards.bind(this, "我方战略牌", this.state.plot)} key="my_plot" x={plot_x} y={my_y} height={100} width={100}/>,
+			<Block key="my_library" x={library_x} y={my_y} height={100} width={100}/>,
+			<Block onClick={this.showCards.bind(this, "我方弃牌堆", this.state.discard)} key="my_discard" x={discard_x} y={my_y} height={100} width={100}/>,
+			<Block onClick={this.showCards.bind(this, "我方死亡牌堆", this.state.dead)} key="my_dead" x={dead_x} y={my_y} height={100} width={100}/>,
+			<Block key="op_plot" x={plot_x} y={op_y} height={100} width={100}/>,
+			<Block key="op_library" x={library_x} y={op_y} height={100} width={100}/>,
+			<Block onClick={this.showCards.bind(this, "对方弃牌堆", this.state.op_discard)} key="op_discard" x={discard_x} y={op_y} height={100} width={100}/>,
+			<Block onClick={this.showCards.bind(this, "对方死亡牌堆", this.state.op_dead)} key="op_dead" x={dead_x} y={op_y} height={100} width={100}/>,
 			];
+			// blocks=[];
 		let hands = this.state.hands;
 		let playground = this.state.playground;
 		let discard = this.state.discard;
@@ -64,7 +78,6 @@ class GameBoard extends Component {
 		let dead = this.state.dead;
 		let op_hands = this.state.op_hands;
 		let side = this.state.side;
-
 
 		let j = 0;
 		for(let i in hands){
@@ -89,6 +102,14 @@ class GameBoard extends Component {
 			cards.push(<Card unmovable={true} x={x} y={y} key={"op_hands" + i} id={"unknown"} card_id={"back"}/>);
 		}
 
+		if(!Util.empty(discard)){
+			let c;
+			for(let i in discard){
+				c = <Card key={"discard" + i} x={discard_x} y={my_y} id={discard[i]['id']} card_id={discard[i]['card_id']}/>;
+			}
+			cards.push(c);
+		}
+
 
 
 		return (<div className="game-board" ref="t"
@@ -101,6 +122,7 @@ class GameBoard extends Component {
 	}
 
 	componentDidMount() {
+		board_width = this.refs.t.clientWidth;
 		this.bindEvent();
 		this.getCards();
 	}
@@ -143,14 +165,21 @@ class GameBoard extends Component {
 		})
 
 		function inHand(p){
-			if(p.y >= 580){
+			if(p.y >= my_y){
 				return true;
 			}
 			return false;
 		}
 
 		function inPlayground(p){
-			if(p.y >= 120 && p.y <= 580){
+			if(p.y >= op_y + card_high && p.y <= my_y){
+				return true;
+			}
+			return false;
+		}
+
+		function inLibrary(p){
+			if(p.y >= my_y && p.x <= board_width + library_x && p.x >= board_width + library_x - card_width){
 				return true;
 			}
 			return false;
@@ -226,12 +255,6 @@ class GameBoard extends Component {
 	handDragover(event) {
 		event.preventDefault()
 	}
-
-
-
-
-
-
 }
 
 
@@ -257,7 +280,11 @@ class Card extends Component{
 		if(x || y){
 			class_name = 'card2';
 			style.top = y + "px";
-			style.left = x + "px";
+			if(x >= 0){
+				style.left = x + "px";
+			}else{
+				style.right = x + "px";
+			}
 		}
 
 		if(!unmovable){
@@ -307,8 +334,6 @@ class Card extends Component{
 	handleDrag() {
 
 	}
-
-
 }
 
 class Board extends Component {
@@ -319,7 +344,13 @@ class Board extends Component {
 
 class Block extends Component{
 	render() {
-		return <div onClick={this.props.onClick || function(){}} className="block" style={{top: this.props.y, left: this.props.x, height: this.props.height, width: this.props.width}}></div>
+		let style;
+		if(this.props.x >= 0){
+			style = {top: this.props.y, left: this.props.x, height: this.props.height, width: this.props.width};
+		}else{
+			style = {top: this.props.y, right: -(this.props.x), height: this.props.height, width: this.props.width};
+		}
+		return <div onClick={this.props.onClick || function(){}} className="block" style={style}></div>
 	}
 }
 
