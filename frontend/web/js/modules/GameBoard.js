@@ -26,12 +26,12 @@ class GameBoard extends Component {
 		super(props);
         this.state = {
             // cards: [<Card key="0"/>],
-            playground: [{id: 102, x: 1, y: 100, card_id: 2}],
-            hands: [{id: 101, card_id: 1}],
-            discard: [{id: 103, card_id: 3}],
+            playground: {},
+            hands: {},
+            discard: {},
             library: 0,
-            plot: [{id: 112, card_id: 5}],
-            dead: [{id: 104, card_id: 6}],
+            plot: {},
+            dead: {},
 
             op_hands: 0,
             op_plot: 0,
@@ -83,7 +83,7 @@ class GameBoard extends Component {
 		for(let i in hands){
 			let x = 20 + 110 * j;
 			let y = 580;
-			cards.push(<Card x={x} y={y} key={hands[i]['id']} id={hands[i]['id']} card_id={hands[i]['card_id']} />);
+			cards.push(<Card x={x} y={y} key={"hands" + hands[i]['id']} id={hands[i]['id']} card_id={hands[i]['card_id']} />);
 			j++;
 		}
 
@@ -110,6 +110,11 @@ class GameBoard extends Component {
 			cards.push(c);
 		}
 
+		if(!Util.empty(library)){
+			let c = <Card key={"library"} x={library_x} y={my_y} id={"unknown"} card_id={"back"}/>;
+			cards.push(c);
+		}
+
 
 
 		return (<div className="game-board" ref="t"
@@ -131,14 +136,16 @@ class GameBoard extends Component {
 
 		let self = this;
 		EventManage.on('card_move', function(event, params){
-			console.log(event, params);
-			if(inHand(params['from']) && inPlayground(params['to'])){
+			console.log(params);
+				console.log(getBlockType(params['from']));
+				console.log(getBlockType(params['to']));
+			if(!inPlayground(params['from']) && inPlayground(params['to'])){
 				params['to'] = opPosition(params['to'], self.state.side);
 				$.post(
 					'/table/play-onto-board',
 					{
 						id : params['id'],
-						from : 0,
+						from : getBlockType(params['from']),
 						to : params['to']
 					},
 					function(ret){
@@ -159,10 +166,38 @@ class GameBoard extends Component {
 					},
 					'json'
 				)
+			}else if(inPlayground(params['from']) && !inPlayground(params['to'])){
+				$.post(
+					'/table/leave-card',
+					{
+						id : params['id'],
+						to : getBlockType(params['to'])
+					},
+					function(ret){
+						self.getCards();
+					},
+					'json'
+				)
 			}else{
 				self.getCards();
 			}
 		})
+
+		// 0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌
+		function getBlockType(p){
+			if(inLibrary(p)){
+				return 1;
+			}else if(inDiscard(p)){
+				return 2;
+			}else if(inDead(p)){
+				return 3;
+			}else if(inPlot(p)){
+				return 4;
+			}else if(inHand(p)){
+				return 0;
+			}
+			return -1;
+		}
 
 		function inHand(p){
 			if(p.y >= my_y){
@@ -172,14 +207,32 @@ class GameBoard extends Component {
 		}
 
 		function inPlayground(p){
-			if(p.y >= op_y + card_high && p.y <= my_y){
+			if(p.y > op_y + card_high && p.y < my_y){
 				return true;
 			}
 			return false;
 		}
 
 		function inLibrary(p){
-			if(p.y >= my_y && p.x <= board_width + library_x && p.x >= board_width + library_x - card_width){
+			return inBlock(p, library_x, my_y);
+		}
+
+		function inDiscard(p){
+			return inBlock(p, discard_x, my_y);
+		}
+
+		function inPlot(p){
+			return inBlock(p, plot_x, my_y);
+		}
+
+		function inDead(p){
+			return inBlock(p, dead_x, my_y);
+		}
+
+		function inBlock(p, x, y){
+			console.log(board_width + x);
+			console.log(board_width + x - card_width);
+			if(p.y >= y && p.x <= board_width + x && p.x >= board_width + x - card_width){
 				return true;
 			}
 			return false;
@@ -283,7 +336,7 @@ class Card extends Component{
 			if(x >= 0){
 				style.left = x + "px";
 			}else{
-				style.right = x + "px";
+				style.right = -x + "px";
 			}
 		}
 

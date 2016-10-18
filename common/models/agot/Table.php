@@ -223,10 +223,10 @@ class Table extends Model{
         $info = $this->info;
 
         $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead', '4' => 'plot'];
-        if (!isset($type2name[$params['type']])) {
+        if (!isset($type2name[$to])) {
             return [false, '不存在的类型'];
         }
-        $name = $type2name[$params['type']];
+        $name = $type2name[$to];
 
         if (empty($info['playground'][$id])) {
             return [false, '该牌不在场上'];

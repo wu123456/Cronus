@@ -142,9 +142,8 @@ class TableController extends JsonBaseController{
 
         $id = Yii::$app->request->post("id");
         $to = Yii::$app->request->post("to");
-        $side = intval(Yii::$app->request->post("side"));
 
-        $ret = $table->leaveCard(['id' => $id, 'side' => $side, 'to' => $to]);
+        $ret = $table->leaveCard(['id' => $id, 'side' => $table->getSideByUserId($user_id), 'to' => $to]);
 
         if ($ret[0] === true) {
             return ['code' => self::CODE_SUCCESS, 'data' => []];
