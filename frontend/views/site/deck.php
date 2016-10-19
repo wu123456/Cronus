@@ -32,6 +32,15 @@ $this->params['breadcrumbs'][] = $this->title;
 	    margin-top: 20px;
 	    margin-left: 20px;
 	    margin-right: 10px;
+	    text-align: center;
+	}
+	.deck-info {
+	    width: 100%;
+	    height: 36px;
+	    float: left;
+	    margin-bottom: 10px;
+	    background-color: #ffb100;
+	    text-align: center;
 	}
 </style>
 <div class="deck">
@@ -40,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		
 	</div>
 
-	<div class="right-block" ondrapenter="drapEnter" ondragover="dragOver" ondrop="drop">
+	<div class="right-block" ondrop="drop(event)" ondragover="allowDrop(event)">
 		
 	</div>
 </div>
@@ -49,6 +58,8 @@ $this->params['breadcrumbs'][] = $this->title;
 <script type="text/javascript">
 	
 	var cardInfo; //全局卡牌信息
+	var deckInfo; //全局牌组信息
+	var deckIndex;
 
 	$(function(){
 
@@ -64,7 +75,8 @@ $this->params['breadcrumbs'][] = $this->title;
 			},
 			success: function(result){
         		cardInfo = result.data;
-        		//console.log(cardInfo);
+        		deckInfo = [];
+        		deckIndex = 0;
         		initView();
       		}
       	});
@@ -73,22 +85,41 @@ $this->params['breadcrumbs'][] = $this->title;
 	function initView(){
 		length = cardInfo.length;
 		for (var i = 0; i < length; i++) {
-			//console.log(cardInfo[i]);
-			cardNode = "<div draggable='true' class='card-info'></div>";
+			card = cardInfo[i];
+			//console.log(card);
+			cardNode = "<div draggable='true' id='card" + card.id + "' class='card-info' ondragstart='drag(event)' data-index='" + i + "'>" + card.name + "</div>";
 			$('.left-block').append(cardNode);
-		};
+		}
+		initEvent();
 	}
 
-	function drapEnter(){
-		console.log(111);
+	function initEvent(){
+		
 	}
 
-	function dragOver(e){
-		console.log(222);
-		e.preventDefault();
+	function drag(ev){
+		ev.dataTransfer.setData("Text",ev.target.id);
 	}
 
-	function drop(){
-		console.log(333);
+	function allowDrop(ev){
+		ev.preventDefault();
 	}
+
+	function drop(ev){
+		ev.preventDefault();
+		data = ev.dataTransfer.getData("Text");
+		index = $('#'+data).data('index');
+		card = cardInfo[index];
+		deckInfo.push(card);
+		deckNode = "<div id='deck" + deckIndex + "' class='deck-info' onclick='remove(this)' data-index='" + deckIndex + "'>" + card.name + "</div>";
+		$('.right-block').append(deckNode);
+		deckIndex ++;
+	}
+
+	function remove(obj){
+		$(obj).hide();
+		index = $(obj).data('index');
+		deckInfo.splice(index, 1);
+	}
+
 </script>
