@@ -19,7 +19,7 @@ body {padding: 0;}
 .top {top:0;}
 .bottom {bottom:0;}
 
-.block { background: yellow; position: absolute; z-index: 2; }
+.block { background: rgba(200, 54, 54, 0.5); position: absolute; z-index: 4; }
 
 .clearfix { clear:both;height:0;overflow:hidden; }
  

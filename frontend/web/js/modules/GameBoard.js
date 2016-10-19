@@ -58,7 +58,6 @@ class GameBoard extends Component {
 		console.log(this.state);
 		let cards = [];
 		
-
 		let blocks = [
 			<Block onClick={this.showCards.bind(this, "我方战略牌", this.state.plot)} key="my_plot" x={plot_x} y={my_y} height={100} width={100}/>,
 			<Block key="my_library" x={library_x} y={my_y} height={100} width={100}/>,
@@ -102,12 +101,19 @@ class GameBoard extends Component {
 			cards.push(<Card unmovable={true} x={x} y={y} key={"op_hands" + i} id={"unknown"} card_id={"back"}/>);
 		}
 
-		if(!Util.empty(discard)){
-			let c;
-			for(let i in discard){
-				c = <Card key={"discard" + i} x={discard_x} y={my_y} id={discard[i]['id']} card_id={discard[i]['card_id']}/>;
+		setCard(discard, discard_x, my_y);
+		setCard(dead, dead_x, my_y);
+		setCard(plot, plot_x, my_y);
+
+
+		function setCard(type, x, y){
+			if(!Util.empty(type)){
+				let c;
+				for(let i in type){
+					c = <Card key={ new Date() + i} x={x} y={y} id={type[i]['id']} card_id={type[i]['card_id']}/>;
+				}
+				cards.push(c);
 			}
-			cards.push(c);
 		}
 
 		if(!Util.empty(library)){

@@ -125,7 +125,7 @@ a.desc:after {
 .dialog { position: fixed; border-radius: 10px; font-size: 16px; }
 .dialog .title { border-radius: 10px 10px 0px 0px; background-color: #ff5951; color: #F7F7F7; text-align: center; height: 40px; line-height: 40px; margin: 0px; font-weight: normal; }
 .dialog .content { width: 100%; height: 100%; box-sizing: border-box; border-radius: 0px 0px 10px 10px; background-color: #F7F7F7; color: #999999; padding: 20px 10px; min-height: 104px; }
-.mask { position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; background-color: black; filter:alpha(opacity=50); /*IE滤镜，透明度50%*/ -moz-opacity: 0.5; /*Firefox私有，透明度50%*/ opacity: 0.5;/*其他，透明度50%*/ }
+.mask { z-index: 998; position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; background-color: black; filter:alpha(opacity=50); /*IE滤镜，透明度50%*/ -moz-opacity: 0.5; /*Firefox私有，透明度50%*/ opacity: 0.5;/*其他，透明度50%*/ }
 .dialog .message { padding: 10px; margin: 0px; margin-bottom: 10px; text-align: center; }
 .dialog .buttons { text-align: center; margin-bottom: 10px; margin-top: 20px;}
 .dialog .buttons .confirm{ background-color: #ff5951; !important;}
