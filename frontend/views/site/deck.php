@@ -59,7 +59,6 @@ $this->params['breadcrumbs'][] = $this->title;
 	
 	var cardInfo; //全局卡牌信息
 	var deckInfo; //全局牌组信息
-	var deckIndex;
 
 	$(function(){
 
@@ -110,16 +109,20 @@ $this->params['breadcrumbs'][] = $this->title;
 		data = ev.dataTransfer.getData("Text");
 		index = $('#'+data).data('index');
 		card = cardInfo[index];
-		deckInfo.push(card);
-		deckNode = "<div id='deck" + deckIndex + "' class='deck-info' onclick='remove(this)' data-index='" + deckIndex + "'>" + card.name + "</div>";
+		id = card.id;
+		if(typeof deckInfo[id] == "undefined"){
+			deckInfo[id] = 1;
+		}else{
+			deckInfo[id] ++;
+		}
+		deckNode = "<div id='deck" + id + "' class='deck-info' onclick='remove(this)' data-id='" + id + "'>" + card.name + "</div>";
 		$('.right-block').append(deckNode);
-		deckIndex ++;
 	}
 
 	function remove(obj){
-		$(obj).hide();
-		index = $(obj).data('index');
-		deckInfo.splice(index, 1);
+		id = $(obj).data('id');
+		deckInfo[id] --;
+		$(obj).remove();
 	}
 
 </script>
