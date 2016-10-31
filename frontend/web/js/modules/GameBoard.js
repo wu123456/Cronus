@@ -331,10 +331,17 @@ class Card extends Component{
 		let x = this.state.x || this.props.x || 0;
 		let y = this.state.y || this.props.y || 0;
 		let margin = this.state.margin || this.props.margin || 0;
-		let name = this.state.card_id || this.props.card_id || this.state.id || this.props.id ||"";
+		let name = this.state.name || this.state.card_id || this.props.card_id || this.state.id || this.props.id ||"";
 		let unmovable = this.props.unmovable;
 		let class_name = 'card';
-		let style = {opacity:this.state.opacity, margin:margin + "px", background:this.props.color};
+		let style = {opacity:this.state.opacity, margin:margin + "px", background: this.props.color};
+
+		if(this.state.url){
+			console.log(this.state.url);
+			style['backgroundImage'] = "url(" + this.state.url + ")";
+			style['backgroundSize'] = "100% 100%";
+			name = "";
+		}
 
 		if(x || y){
 			class_name = 'card2';
@@ -362,9 +369,28 @@ class Card extends Component{
 						> 
 						{name}
 				</div>);
+	}
 
-		
-		
+	componentDidMount(){
+		$.getJSON(
+			'/card/cards',
+			{
+				condition : {
+					'id' : this.state.card_id || this.props.card_id
+				}
+			},
+			function(ret){
+				console.log(11111, ret);
+				if(ret.code != 0){
+					return showMessage(ret.msg);
+				}
+
+				let card = ret['data'][0];
+				if(card){
+					this.setState({name : card['name'], url : "/image/card/" + card['picture_url'] + ".png"});
+				}
+			}.bind(this)
+		);
 	}
 
 	handleClick() {

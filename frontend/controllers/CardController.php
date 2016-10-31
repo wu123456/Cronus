@@ -20,7 +20,7 @@ class CardController extends JsonBaseController{
      */
     public function actionCards(){
 
-        $condition = Yii::$app->request->post("condition");
+        $condition = Yii::$app->request->get("condition");
 
         if (empty($condition)) {
         	$condition = [];
