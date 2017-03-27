@@ -59,6 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	
 	var cardInfo; //全局卡牌信息
 	var deckInfo; //全局牌组信息
+	//test
 
 	$(function(){
 
