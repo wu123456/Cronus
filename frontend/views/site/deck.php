@@ -113,7 +113,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		for (var i = 0; i < length; i++) {
 			card = cardInfo[i];
 			console.log(card);
-			cardNode = "<div draggable='true' id='card" + card.id + "' class='card-info' ondragstart='drag(event)' data-index='" + i + "'>" + card.name + "</div>";
+			cardNode = "<div draggable='true' id='card" + card.id + "' class='card-info' ondragstart='drag(event)' data-index='" + i + "' style='opacity: 1; background-image: url(&quot;/image/card/" + card.picture_url + ".png&quot;); background-size: 100% 100%;'>" + card.name + "</div>";
 			$('.left-block').append(cardNode);
 		}
 		initEvent();
