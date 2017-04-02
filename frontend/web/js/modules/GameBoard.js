@@ -335,9 +335,10 @@ class Card extends Component{
 		let unmovable = this.props.unmovable;
 		let class_name = 'card';
 		let style = {opacity:this.state.opacity, margin:margin + "px", background: this.props.color};
+		let isStanding = this.state.isStanding;
+		const LYING_DOWN_CLASS = 'card-lying-down';
 
 		if(this.state.url){
-			console.log(this.state.url);
 			style['backgroundImage'] = "url(" + this.state.url + ")";
 			style['backgroundSize'] = "100% 100%";
 			name = "";
@@ -353,11 +354,16 @@ class Card extends Component{
 			}
 		}
 
+		if (isStanding != undefined && !isStanding) {
+			class_name = class_name + ' ' + LYING_DOWN_CLASS;
+		};
+
 		if(!unmovable){
 			return (<div className={class_name} draggable="true" ref="s"
 						onDragStart = {this.handleDragStart.bind(this)}
 						onDragEnd = {this.handleDragEnd.bind(this)}
 						onDrag = {this.handleDrag.bind(this)}
+						onDoubleClick = {this.handleDbClick.bind(this)}
 						style={style}
 						> 
 						{name}
@@ -380,7 +386,6 @@ class Card extends Component{
 				}
 			},
 			function(ret){
-				console.log(11111, ret);
 				if(ret.code != 0){
 					return showMessage(ret.msg);
 				}
@@ -392,11 +397,6 @@ class Card extends Component{
 			}.bind(this)
 		);
 	}
-
-	handleClick() {
-		console.log(5)
-	}
-
 
 	handleDragLeave() {
 		console.log(2)
@@ -418,6 +418,16 @@ class Card extends Component{
 
 	handleDrag() {
 
+	}
+
+	handleDbClick() {
+		let isStanding = this.state.isStanding;
+		console.log('onDoubleClick:' + isStanding)
+		if (isStanding == undefined || isStanding) {
+			this.setState({isStanding: false});
+		} else {
+			this.setState({isStanding: true});
+		}
 	}
 }
 
