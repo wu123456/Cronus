@@ -15,7 +15,7 @@ class Table extends Model{
     private $_table_id;
 
     public static function getTableIdByUserId($user_id){
-        return 4;
+        return 1;
     }
 
     public function __construct($table_id) {
@@ -273,6 +273,22 @@ class Table extends Model{
         return [$ret];
     }
 
+    public function changeCardState($params){
+        $id = $params['id'];
+        $type = $params['type'];
+        $info = $this->info;
+        // if no target state, just change state follow the rule : 0 => 1, 1 => 0
+        // if no old state, default value is 1
+        if(isset($params['target_state'])){
+            $info['playground'][$id][$type] = $params['target_state'];
+        }else{
+            $state = isset($info['playground'][$id][$type]) ? $info['playground'][$id][$type] : 1;
+            $info['playground'][$id][$type] = ($state + 1) % 2;
+        }
+        $ret = $this->setInfo($info);
+        return [$ret];
+    }
+
     public function getSideByUserId($user_id){
         $info = $this->info;
         $sides = $info['side'];
@@ -282,7 +298,6 @@ class Table extends Model{
             }
         }
         return -1;
-
     }
 
     
