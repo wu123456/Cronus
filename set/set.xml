@@ -1,367 +1,377 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 
-<set name="02-Westeros"
-     id="7f08ef9f-dd47-415b-b002-827a0defcd2a"
+<set name="06-Blood and Gold"
+     id="ec00725d-1ec3-4433-9ebb-9a781eed4c89"
      gameId="30c200c9-6c98-49a4-a293-106c06295c05"
-     gameVersion="1.1.0.0"
+     gameVersion="2.0.0.29"
      version="1.0">
 
     <cards>
-        <card id="84c07bae-1e90-433f-a31d-00479f13342c" name="Will">
-            <property name="名称" value="威尔"/>
-            <property name="阵营"                       value="守夜人."/>
+            <card id="23d15408-910c-48a9-8c65-436765bdbe03" name="Hoster Tully">
+            <property name="名称"                       value="霍斯特·徒利"/>
+            <property name="阵营"                       value="史塔克"/>
             <property name="类型"                       value="角色"/>
-            <property name="属性"                       value="游骑兵."/>
-            <property name="能力"                       value="强制响应：在你输掉一次完胜争夺后，牺牲你控制的一名游骑兵角色。"/>
-            <property name="关键字"                     value="隐秘.洞察."/>
-            <property name="Faction"                    value="Night's Watch."/>
-            <property name="Type"                       value="Character"/>
-            <property name="Traits"                     value="Ranger."/>
-            <property name="Text"                       value="Forced Reaction: After you lose an unopposed challenge, sacrifice a Ranger character you control."/>
-			<property name="Keywords"                   value="Stealth. Insight."/>
-            <property name="Unique"                     value="Yes"/>
-            <property name="Loyal"                      value="Yes"/>
-            <property name="Cost"                       value="4"/>
-            <property name="Strength"                   value="3"/>
-            <property name="Military"                   value="Yes"/>
-            <property name="Intrigue"                   value="Yes"/>
-            <property name="Power"                      value="No"/>           
-            <property name="CardNumber"                 value="1"/>
-            <property name="Illustrator"                value="Joshua Cairós"/>
-        </card>
-        <card id="0fcc5481-0631-4e82-a3c4-cca7535241bd" name="The Watch Has Need">
-            <property name="名称" value="守夜人之需"/>
-            <property name="阵营"                       value="守夜人."/>
-            <property name="类型"                       value="事件"/>
-            <property name="能力"                       value="行动：声明一种属性：工匠、游骑兵或事务官。从你牌组顶的X张牌中搜寻任意名具有该属性的角色，将他们展示，并加入你的手牌。将其余牌洗回你的牌组。X等于你的手牌上限值。"/>
-            <property name="Faction"                    value="Night's Watch."/>
-            <property name="Type"                       value="Event"/>
-            <property name="Text"                       value="Action: Name a trait: Builder, Ranger, or Steward. Search the top X cards of your deck for any number of characters with that trait, reveal them, and add them to your hand. Shuffle the other cards back into your deck. X is your reserve value."/>
-            <property name="Unique"                     value="No"/>
-			<property name="Loyal"                      value="No"/>
-            <property name="Cost"                       value="1"/>
-            <property name="CardNumber"                 value="2"/>
-            <property name="Illustrator"                value="Mauricio Calle"/>
-        </card>
-        <card id="a1532c17-62ab-49b2-b5f3-cbb5f2d5d590" name="Maester Luwin">
-            <property name="名称" value="鲁温学士"/>
-            <property name="阵营"                       value="史塔克."/>
-            <property name="类型"                       value="角色"/>
-            <property name="属性"                       value="学士."/>
-            <property name="能力"                       value="当你控制：:&#13;&#10;•罗柏·史塔克时，他获得洞察。:&#13;&#10;•琼恩·雪诺时，他获得隐秘。:&#13;&#10;•布兰·史塔克时，他获得：“免疫对手的战略效果。”:&#13;&#10;•瑞肯·史塔克时，他获得劫掠。"/>
+            <property name="属性"                       value="徒利家族.贵族."/>
+            <property name="能力"                       value="当『霍斯特·徒利』参与争夺时，你控制的每名参与争夺的其他徒利家族角色获得名望。"/>
             <property name="Faction"                    value="Stark."/>
             <property name="Type"                       value="Character"/>
-            <property name="Traits"                     value="Maester."/>
-            <property name="Text"                       value="While you control:&#13;&#10;• Robb Stark, he gains insight.&#13;&#10;• Jon Snow, he gains stealth.&#13;&#10;• Bran Stark, he gains: &quot;immune to opponents&apos; plot effects.&quot;&#13;&#10;• Rickon Stark, he gains pillage."/>
+            <property name="Traits"                     value="House Tully. Lord."/>
+            <property name="Text"                       value="While Hoster Tully is participating in a challenge, each other participating House Tully character you control gains renown."/>
             <property name="Unique"                     value="Yes"/>
             <property name="Loyal"                      value="No"/>
-            <property name="Cost"                       value="3"/>
-            <property name="Strength"                   value="2"/>
+            <property name="Cost"                       value="2"/>
+            <property name="Strength"                   value="1"/>
+            <property name="Military"                   value="No"/>
+            <property name="Intrigue"                   value="No"/>
+            <property name="Power"                      value="Yes"/>
+            <property name="CardNumber"                 value="1"/>
+            <property name="Illustrator"                value="Tiziano Baracchi"/>
+        </card>
+        <card id="951fd294-61be-4202-b8c0-0536a4249815" name="The Tumblestone">
+            <property name="名称"                       value="腾石河"/>
+            <property name="阵营"                       value="史塔克"/>
+            <property name="类型"                       value="地区"/>
+            <property name="属性"                       value="河间地."/>
+            <property name="关键词"                     value="赏赐(3). "/>
+            <property name="能力"                       value="响应：在一名徒利家族角色获得权力标记后，从『腾石河』上弃除1枚金币，以重置该角色。"/>
+            <property name="Faction"                    value="Stark."/>
+            <property name="Type"                       value="Location"/>
+            <property name="Traits"                     value="The Riverlands."/>
+            <property name="Text"                       value="Reaction: After a House Tully character gains power, discard 1 gold from The Tumblestone to stand that character."/>
+            <property name="Keywords"                    value="Bestow (3)."/>
+            <property name="Unique"                     value="Yes"/>
+            <property name="Loyal"                      value="No"/>
+            <property name="Cost"                       value="0"/>
+            <property name="CardNumber"                 value="2"/>
+            <property name="Illustrator"                value="Sergey Glushakov"/>
+        </card>
+        <card id="0b2da821-5256-4ec6-8f91-34d73e359c4b" name="Margaery Tyrell">
+            <property name="名称"                       value="玛格丽·提利尔"/>
+            <property name="阵营"                       value="提利尔"/>
+            <property name="类型"                       value="角色"/>
+            <property name="属性"                       value="贵妇.女王."/>
+            <property name="关键词"                     value="名望."/>
+            <property name="能力"                       value="响应：在你控制的一名独有国王或贵族角色被杀后，从你的牌组中搜寻一名独有国王或贵族角色并将其放置进场。将你的牌组洗牌。（每回合限制一次。）"/>
+            <property name="Faction"                    value="Tyrell."/>
+            <property name="Type"                       value="Character"/>
+            <property name="Traits"                     value="Lady. Queen."/>
+            <property name="Text"                       value="Reaction: After a unique King or Lord character you control is killed, search your deck for a unique King or Lord character and put it into play. Shuffle your deck. (Limit once per round.)"/>
+            <property name="Keywords"                    value="Renown."/>
+            <property name="Unique"                     value="Yes"/>
+            <property name="Loyal"                      value="Yes"/>
+            <property name="Cost"                       value="6"/>
+            <property name="Strength"                   value="5"/>
             <property name="Military"                   value="No"/>
             <property name="Intrigue"                   value="Yes"/>
             <property name="Power"                      value="Yes"/>
             <property name="CardNumber"                 value="3"/>
-            <property name="Illustrator"                value="Joshua Cairós"/>
+            <property name="Illustrator"                value="Kate Burmak"/>
         </card>
-        <card id="d4827a8a-6403-4d47-bb47-813073b78b49" name="Lady">
-            <property name="名称" value="淑女"/>
-            <property name="阵营"                       value="史塔克."/>
-            <property name="类型"                       value="附属"/>
-            <property name="属性"                       value="冰原狼."/>
-            <property name="能力"                       value="史塔克角色专用。 终结.&#13;&#10;所附属角色获得能力值+2。
-行动：支付1枚金币，以将淑女附属到一名不同的角色。然后，如果所附属角色是珊莎·史塔克，将其重置。（每阶段限制一次。）"/>
-            <property name="Faction"                    value="Stark."/>
-            <property name="Type"                       value="Attachment"/>
-            <property name="Traits"                     value="Direwolf."/>
-            <property name="Text"                       value="[Stark] character only.&#13;&#10;Terminal.Attached character gets +2 STR.&#13;&#10;Action: Pay 1 gold to attach Lady to a different character. Then, if attached character is Sansa Stark, stand her. (Limit once per phase.)"/>
-			<property name="Unique"                     value="Yes"/>
-			<property name="Loyal"                      value="No"/>
-            <property name="CardNumber"                 value="4"/>
-            <property name="Illustrator"                value="Smirtouille"/>
-        </card>
-        <card id="2ee7a645-7d26-42f2-9440-ceb82ea818e2" name="Arbor Knight">
-            <property name="名称" value="青亭岛骑士"/>
-            <property name="阵营"                       value="提利尔."/>
-            <property name="类型"                       value="角色"/>
-            <property name="属性"                       value="雷德温家族.骑士."/>
-            <property name="能力"                       value="争夺行动：支付1枚金币，以选择一名参与争夺的雷德温家族角色。直到本次争夺结束，该角色获得能力值+1。（每阶段限制三次。）"/>
+        <card id="bde6ed04-4d69-48e4-a4e5-8742f78eebc1" name="All Men Are Fools">
+            <property name="名称"                       value="所有人都是小丑"/>
+            <property name="阵营"                       value="提利尔"/>
+            <property name="类型"                       value="事件"/>
+            <property name="能力"                       value="响应：在你以5点或更高总能力差值赢得一次争夺后，你控制的每名贵妇角色获得1枚权力标记。（每次争夺至多1次。）"/>
             <property name="Faction"                    value="Tyrell."/>
-            <property name="Type"                       value="Character"/>
-            <property name="Traits"                     value="House Redwyne. Knight."/>
-            <property name="Text"                       value="Challenges Action: Pay 1 gold to choose a participating House Redwyne character. Until the end of the challenge, that character gets +1 STR. (Limit 3 times per phase.)"/>
-            <property name="Unique"                     value="No"/>
-            <property name="Loyal"                      value="No"/>
-            <property name="Cost"                       value="2"/>
-            <property name="Strength"                   value="1"/>
-            <property name="Military"                   value="Yes"/>
-            <property name="Intrigue"                   value="Yes"/>
-            <property name="Power"                      value="No"/>
-            <property name="CardNumber"                 value="5"/>
-            <property name="Illustrator"                value="Carlos Palma Cruchaga"/>
-        </card>
-        <card id="8f2b58df-649e-4793-bd4c-bbf701cd57c5" name="Pleasure Barge">
-            <property name="名称" value="豪华游船"/>
-            <property name="阵营"                       value="提利尔."/>
-            <property name="类型"                       value="地区"/>
-            <property name="属性"                       value="游船."/>
-            <property name="能力"                       value="响应：在你备战『豪华游船』后，如果本阶段中你没有补过牌，补3张牌。"/>
-            <property name="关键字"                     value="免疫卡牌效果."/>
-            <property name="Faction"                    value="Tyrell."/>
-            <property name="Type"                       value="Location"/>
-            <property name="Traits"                     value="Barge."/>
-			<property name="Keywords"                   value="Immune to card effects."/>
-            <property name="Text"                       value="Reaction: After you marshal Pleasure Barge, if you have not yet drawn any cards this phase, draw 3 cards."/>
+            <property name="Type"                       value="Event"/>
+            <property name="Text"                       value="Reaction: After you win a challenge by 5 or more STR, each Lady character you control gains 1 power. (Max 1 per challenge.)"/>
             <property name="Unique"                     value="No"/>
             <property name="Loyal"                      value="Yes"/>
-            <property name="CardNumber"                 value="6"/>
-            <property name="Illustrator"                value="Sergey Glushakov"/>
+            <property name="Cost"                       value="0"/>
+            <property name="CardNumber"                 value="4"/>
+            <property name="Illustrator"                value="Drazenka Kimpel"/>
         </card>
-        <card id="b9e548d6-49df-4a34-b84d-22f92ec101c4" name="Renly Baratheon">
-            <property name="名称" value="蓝礼·拜拉席恩"/>
-            <property name="阵营"                       value="拜拉席恩."/>
+        <card id="a3badfe6-8b06-4775-bdc6-2fc1bb2dd715" name="Eastwatch Carpenter">
+            <property name="名称"                       value="东海望木工"/>
+            <property name="阵营"                       value="守夜人"/>
             <property name="类型"                       value="角色"/>
-            <property name="属性"                       value="贵族.御前议会."/>
-            <property name="能力"                       value="每回合中你备战的首名非拜拉席恩角色费用减1。"/>
-            <property name="Faction"                    value="Baratheon."/>
+            <property name="属性"                       value="工匠."/>
+            <property name="关键词"                     value="除武器外不受附属."/>
+            <property name="能力"                       value="响应：在你获取收入后，你每控制2个{守夜人}地区，获得1枚金币。"/>
+            <property name="Faction"                    value="Night's Watch."/>
             <property name="Type"                       value="Character"/>
-            <property name="Traits"                     value="Lord. Small Council."/>
-            <property name="Text"                       value="Reduce the cost of the first non-[Baratheon] character you marshal each round by 1."/>
-            <property name="Unique"                     value="Yes"/>
-            <property name="Loyal"                      value="No"/>
-            <property name="Cost"                       value="6"/>
-            <property name="Strength"                   value="4"/>
-            <property name="Military"                   value="Yes"/>
-            <property name="Intrigue"                   value="Yes"/>
-            <property name="Power"                      value="Yes"/>
-            <property name="CardNumber"                 value="7"/>
-            <property name="Illustrator"                value="Jan-Wah Li"/>
-        </card>
-        <card id="8c6f2e35-5a68-4057-8905-fe74afc5cda1" name="King Robert’s Warhammer">
-            <property name="名称" value="劳勃国王的战锤"/>
-            <property name="阵营"                       value="拜拉席恩."/>
-            <property name="类型"                       value="附属"/>
-            <property name="属性"                       value="武器."/>
-            <property name="能力"                       value="所附属角色获得能力值+1。&#13;&#10;响应：在你赢得一次所附属角色作为进攻者参与的争夺后，选择并横置能力值总和至多为X的角色，X等于所附属角色的能力值。然后，牺牲劳勃国王的战锤。"/>
-            <property name="Faction"                    value="Baratheon."/>
-            <property name="Type"                       value="Attachment"/>
-            <property name="Traits"                     value="Weapon."/>
-            <property name="Text"                       value="Attached character gets +1 STR.&#13;&#10;Reaction: After you win a challenge in which attached character is participating as an attacker, choose and kneel up to X total STR worth of characters, where X is attached character’s STR. Then, sacrifice King Robert's Warhammer."/>
-            <property name="Unique"                     value="Yes"/>
-			<property name="Loyal"                      value="No"/>
-			<property name="Cost"                       value="2"/>
-            <property name="CardNumber"                 value="8"/>
-            <property name="Illustrator"                value="Victor Manuel Leza Moreno"/>
-        </card>
-        <card id="200bd056-3e5d-4ed6-a337-ea2667618605" name="The Hound">
-            <property name="名称" value="猎狗"/>
-            <property name="阵营"                       value="兰尼斯特."/>
-            <property name="类型"                       value="角色"/>
-            <property name="属性"                       value="克里冈家族."/>
-            <property name="能力"                       value="强制响应：在你赢得一次猎狗参与的争夺后，你可以从你的手牌中随机弃除1张牌。如果你不这样做，将猎狗返回你的手牌。"/>
-            <property name="关键字"                     value="伏击(4)."/>
-            <property name="Faction"                    value="Lannister."/>
-            <property name="Type"                       value="Character"/>
-            <property name="Traits"                     value="House Clegane."/>
-            <property name="Text"                       value="Forced Reaction: After you win a challenge in which The Hound is participating, you may discard 1 card at random from your hand. If you do not, return The Hound to your hand."/>
-            <property name="Keywords"                   value="Ambush (4)."/>
-            <property name="Unique"                     value="Yes"/>
-            <property name="Loyal"                      value="No"/>
-            <property name="Cost"                       value="3"/>
-            <property name="Strength"                   value="6"/>
-            <property name="Military"                   value="Yes"/>
-            <property name="Intrigue"                   value="No"/>
-            <property name="Power"                      value="Yes"/>
-            <property name="CardNumber"                 value="9"/>
-            <property name="Illustrator"                value="Joshua Cairós"/>
-        </card>
-        <card id="53d1c773-0f71-429c-a94e-6473d2e5a100" name="Cersei’s Wheelhouse">
-            <property name="名称" value="瑟曦的轮宫"/>
-            <property name="阵营"                       value="兰尼斯特."/>
-            <property name="类型"                       value="地区"/>
-            <property name="属性"                       value="载具."/>
-            <property name="能力"                       value="响应：在你成为起始玩家后，选择一项：获得1枚金币，或补1张牌。"/>
-            <property name="Faction"                    value="Lannister."/>
-            <property name="Type"                       value="Location"/>
-            <property name="Traits"                     value="Vehicle."/>
-            <property name="Text"                       value="Reaction: After you become the first player, either: gain 1 gold, or draw 1 card."/>
-            <property name="Unique"                     value="Yes"/>
-			<property name="Loyal"                      value="Yes"/>
-			<property name="Cost"                       value="1"/>
-			<property name="Initiative"     			value="-1"/>
-            <property name="CardNumber"                 value="10"/>
-            <property name="Illustrator"                value="Federico Musetti"/>
-        </card>
-        <card id="daadbc76-f34e-4b92-bac6-837d4b55ed0a" name="The Seastone Chair">
-            <property name="名称" value="海石之位"/>
-            <property name="阵营"                       value="葛雷乔伊."/>
-            <property name="类型"                       value="地区"/>
-            <property name="属性"                       value="铁岛."/>
-            <property name="能力"                       value="打断：当你作为进攻方的一次完胜的军事争夺效能执行时，横置你的阵营牌，以选择失败的对手控制的一名没有附属的角色。杀死该角色以代替常规的效能效果。"/>
-            <property name="Faction"                    value="Greyjoy."/>
-            <property name="Type"                       value="Location"/>
-            <property name="Traits"                     value="Iron Islands."/>
-            <property name="Text"                       value="Interrupt: When claim is applied for an unopposed [MIL] challenge in which you are the attacking player, kneel your faction card to choose a character without attachments, controlled by the losing opponent. Instead of the normal claim effects, kill that character."/>
-            <property name="Unique"                     value="Yes"/>
-			<property name="Loyal"                      value="Yes"/>
-			<property name="Cost"                       value="1"/>
-            <property name="CardNumber"                 value="11"/>
-            <property name="Illustrator"                value="Logan Feliciano"/>
-        </card>
-		<card id="d991ea90-2741-4516-b0ad-33a5c3d6dc28" name="Rise of the Kraken" size="HorizontalCards">
-            <property name="名称" value="海怪的崛起"/>
-            <property name="阵营"                       value="葛雷乔伊."/>
-            <property name="类型"                       value="战略"/>
-            <property name="属性"                       value="战争."/>
-            <property name="能力"                       value="打断：当你因赢得完胜争夺获得权力标记时，获得2枚权力标记以代替。"/>
-            <property name="Faction"                    value="Greyjoy."/>
-            <property name="Type"                       value="Plot"/>
-            <property name="Traits"                     value="War."/>
-            <property name="Text"                       value="Interrupt: When you gain power for winning an unopposed challenge, gain 2 power instead."/>
-            <property name="Loyal"                      value="No"/>
-            <property name="PlotGoldIncome"             value="2"/>
-            <property name="PlotInitiative"             value="8"/>
-            <property name="PlotClaim"                  value="2"/>
-            <property name="PlotReserve"                value="5"/>
-			<property name="DeckLimit"                  value="1"/>
-            <property name="CardNumber"                 value="12"/>
-            <property name="Illustrator"                value="Tomasz Jedruszek"/>
-		</card>
-        <card id="f176a119-9fa1-465f-91d4-53ebe6cb65ac" name="Merchant Prince">
-            <property name="名称" value="巨商"/>
-            <property name="阵营"                       value="坦格利安."/>
-            <property name="类型"                       value="角色"/>
-            <property name="属性"                       value="同伴."/>
-            <property name="能力"                       value="当巨商有附属时，他获得能力值+1并获得一个军事符号。"/>
-            <property name="Faction"                    value="Targaryen."/>
-            <property name="Type"                       value="Character"/>
-            <property name="Traits"                     value="Companion."/>
-            <property name="Text"                       value="While Merchant Prince has an attachment, he gets +1 STR and gains a [MIL] icon."/>
+            <property name="Traits"                     value="Builder."/>
+            <property name="Text"                       value="Reaction: After you collect income, gain 1 gold for every 2 [thenightswatch] locations you control."/>
+            <property name="Keywords"                    value="No attachments except Weapon."/>
             <property name="Unique"                     value="No"/>
             <property name="Loyal"                      value="No"/>
             <property name="Cost"                       value="3"/>
             <property name="Strength"                   value="3"/>
             <property name="Military"                   value="No"/>
-            <property name="Intrigue"                   value="Yes"/>
-            <property name="Power"                      value="No"/>
-            <property name="CardNumber"                 value="13"/>
-            <property name="Illustrator"                value="Dleoblack"/>
+            <property name="Intrigue"                   value="No"/>
+            <property name="Power"                      value="Yes"/>
+            <property name="CardNumber"                 value="5"/>
+            <property name="Illustrator"                value="Adam Lane"/>
         </card>
-        <card id="5f0c6f78-4af1-45c4-be89-5d7bc5014b5a" name="Vaes Dothrak">
-            <property name="名称" value="维斯·多斯拉克"/>
-            <property name="阵营"                       value="坦格利安."/>
+        <card id="09271055-a8d3-48b8-b01d-fac76dc954d8" name="Eastwatch-by-the-Sea">
+            <property name="名称"                       value="东海望"/>
+            <property name="阵营"                       value="守夜人"/>
             <property name="类型"                       value="地区"/>
-            <property name="属性"                       value="厄索斯."/>
-            <property name="能力"                       value="响应：在你展示一张战略牌后，从你的手牌中弃除一个附属，以选择一个印刷费用不高于该附属的附属，并将其从场上弃除。"/>
-            <property name="Faction"                    value="Targaryen."/>
+            <property name="属性"                       value="北境."/>
+            <property name="能力"                       value="响应：在统御阶段开始后，如果你的手牌上限值高于一位对手，补1张牌。"/>
+            <property name="Faction"                    value="Night's Watch."/>
             <property name="Type"                       value="Location"/>
-            <property name="Traits"                     value="Essos."/>
-            <property name="Text"                       value="Reaction: After you reveal a plot card, discard an attachment from your hand to choose an attachment with equal or lower printed cost, and discard it from play"/>
+            <property name="Traits"                     value="The North."/>
+            <property name="Text"                       value="Reaction: After the dominance phase begins, if you have a higher reserve value than an opponent, draw 1 card."/>
+            <property name="Reserve"                    value="+1"/>
             <property name="Unique"                     value="Yes"/>
-			<property name="Loyal"                      value="Yes"/>
-			<property name="Cost"                       value="1"/>
-            <property name="CardNumber"                 value="14"/>
-            <property name="Illustrator"                value="Matthew Cowdery"/>
+            <property name="Loyal"                      value="Yes"/>
+            <property name="Cost"                       value="2"/>
+            <property name="CardNumber"                 value="6"/>
+            <property name="Illustrator"                value="Sergey Glushakov"/>
         </card>
-        <card id="fcba07e6-a15f-46d8-821c-8a14a4983284" name="Bastard Daughter">
-            <property name="名称" value="私生女"/>
-            <property name="阵营"                       value="马泰尔."/>
+        <card id="e6ef6930-b0b9-42b7-b062-87467631aac8" name="Fickle Bannerman">
+            <property name="名称"                       value="善变的封臣"/>
+            <property name="阵营"                       value="拜拉席恩"/>
             <property name="类型"                       value="角色"/>
-            <property name="属性"                       value="私生子.沙蛇."/>
-            <property name="能力"                       value="打断：当『私生女』或『红毒蛇』被杀时，从每位对手的手牌中随机弃除1张牌。"/>
-            <property name="Faction"                    value="Martell."/>
+            <property name="属性"                       value="盟友."/>
+            <property name="关键词"                     value="赏赐(2). 名望."/>
+            <property name="能力"                       value="强制响应：在你输掉一次{权力}争夺后，获胜的对手获得『善变的封臣』的控制权，除非你从该卡牌上弃除1枚金币。"/>
+            <property name="Faction"                    value="Baratheon."/>
             <property name="Type"                       value="Character"/>
-            <property name="Traits"                     value="Bastard. Sand Snake."/>
-            <property name="Text"                       value="Interrupt: When Bastard Daughter or The Red Viper is killed, discard 1 card at random from each opponent’s hand."/>
+            <property name="Traits"                     value="Ally."/>
+            <property name="Text"                       value="Forced Reaction: After you lose a [power] challenge, the winning opponent takes control of Fickle Bannerman unless you discard 1 gold from it."/>
+            <property name="Keywords"                    value="Bestow (2). Renown."/>
             <property name="Unique"                     value="No"/>
             <property name="Loyal"                      value="No"/>
-            <property name="Cost"                       value="2"/>
-            <property name="Strength"                   value="1"/>
+            <property name="Cost"                       value="3"/>
+            <property name="Strength"                   value="5"/>
+            <property name="Military"                   value="Yes"/>
+            <property name="Intrigue"                   value="No"/>
+            <property name="Power"                      value="Yes"/>
+            <property name="CardNumber"                 value="7"/>
+            <property name="Illustrator"                value="Audrey Hotte"/>
+        </card>
+        <card id="850e4c75-bd8f-4b9b-b6d4-9f8ae718a463" name="Storm's End">
+            <property name="名称"                       value="风息堡"/>
+            <property name="阵营"                       value="拜拉席恩"/>
+            <property name="类型"                       value="地区"/>
+            <property name="属性"                       value="要塞."/>
+            <property name="能力"                       value="响应：在你赢得统御后，从你的阵营牌上弃除1枚权力标记，以选择2名角色。每名被选择的角色获得1枚权力标记。"/>
+            <property name="Faction"                    value="Baratheon."/>
+            <property name="Type"                       value="Location"/>
+            <property name="Traits"                     value="Stronghold."/>
+            <property name="Text"                       value="Reaction: After you win dominance, discard 1 power from your faction card to choose 2 characters. Each of those characters gains 1 power."/>
+            <property name="Unique"                     value="Yes"/>
+            <property name="Loyal"                      value="Yes"/>
+            <property name="Cost"                       value="1"/>
+            <property name="CardNumber"                 value="8"/>
+            <property name="Illustrator"                value="Logan Feliciano"/>
+        </card>
+        <card id="128442f8-7aa3-4321-8d9f-9377a79313a6" name="Stone Crows">
+            <property name="名称"                       value="石鸦部"/>
+            <property name="阵营"                       value="兰尼斯特"/>
+            <property name="类型"                       value="角色"/>
+            <property name="属性"                       value="原住民."/>
+            <property name="关键词"                     value="伏击(3). 赏赐(2). "/>
+            <property name="能力"                       value="响应：在你赢得一次『石鸦部』进攻的争夺后，从该卡牌上弃除1枚金币，以使失败的对手选择并杀死一名防御角色。"/>
+            <property name="Faction"                    value="Lannister."/>
+            <property name="Type"                       value="Character"/>
+            <property name="Traits"                     value="Clansman."/>
+            <property name="Text"                       value="Reaction: After you win a challenge in which Stone Crows is attacking, discard 1 gold from it to have the losing opponent choose and kill a defending character."/>
+            <property name="Keywords"                    value="Ambush (3). Bestow (2). "/>
+            <property name="Unique"                     value="No"/>
+            <property name="Loyal"                      value="No"/>
+            <property name="Cost"                       value="3"/>
+            <property name="Strength"                   value="3"/>
             <property name="Military"                   value="Yes"/>
             <property name="Intrigue"                   value="No"/>
             <property name="Power"                      value="No"/>
-            <property name="CardNumber"                 value="15"/>
-            <property name="Illustrator"                value="Tawny Fritzinger"/>
+            <property name="CardNumber"                 value="9"/>
+            <property name="Illustrator"                value="Josu Hernaiz"/>
         </card>
-        <card id="06b34127-fbb3-4d9c-94e2-bf00001a2b09" name="The Long Plan" size="HorizontalCards">
-            <property name="名称" value="长远的计划"/>
-            <property name="阵营"                       value="马泰尔."/>
-            <property name="类型"                       value="战略"/>
-            <property name="属性"                       value="诡计."/>
-            <property name="能力"                       value="在赋税阶段中，你不将未使用的金币返回藏宝库。&#13;&#10;响应：在你输掉一次争夺后，获得1枚金币。"/>
-            <property name="Faction"                    value="Martell."/>
-            <property name="Type"                       value="Plot"/>
-            <property name="Traits"                     value="Scheme."/>
-            <property name="Text"                       value="You do not return unspent gold to the treasury during the taxation phase.&#13;&#10;Reaction: After you lose a challenge, gain 1 gold."/>
+        <card id="9356b05f-fb39-4c40-9eeb-13642a68d3a7" name="Attack From the Mountains">
+            <property name="名称"                       value="山地进攻"/>
+            <property name="阵营"                       value="兰尼斯特"/>
+            <property name="类型"                       value="事件"/>
+            <property name="能力"                       value="响应：在你赢得一次有你控制的原住民进攻角色参与的争夺后，将一名原住民角色从你的手牌中放置进场。"/>
+            <property name="Faction"                    value="Lannister."/>
+            <property name="Type"                       value="Event"/>
+            <property name="Text"                       value="Reaction: After you win a challenge in which you control an attacking Clansman character, put a Clansman character into play from your hand."/>
+            <property name="Unique"                     value="No"/>
+            <property name="Loyal"                      value="No"/>
+            <property name="Cost"                       value="2"/>
+            <property name="CardNumber"                 value="10"/>
+            <property name="Illustrator"                value="Frej Agelii"/>
+        </card>
+        <card id="e1151066-0978-4f9f-b4f6-65b9f6bbc339" name="Drowned Disciple">
+            <property name="名称"                       value="淹神的信徒"/>
+            <property name="阵营"                       value="葛雷乔伊"/>
+            <property name="类型"                       value="角色"/>
+            <property name="属性"                       value="淹神."/>
+            <property name="能力"                       value="响应：在一名角色从你的死亡牌堆中进场后，选择一名淹神角色并使其获得1枚权力标记。（每阶段限制两次。）"/>
+            <property name="Faction"                    value="Greyjoy."/>
+            <property name="Type"                       value="Character"/>
+            <property name="Traits"                     value="Drowned God."/>
+            <property name="Text"                       value="Reaction: After a character enters play from your dead pile, choose a Drowned God character and have it gain 1 power. (Limit twice per phase.)"/>
+            <property name="Unique"                     value="No"/>
+            <property name="Loyal"                      value="No"/>
+            <property name="Cost"                       value="3"/>
+            <property name="Strength"                   value="3"/>
+            <property name="Military"                   value="No"/>
+            <property name="Intrigue"                   value="No"/>
+            <property name="Power"                      value="Yes"/>
+            <property name="CardNumber"                 value="11"/>
+            <property name="Illustrator"                value="Andreia Ugrai"/>
+        </card>
+        <card id="30e2bbb1-34cf-471a-a1b0-387d6feb8a62" name="Moat Cailin">
+            <property name="名称"                       value="卡林湾"/>
+            <property name="阵营"                       value="葛雷乔伊"/>
+            <property name="类型"                       value="地区"/>
+            <property name="属性"                       value="冲突.北境."/>
+            <property name="能力"                       value="当展示中的寒冬战略牌多于盛夏战略牌时，每位对手展示中的战略牌优先值减3，且每位对手展示中的战略牌手牌上限值减1。"/>
+            <property name="Faction"                    value="Greyjoy."/>
+            <property name="Type"                       value="Location"/>
+            <property name="Traits"                     value="Contested. The North."/>
+            <property name="Text"                       value="While there are more Winter plot cards than Summer plot cards revealed, reduce the initiative value on each opponent's revealed plot card by 3, and the reserve value on each opponent's revealed plot card by 1."/>
+            <property name="Unique"                     value="Yes"/>
+            <property name="Loyal"                      value="No"/>
+            <property name="Cost"                       value="2"/>
+            <property name="CardNumber"                 value="12"/>
+            <property name="Illustrator"                value="Logan Feliciano"/>
+        </card>
+        <card id="65d42976-6b3d-4dbc-ad9b-36d0301f5e18" name="Ghiscari Elite">
+            <property name="名称"                       value="吉斯卡利权贵"/>
+            <property name="阵营"                       value="坦格利安"/>
+            <property name="类型"                       value="角色"/>
+            <property name="属性"                       value="盟友."/>
+            <property name="能力"                       value="响应：在『吉斯卡利权贵』横置后，从你的弃牌堆中选择一张附属牌或事件牌，并将其放置到你的牌组底。"/>
+            <property name="Faction"                    value="Targaryen."/>
+            <property name="Type"                       value="Character"/>
+            <property name="Traits"                     value="Ally."/>
+            <property name="Text"                       value="Reaction: After Ghiscari Elite is knelt, choose an attachment or event in your discard pile, and place it on the bottom of your deck."/>
+            <property name="Unique"                     value="No"/>
+            <property name="Loyal"                      value="No"/>
+            <property name="Cost"                       value="5"/>
+            <property name="Strength"                   value="5"/>
+            <property name="Military"                   value="No"/>
+            <property name="Intrigue"                   value="Yes"/>
+            <property name="Power"                      value="Yes"/>
+            <property name="CardNumber"                 value="13"/>
+            <property name="Illustrator"                value="Cassandre Bolan"/>
+        </card>
+        <card id="4e7c3e4c-e705-43ca-a562-d38e848c6e21" name="Slaver's Bay Port">
+            <property name="名称"                       value="奴隶湾港口"/>
+            <property name="阵营"                       value="坦格利安"/>
+            <property name="类型"                       value="地区"/>
+            <property name="属性"                       value="厄斯索斯."/>
+            <property name="关键词"                     value="限制."/>
+            <property name="能力"                       value="备战行动：横置『奴隶湾港口』，以获得1枚金币。（如果一位对手的死亡牌堆中有4名或更多角色，则获得2枚金币以代替。）"/>
+            <property name="Faction"                    value="Targaryen."/>
+            <property name="Type"                       value="Location"/>
+            <property name="Traits"                     value="Essos."/>
+            <property name="Text"                       value="Marshaling Action: Kneel Slaver's Bay Port to gain 1 gold. (2 gold instead if an opponent has 4 or more characters in his or her dead pile.)"/>
+            <property name="Keywords"                    value="Limited."/>
+            <property name="Unique"                     value="No"/>
             <property name="Loyal"                      value="Yes"/>
-            <property name="PlotGoldIncome"             value="4"/>
-            <property name="PlotInitiative"             value="3"/>
-            <property name="PlotClaim"                  value="1"/>
-            <property name="PlotReserve"                value="8"/>
+            <property name="Cost"                       value="2"/>
+            <property name="CardNumber"                 value="14"/>
+            <property name="Illustrator"                value="Frej Agelii"/>
+        </card>
+        <card id="2209c19e-88c3-4172-858d-6bab561dc5b0" name="Ricasso">
+            <property name="名称"                       value="里卡索"/>
+            <property name="阵营"                       value="马泰尔"/>
+            <property name="类型"                       value="角色"/>
+            <property name="属性"                       value="盟友.事务官."/>
+            <property name="关键词"                     value="赏赐(2). "/>
+            <property name="能力"                       value="你已使用的战略牌堆中视为有X张额外的战略牌。X等于『里卡索』上的金币数。"/>
+            <property name="Faction"                    value="Martell."/>
+            <property name="Type"                       value="Character"/>
+            <property name="Traits"                     value="Ally. Steward."/>
+            <property name="Text"                       value="You are considered to have X additional plot cards in your used pile. X is the number of gold Ricasso has."/>
+            <property name="Keywords"                    value="Bestow (2). "/>
+            <property name="Unique"                     value="Yes"/>
+            <property name="Loyal"                      value="Yes"/>
+            <property name="Cost"                       value="3"/>
+            <property name="Strength"                   value="3"/>
+            <property name="Military"                   value="No"/>
+            <property name="Intrigue"                   value="Yes"/>
+            <property name="Power"                      value="Yes"/>
+            <property name="CardNumber"                 value="15"/>
+            <property name="Illustrator"                value="Jacob Atienza"/>
+        </card>
+        <card id="43551dd3-5187-4e19-ab02-3d6e6b2bca39" name="The Prince's Plan">
+            <property name="名称"                       value="亲王的计划"/>
+            <property name="阵营"                       value="马泰尔"/>
+            <property name="类型"                       value="事件"/>
+            <property name="能力"                       value="行动：选择一名角色。直到本阶段结束，该角色获得一个由你选择的争夺符号，且你已使用的战略牌堆中每有一张战略牌，该角色获得能力值+1。&#13;&#10;响应：在你输掉一次争夺后，支付1枚金币，以将『亲王的计划』从你的弃牌堆中返回你的手牌。"/>
+            <property name="Faction"                    value="Martell."/>
+            <property name="Type"                       value="Event"/>
+            <property name="Text"                       value="Action: Choose a character. Until the end of the phase, that character gets +1 STR for each plot card in your used pile and gains a challenge icon of your choice. &#13;&#10;Reaction: After you lose a challenge, pay 1 gold to return The Prince's Plan from your discard pile to your hand."/>
+            <property name="Unique"                     value="No"/>
+            <property name="Loyal"                      value="Yes"/>
+            <property name="Cost"                       value="2"/>
             <property name="CardNumber"                 value="16"/>
+            <property name="Illustrator"                value="Joshua Cairós"/>
+        </card>
+        <card id="a3a6f31a-63ec-42b6-ace1-f71228491e69" name="Ygritte">
+            <property name="名称"                       value="耶哥蕊特"/>
+            <property name="阵营"                       value="中立"/>
+            <property name="类型"                       value="角色"/>
+            <property name="属性"                       value="野人."/>
+            <property name="能力"                       value="『耶哥蕊特』不能因卡牌效果被横置。&#13;&#10;当你控制其他野人角色时，『耶哥蕊特』获得隐秘。"/>
+            <property name="Faction"                    value="Neutral."/>
+            <property name="Type"                       value="Character"/>
+            <property name="Traits"                     value="Wildling."/>
+            <property name="Text"                       value="Ygritte cannot be knelt by card effects.&#13;&#10;While you control another Wildling character, Ygritte gains stealth."/>
+            <property name="Unique"                     value="Yes"/>
+            <property name="Loyal"                      value="No"/>
+            <property name="Cost"                       value="4"/>
+            <property name="Strength"                   value="3"/>
+            <property name="Military"                   value="Yes"/>
+            <property name="Intrigue"                   value="Yes"/>
+            <property name="Power"                      value="No"/>
+            <property name="CardNumber"                 value="17"/>
+            <property name="Illustrator"                value="Dani Hartel"/>
+        </card>
+        <card id="841ff92f-f266-42f9-835e-eb4899c233fb" name="Alliance">
+            <property name="名称"                       value="联盟"/>
+            <property name="阵营"                       value="中立"/>
+            <property name="类型"                       value="议政"/>
+            <property name="能力"                       value="你牌组中的卡牌数量下限为75张。&#13;&#10;除此议政外，你还可以使用2张旗帜议政。"/>
+            <property name="Faction"                    value="Neutral."/>
+            <property name="Type"                       value="Agenda"/>
+            <property name="Text"                       value="Your minimum deck size is 75 cards.&#13;&#10;You may run 2 Banner agendas in addition to this agenda."/>
+            <property name="Loyal"                      value="No"/>
+            <property name="CardNumber"                 value="18"/>
+            <property name="DeckLimit"                  value="1"/>
             <property name="Illustrator"                value="Tim Durning"/>
         </card>
-		<card id="8f9f0932-a151-4fcb-b1ed-f82a806c82c6" name="Support of the People">
-            <property name="名称" value="民众的支持"/>
-            <property name="阵营"                       value="中立."/>
-            <property name="类型"                       value="事件"/>
-            <property name="能力"                       value="响应：在你以5点或更高总能力差值赢得一次权力争夺后，从你的牌组中搜寻一个印刷费用不高于3的地区，并将其放置进场。将你的牌组洗牌。（每次争夺至多1次。"/>
-            <property name="Faction"                    value="Neutral."/>
-            <property name="Type"                       value="Event"/>
-            <property name="Text"                       value="Reaction: After you win a [POW] challenge by 5 or more STR, search your deck for a location with printed cost 3 or lower, and put it into play. Shuffle your deck. (Max 1 per challenge.)"/>
-            <property name="Unique"                     value="No"/>
-            <property name="Cost"                       value="1"/>
-            <property name="CardNumber"                 value="17"/>
-            <property name="Illustrator"                value="Glen Osterberger"/>
-        </card>
-        <card id="3ade8418-4ab8-45e4-9b6a-615ed12682ba" name="Street of the Sisters">
-            <property name="名称" value="静默修女街"/>
-            <property name="阵营"                       value="中立."/>
-            <property name="类型"                       value="地区"/>
-            <property name="属性"                       value="君临."/>
-            <property name="能力"                       value="响应：在你以5点或更高总能力差值赢得一次权力争夺后，横置你的阵营牌，以为你的阵营获得1枚权力标记。"/>
-            <property name="Faction"                    value="Neutral."/>
-            <property name="Type"                       value="Location"/>
-            <property name="Traits"                     value="King’s Landing."/>
-            <property name="Text"                       value="Reaction: After you win a [POW] challenge by 5 or more STR, kneel your faction card to gain 1 power for your faction."/>
-			<property name="Unique"                     value="No"/>
-            <property name="CardNumber"                 value="18"/>
-            <property name="Illustrator"                value="Matthew Cowdery"/>
-        </card>
-        <card id="ffedc660-c11b-4324-8938-31a3911c2a58" name="Muster the Realm" size="HorizontalCards">
-            <property name="名称" value="王国集结"/>
-            <property name="阵营"                       value="中立."/>
+        <card id="33ff3b65-8df2-4e4a-915d-b10864121b70" name="Barring the Gates" size="HorizontalCards">
+            <property name="名称"                       value="固守城门"/>
+            <property name="阵营"                       value="中立"/>
             <property name="类型"                       value="战略"/>
-            <property name="属性"                       value="法令."/>
-            <property name="能力"                       value="在有你控制的军队进攻角色参与的争夺中，王国集结的效能值提升1。"/>
+            <property name="属性"                       value="法令.寒冬."/>
+            <property name="能力"                       value="卡牌能力不能使角色进场。"/>
             <property name="Faction"                    value="Neutral."/>
             <property name="Type"                       value="Plot"/>
-            <property name="Traits"                     value="Edict."/>
-            <property name="Text"                       value="During a challenge in which you control an attacking Army character, raise the claim value on Muster the Realm by 1."/>
+            <property name="Traits"                     value="Edict. Winter."/>
+            <property name="Text"                       value="Card abilities cannot cause characters to enter play."/>
             <property name="Loyal"                      value="No"/>
-            <property name="PlotGoldIncome"             value="4"/>
-            <property name="PlotInitiative"             value="5"/>
+            <property name="PlotGoldIncome"             value="5"/>
+            <property name="PlotInitiative"             value="2"/>
             <property name="PlotClaim"                  value="1"/>
-            <property name="PlotReserve"                value="6"/>
+            <property name="PlotReserve"                value="5"/>
             <property name="CardNumber"                 value="19"/>
-            <property name="Illustrator"                value="Jon Bosco"/>
+            <property name="Illustrator"                value="Lukas Banas"/>
         </card>
-        <card id="f68a9d16-dea2-4eae-a03f-8fbc48e2c85c" name="Here to Serve" size="HorizontalCards">
-            <property name="名称" value="听候差遣"/>
-            <property name="阵营"                       value="中立."/>
+        <card id="3d6f90f0-f1b5-45a5-895e-8f8bc1a33763" name="Late Summer Feast" size="HorizontalCards">
+            <property name="名称"                       value="暮夏盛筵"/>
+            <property name="阵营"                       value="中立"/>
             <property name="类型"                       value="战略"/>
-            <property name="属性"                       value="枢机会.王国."/>
-            <property name="能力"                       value="展示后：从你的牌组中搜寻一名印刷费用不高于3的学士角色，并将其放置进场。将你的牌组洗牌。"/>
+            <property name="属性"                       value="王国.盛夏."/>
+            <property name="能力"                       value="强制响应：在你赢得一次争夺后，失败的对手可以补1张牌。"/>
             <property name="Faction"                    value="Neutral."/>
             <property name="Type"                       value="Plot"/>
-            <property name="Traits"                     value="Conclave. Kingdom."/>
-            <property name="Text"                       value="When Revealed: Search your deck for a Maester character with printed cost 3 or lower, and put it into play. Shuffle your deck."/>
+            <property name="Traits"                     value="Kingdom. Summer."/>
+            <property name="Text"                       value="Forced Reaction: After you win a challenge, the losing opponent may draw 1 card."/>
             <property name="Loyal"                      value="No"/>
-            <property name="PlotGoldIncome"             value="3"/>
-            <property name="PlotInitiative"             value="3"/>
+            <property name="PlotGoldIncome"             value="9"/>
+            <property name="PlotInitiative"             value="0"/>
             <property name="PlotClaim"                  value="1"/>
-            <property name="PlotReserve"                value="6"/>
+            <property name="PlotReserve"                value="5"/>
             <property name="CardNumber"                 value="20"/>
-            <property name="Illustrator"                value="Nikolas Hagialas"/>
+            <property name="Illustrator"                value="Logan Feliciano"/>
         </card>
     </cards>
 </set>
