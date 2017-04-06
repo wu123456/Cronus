@@ -82,7 +82,7 @@ class GameBoard extends Component {
 		for(let i in hands){
 			let x = 20 + 110 * j;
 			let y = 580;
-			cards.push(<Card x={x} y={y} key={"hands" + hands[i]['id']} id={hands[i]['id']} card_id={hands[i]['card_id']} />);
+			cards.push(<Card x={x} y={y} key={"hands" + hands[i]['id']} id={hands[i]['id']} card_id={hands[i]['card_id']} is_in_hand={true}/>);
 			j++;
 		}
 
@@ -92,7 +92,7 @@ class GameBoard extends Component {
 				y = board_high - card_high - y;
 			}
 
-			cards.push(<Card x={playground[i]['x']} y={y} key={playground[i]['id']} id={playground[i]['id']} card_id={playground[i]['card_id']} />);
+			cards.push(<Card x={playground[i]['x']} y={y} key={playground[i]['id']} id={playground[i]['id']} card_id={playground[i]['card_id']} is_standing={playground[i]['stand']}/>);
 		}
 
 		for(let i = 0; i < op_hands; i++){
@@ -317,13 +317,19 @@ class GameBoard extends Component {
 }
 
 
-class Card extends Component{
-
+class Card extends Component {
 
 	constructor(props) {
 		super(props);
+
+		// 生成横置状态
+		let standingCode = this.props.is_standing; // 1表示站着，0表示躺着
+		// 如果standingCode是undefined，则默认为1，isStanding=true
+		let isStanding = (standingCode != 0);
+
         this.state = {
             opacity: 1,
+            isStanding: isStanding,
         }
     }
 
@@ -354,7 +360,7 @@ class Card extends Component{
 			}
 		}
 
-		if (isStanding != undefined && !isStanding) {
+		if (!isStanding) {
 			class_name = class_name + ' ' + LYING_DOWN_CLASS;
 		};
 
@@ -421,13 +427,27 @@ class Card extends Component{
 	}
 
 	handleDbClick() {
-		let isStanding = this.state.isStanding;
-		console.log('onDoubleClick:' + isStanding)
-		if (isStanding == undefined || isStanding) {
-			this.setState({isStanding: false});
-		} else {
-			this.setState({isStanding: true});
-		}
+		// 手牌不需要躺下来_(:з」∠)_
+		let isInHand = this.props.is_in_hand;
+		if (isInHand) {
+			return;
+		};
+
+		let self = this;
+		$.post(
+			'/table/flip-card',
+			{id : self.props.id},
+			function(ret){
+				if (ret.code == 0) {
+					self.setStandingState(!self.state.isStanding);
+				};
+			},
+			'json'
+		);
+	}
+
+	setStandingState(isStanding) {
+		this.setState({isStanding: isStanding});
 	}
 }
 
