@@ -19,6 +19,18 @@ let dead_x = -130;
 let my_y = 580; 
 let op_y = 20;
 
+EventManage.on("show_card", function(event, params){
+	let style = {
+					backgroundImage: "url(" + params['url'] + ")",
+					height: '480px',
+					width: '360px',
+					backgroundSize:	"100% 100%",
+				};
+	showMessage({
+			message: <div style = {style}></div>
+	});
+});
+
 
 class GameBoard extends Component {
 
@@ -142,9 +154,6 @@ class GameBoard extends Component {
 
 		let self = this;
 		EventManage.on('card_move', function(event, params){
-			console.log(params);
-				console.log(getBlockType(params['from']));
-				console.log(getBlockType(params['to']));
 			if(!inPlayground(params['from']) && inPlayground(params['to'])){
 				params['to'] = opPosition(params['to'], self.state.side);
 				$.post(
@@ -370,6 +379,8 @@ class Card extends Component {
 						onDragEnd = {this.handleDragEnd.bind(this)}
 						onDrag = {this.handleDrag.bind(this)}
 						onDoubleClick = {this.handleDbClick.bind(this)}
+						onMouseOver = {this.handleMover.bind(this)}
+						onMouseOut = {this.handleMout.bind(this)}
 						style={style}
 						> 
 						{name}
@@ -408,6 +419,21 @@ class Card extends Component {
 		console.log(2)
 	}
 
+	handleMover() {
+		if(this.state && this.state.url){
+			this.to = setTimeout(function(){
+				EventManage.trigger('show_card', {url: this.state.url});
+			}.bind(this) , 3000);
+		}
+		
+	}
+
+	handleMout() {
+		if(this.to){
+			clearInterval(this.to);
+		}
+	}
+
 	handleDragStart(event) {
 	    this.setState({opacity:0.2});
 	    this._x = event.pageX - this.refs.s.offsetLeft;
@@ -423,7 +449,6 @@ class Card extends Component {
 	}
 
 	handleDrag() {
-
 	}
 
 	handleDbClick() {
