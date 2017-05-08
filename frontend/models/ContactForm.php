@@ -52,8 +52,12 @@ class ContactForm extends Model
     {
         return Yii::$app->mailer->compose()
             ->setTo($email)
-            ->setFrom([$this->email => $this->name])
-            ->setSubject($this->subject)
+            // 由于使用外部邮箱系统，from邮箱名称不能随意制定，将原来的
+            // ->setFrom([$this->email => $this->name])
+            // ->setSubject($this->subject)
+            // 做了如下调整
+            ->setFrom(Yii::$app->params['systemMail'])
+            ->setSubject($this->subject." from " . $this->email . " / " . $this->name)
             ->setTextBody($this->body)
             ->send();
     }

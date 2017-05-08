@@ -64,7 +64,7 @@ class UserController extends JsonBaseController{
             ];
         }
 
-        return ['code' => self::CODE_SUCCESS, 'data' => $result;
+        return ['code' => self::CODE_SUCCESS, 'data' => $result];
     }
 
 

@@ -1,10 +1,10 @@
 module.exports = {
   // entry: './index.js',
-  entry: './index-tables.js',
+  entry: './index-game.js',
 
   output: {
     // filename: 'bundle.js',
-    filename: 'tables.js',
+    filename: 'game.js',
     publicPath: ''
   },
 

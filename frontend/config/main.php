@@ -56,6 +56,7 @@ return [
         'class' => 'mdm\admin\components\AccessControl',
         // 'defaultRoles' => ['role_guest'],
         'allowActions' => [
+            '*',
             'site/index',
             'site/login',
             'site/signup',

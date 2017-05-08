@@ -90,12 +90,12 @@ class DeckCard extends AgotBase{
         $inserts = [];
 
         foreach ($cards as $card) {
-            $inserts[] = [$deck_id, $card['id'], $card['count']];
+            $inserts[] = [$deck_id, $card['id'], $card['count'], self::STATUS_ACTIVE];
         }
 
         //批量插入
         return self::getDb()->createCommand()->batchInsert(self::tableName(), 
-            ['deck_id', 'card_id' ,'count'], $inserts)->execute();
+            ['deck_id', 'card_id' ,'count', 'status'], $inserts)->execute();
     }
 
 
