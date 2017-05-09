@@ -19,6 +19,7 @@ let dead_x = -130;
 let my_y = 580; 
 let op_y = 20;
 
+// 展示卡牌详情
 EventManage.on("show_card", function(event, params){
 	let style = {
 					backgroundImage: "url(" + params['url'] + ")",
@@ -31,7 +32,12 @@ EventManage.on("show_card", function(event, params){
 	});
 });
 
+// 禁用系统自带右键菜单
+window.document.oncontextmenu = function(){ 
+	return false;
+}  
 
+// 战场定义
 class GameBoard extends Component {
 
 	constructor(props) {
@@ -325,7 +331,7 @@ class GameBoard extends Component {
 	}
 }
 
-
+// 卡牌定义
 class Card extends Component {
 
 	constructor(props) {
@@ -381,6 +387,7 @@ class Card extends Component {
 						onDoubleClick = {this.handleDbClick.bind(this)}
 						onMouseOver = {this.handleMover.bind(this)}
 						onMouseOut = {this.handleMout.bind(this)}
+						onContextMenu = {this.handleContextMenu.bind(this)}
 						style={style}
 						> 
 						{name}
@@ -421,14 +428,20 @@ class Card extends Component {
 
 	handleMover() {
 		if(this.state && this.state.url){
+			// this.to 为时间计数器变量
 			this.to = setTimeout(function(){
 				EventManage.trigger('show_card', {url: this.state.url});
 			}.bind(this) , 3000);
 		}
-		
+	}
+
+	handleContextMenu(){
+		console.log(1234);
+		return false;
 	}
 
 	handleMout() {
+		// this.to 为时间计数器变量
 		if(this.to){
 			clearInterval(this.to);
 		}
