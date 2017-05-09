@@ -11,6 +11,13 @@ body {padding: 0;}
 .game-board { background: green;width: 100%; height: 700px; position: relative; }
 .card { width: 100px; height: 100px; background: red; float: left; }
 .card2 { position: absolute; width: 100px; height: 100px; background: red; z-index: 3; }
+.card-lying-down {
+	transform:rotate(90deg);
+	-ms-transform:rotate(90deg); 	/* IE 9 */
+	-moz-transform:rotate(90deg); 	/* Firefox */
+	-webkit-transform:rotate(90deg); /* Safari 和 Chrome */
+	-o-transform:rotate(90deg); 	/* Opera */
+}
 
 .table { width: 200px; height: 300px; background: green; }
 

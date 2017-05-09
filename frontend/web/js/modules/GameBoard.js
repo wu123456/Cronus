@@ -19,6 +19,18 @@ let dead_x = -130;
 let my_y = 580; 
 let op_y = 20;
 
+EventManage.on("show_card", function(event, params){
+	let style = {
+					backgroundImage: "url(" + params['url'] + ")",
+					height: '480px',
+					width: '360px',
+					backgroundSize:	"100% 100%",
+				};
+	showMessage({
+			message: <div style = {style}></div>
+	});
+});
+
 
 class GameBoard extends Component {
 
@@ -82,7 +94,7 @@ class GameBoard extends Component {
 		for(let i in hands){
 			let x = 20 + 110 * j;
 			let y = 580;
-			cards.push(<Card x={x} y={y} key={"hands" + hands[i]['id']} id={hands[i]['id']} card_id={hands[i]['card_id']} />);
+			cards.push(<Card x={x} y={y} key={"hands" + hands[i]['id']} id={hands[i]['id']} card_id={hands[i]['card_id']} is_in_hand={true}/>);
 			j++;
 		}
 
@@ -92,7 +104,7 @@ class GameBoard extends Component {
 				y = board_high - card_high - y;
 			}
 
-			cards.push(<Card x={playground[i]['x']} y={y} key={playground[i]['id']} id={playground[i]['id']} card_id={playground[i]['card_id']} />);
+			cards.push(<Card x={playground[i]['x']} y={y} key={playground[i]['id']} id={playground[i]['id']} card_id={playground[i]['card_id']} is_standing={playground[i]['stand']}/>);
 		}
 
 		for(let i = 0; i < op_hands; i++){
@@ -142,9 +154,6 @@ class GameBoard extends Component {
 
 		let self = this;
 		EventManage.on('card_move', function(event, params){
-			console.log(params);
-				console.log(getBlockType(params['from']));
-				console.log(getBlockType(params['to']));
 			if(!inPlayground(params['from']) && inPlayground(params['to'])){
 				params['to'] = opPosition(params['to'], self.state.side);
 				$.post(
@@ -317,13 +326,19 @@ class GameBoard extends Component {
 }
 
 
-class Card extends Component{
-
+class Card extends Component {
 
 	constructor(props) {
 		super(props);
+
+		// 生成横置状态
+		let standingCode = this.props.is_standing; // 1表示站着，0表示躺着
+		// 如果standingCode是undefined，则默认为1，isStanding=true
+		let isStanding = (standingCode != 0);
+
         this.state = {
             opacity: 1,
+            isStanding: isStanding,
         }
     }
 
@@ -335,9 +350,10 @@ class Card extends Component{
 		let unmovable = this.props.unmovable;
 		let class_name = 'card';
 		let style = {opacity:this.state.opacity, margin:margin + "px", background: this.props.color};
+		let isStanding = this.state.isStanding;
+		const LYING_DOWN_CLASS = 'card-lying-down';
 
 		if(this.state.url){
-			console.log(this.state.url);
 			style['backgroundImage'] = "url(" + this.state.url + ")";
 			style['backgroundSize'] = "100% 100%";
 			name = "";
@@ -353,11 +369,18 @@ class Card extends Component{
 			}
 		}
 
+		if (!isStanding) {
+			class_name = class_name + ' ' + LYING_DOWN_CLASS;
+		};
+
 		if(!unmovable){
 			return (<div className={class_name} draggable="true" ref="s"
 						onDragStart = {this.handleDragStart.bind(this)}
 						onDragEnd = {this.handleDragEnd.bind(this)}
 						onDrag = {this.handleDrag.bind(this)}
+						onDoubleClick = {this.handleDbClick.bind(this)}
+						onMouseOver = {this.handleMover.bind(this)}
+						onMouseOut = {this.handleMout.bind(this)}
 						style={style}
 						> 
 						{name}
@@ -380,7 +403,6 @@ class Card extends Component{
 				}
 			},
 			function(ret){
-				console.log(11111, ret);
 				if(ret.code != 0){
 					return showMessage(ret.msg);
 				}
@@ -393,13 +415,23 @@ class Card extends Component{
 		);
 	}
 
-	handleClick() {
-		console.log(5)
-	}
-
-
 	handleDragLeave() {
 		console.log(2)
+	}
+
+	handleMover() {
+		if(this.state && this.state.url){
+			this.to = setTimeout(function(){
+				EventManage.trigger('show_card', {url: this.state.url});
+			}.bind(this) , 3000);
+		}
+		
+	}
+
+	handleMout() {
+		if(this.to){
+			clearInterval(this.to);
+		}
 	}
 
 	handleDragStart(event) {
@@ -417,7 +449,30 @@ class Card extends Component{
 	}
 
 	handleDrag() {
+	}
 
+	handleDbClick() {
+		// 手牌不需要躺下来_(:з」∠)_
+		let isInHand = this.props.is_in_hand;
+		if (isInHand) {
+			return;
+		};
+
+		let self = this;
+		$.post(
+			'/table/flip-card',
+			{id : self.props.id},
+			function(ret){
+				if (ret.code == 0) {
+					self.setStandingState(!self.state.isStanding);
+				};
+			},
+			'json'
+		);
+	}
+
+	setStandingState(isStanding) {
+		this.setState({isStanding: isStanding});
 	}
 }
 

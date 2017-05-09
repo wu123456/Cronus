@@ -182,6 +182,32 @@ class TableController extends JsonBaseController{
         return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
     }
 
+    /**
+     * @name  翻转卡牌
+     * @method POST
+     * @author wolfbian
+     * @date 2016-10-09
+     * @param    string      id   // 本场比赛，卡牌的id
+     */
+    public function actionFlipCard(){
+        $user_id = Yii::$app->user->id;
+        if (empty($user_id)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+        $table_id = Table::getTableIdByUserId($user_id);
+        $table = new Table($table_id);
+
+        $id = Yii::$app->request->post("id");
+
+        $ret = $table->changeCardState(['id' => $id, 'type' => 'stand']);
+
+        if ($ret[0] === true) {
+            return ['code' => self::CODE_SUCCESS, 'data' => []];
+        }
+
+        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
+    }
+
     
     /**
      * @name  准备

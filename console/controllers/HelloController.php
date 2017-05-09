@@ -34,6 +34,7 @@ class HelloController extends \yii\console\Controller {
     		foreach ($card['property'] as $key => $property) {
     			$p = $property['@attributes'];
     			if ( isset($map[$p['name']]) ) {
+                    
     				$model->$map[$p['name']] = $p['value'];
     			}
     		}
@@ -62,7 +63,8 @@ class HelloController extends \yii\console\Controller {
     	$map = [
     		'名称' => 'name',
     		'Name' => 'name',
-    		// '阵营' => 'house',
+            '类型' => 'type',
+    		'阵营' => 'house',
     		// 'House' => 'house',
     		// '属性' => 'attribute',
     		'能力' => 'text',
