@@ -11,4 +11,4 @@ $this->params['breadcrumbs'][] = $this->title;
 <link href="/css/common.css" rel="stylesheet">
 <div id="app"></div>
 
-<script src="/js/game.js"></script>
+<script src="/js/game.js?v=1"></script>

@@ -34,7 +34,6 @@ class HelloController extends \yii\console\Controller {
     		foreach ($card['property'] as $key => $property) {
     			$p = $property['@attributes'];
     			if ( isset($map[$p['name']]) ) {
-                    
     				$model->$map[$p['name']] = $p['value'];
     			}
     		}

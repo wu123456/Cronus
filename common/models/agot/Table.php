@@ -136,7 +136,7 @@ class Table extends Model{
                 return false;
             }
 
-            $info['side'][$value]['plots'] =  $deck->getPlots();
+            $info['side'][$value]['plot'] =  $deck->getPlots();
             $info['side'][$value]['discard'] =  [];
             $info['side'][$value]['dead'] =  [];
 

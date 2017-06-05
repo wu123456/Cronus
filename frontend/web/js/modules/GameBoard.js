@@ -9,7 +9,7 @@ let moveElement;
 
 let board_width = 0;
 let board_high = 700;
-let card_width = 100;
+let card_width = 75;
 let card_high = 100;
 
 let discard_x = -20;
@@ -61,6 +61,7 @@ class GameBoard extends Component {
         };
     }
 
+    // 弹窗形式，展示卡牌列表
     showCards(name, cards) {
     	let message = [];
     	for(let i in cards){
@@ -72,19 +73,20 @@ class GameBoard extends Component {
 		});
     }
 
+
+
+    // react组件渲染方法，里面包括了对战页面各个组件的渲染逻辑，为前端核心逻辑。
 	render() {
-		console.log(this.state);
 		let cards = [];
-		
 		let blocks = [
-			<Block onClick={this.showCards.bind(this, "我方战略牌", this.state.plot)} key="my_plot" x={plot_x} y={my_y} height={100} width={100}/>,
-			<Block key="my_library" x={library_x} y={my_y} height={100} width={100}/>,
-			<Block onClick={this.showCards.bind(this, "我方弃牌堆", this.state.discard)} key="my_discard" x={discard_x} y={my_y} height={100} width={100}/>,
-			<Block onClick={this.showCards.bind(this, "我方死亡牌堆", this.state.dead)} key="my_dead" x={dead_x} y={my_y} height={100} width={100}/>,
-			<Block key="op_plot" x={plot_x} y={op_y} height={100} width={100}/>,
-			<Block key="op_library" x={library_x} y={op_y} height={100} width={100}/>,
-			<Block onClick={this.showCards.bind(this, "对方弃牌堆", this.state.op_discard)} key="op_discard" x={discard_x} y={op_y} height={100} width={100}/>,
-			<Block onClick={this.showCards.bind(this, "对方死亡牌堆", this.state.op_dead)} key="op_dead" x={dead_x} y={op_y} height={100} width={100}/>,
+			<Block onClick={this.showCards.bind(this, "我方战略牌", this.state.plot)} key="my_plot" x={plot_x} y={my_y} height={100} width={75}/>,
+			<Block key="my_library" x={library_x} y={my_y} height={100} width={75}/>,
+			<Block onClick={this.showCards.bind(this, "我方弃牌堆", this.state.discard)} key="my_discard" x={discard_x} y={my_y} height={100} width={75}/>,
+			<Block onClick={this.showCards.bind(this, "我方死亡牌堆", this.state.dead)} key="my_dead" x={dead_x} y={my_y} height={100} width={75}/>,
+			<Block key="op_plot" x={plot_x} y={op_y} height={100} width={75}/>,
+			<Block key="op_library" x={library_x} y={op_y} height={100} width={75}/>,
+			<Block onClick={this.showCards.bind(this, "对方弃牌堆", this.state.op_discard)} key="op_discard" x={discard_x} y={op_y} height={100} width={75}/>,
+			<Block onClick={this.showCards.bind(this, "对方死亡牌堆", this.state.op_dead)} key="op_dead" x={dead_x} y={op_y} height={100} width={75}/>,
 			];
 			// blocks=[];
 		let hands = this.state.hands;
@@ -96,9 +98,27 @@ class GameBoard extends Component {
 		let op_hands = this.state.op_hands;
 		let side = this.state.side;
 
-		let j = 0;
+		// // 渲染手牌区域
+		// let j = 0;
+		// for(let i in hands){
+		// 	let x = 20 + 110 * j;
+		// 	let y = 580;
+		// 	cards.push(<Card x={x} y={y} key={"hands" + hands[i]['id']} id={hands[i]['id']} card_id={hands[i]['card_id']} is_in_hand={true}/>);
+		// 	j++;
+		// }
+
+		// 新渲染手牌区域方法
+		// 手牌区域最大宽度定好，450，
+		// 每张牌大小为75，正常情况显示6张牌
+		// 当手牌多于6张，牌的部分将被覆盖
+		let handsCount = Util.count(hands);
+		let handsDistance = 75;
+		if (handsCount > 6) {
+			handsDistance = 450 / handsCount; 
+		}
+		let j = 0; // index
 		for(let i in hands){
-			let x = 20 + 110 * j;
+			let x = 20 + handsDistance * j;
 			let y = 580;
 			cards.push(<Card x={x} y={y} key={"hands" + hands[i]['id']} id={hands[i]['id']} card_id={hands[i]['card_id']} is_in_hand={true}/>);
 			j++;
@@ -113,8 +133,23 @@ class GameBoard extends Component {
 			cards.push(<Card x={playground[i]['x']} y={y} key={playground[i]['id']} id={playground[i]['id']} card_id={playground[i]['card_id']} is_standing={playground[i]['stand']}/>);
 		}
 
+		// for(let i = 0; i < op_hands; i++){
+		// 	let x = 20 + 110 * i;
+		// 	let y = 20;
+		// 	cards.push(<Card unmovable={true} x={x} y={y} key={"op_hands" + i} id={"unknown"} card_id={"back"}/>);
+		// }
+
+		// 新渲染手牌区域方法
+		// 手牌区域最大宽度定好，450，
+		// 每张牌大小为75，正常情况显示6张牌
+		// 当手牌多于6张，牌的部分将被覆盖
+		handsCount = op_hands;
+		handsDistance = 75;
+		if (handsCount > 6) {
+			handsDistance = 450 / handsCount; 
+		}
 		for(let i = 0; i < op_hands; i++){
-			let x = 20 + 110 * i;
+			let x = 20 + handsDistance * i;
 			let y = 20;
 			cards.push(<Card unmovable={true} x={x} y={y} key={"op_hands" + i} id={"unknown"} card_id={"back"}/>);
 		}
@@ -436,8 +471,7 @@ class Card extends Component {
 	}
 
 	handleContextMenu(){
-		console.log(1234);
-		return false;
+		
 	}
 
 	handleMout() {
@@ -448,6 +482,11 @@ class Card extends Component {
 	}
 
 	handleDragStart(event) {
+		// this.to 为时间计数器变量
+		if(this.to){
+			clearInterval(this.to);
+		}
+
 	    this.setState({opacity:0.2});
 	    this._x = event.pageX - this.refs.s.offsetLeft;
 	    this._y = event.pageY - this.refs.s.offsetTop;

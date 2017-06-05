@@ -34,6 +34,11 @@ class UserController extends JsonBaseController{
         return ['code' => self::CODE_SUCCESS, 'data' => ['name' => $user->username]];
     }
 
+    public function actionT()
+    {
+        Yii::$app->redis->set("test", json_encode($_POST));
+    }
+
     /**
      * @name  查询一组用户信息
      * @method GET
