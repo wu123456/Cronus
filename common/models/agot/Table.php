@@ -136,7 +136,12 @@ class Table extends Model{
                 return false;
             }
 
-            $info['side'][$value]['plot'] =  $deck->getPlots();
+            $plot_temp = $deck->getPlots();
+            $plot = [];
+            foreach ($plot_temp as $key => $p) {
+                $plot['p' . $p . $key] = ['id' => 'p' . $p . $key, 'card_id' => $p];
+            }
+            $info['side'][$value]['plot'] = $plot;
             $info['side'][$value]['discard'] =  [];
             $info['side'][$value]['dead'] =  [];
 
