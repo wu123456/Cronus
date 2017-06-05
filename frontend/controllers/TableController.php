@@ -35,15 +35,15 @@ class TableController extends JsonBaseController{
      */
     public function actionTable(){
 
-        $user_id = Yii::$app->user->id;
-        if (empty($user_id)) {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
         }
-        $table_id = Table::getTableIdByUserId($user_id);
-        $table = new Table($table_id);
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
         $info = $table->info;
         $sides = $info['side'];
-        if($sides[0]['user_id'] == $user_id){
+        if($sides[0]['user_id'] == $userId){
             $side = 0;
             $self_side = $sides[0];
             $other_side = $sides[1];
@@ -77,12 +77,12 @@ class TableController extends JsonBaseController{
      * @param    int            type (0：手牌，1：牌库，2：弃牌区，3：死亡牌区)
      */
     public function actionShuttleCard(){
-        $user_id = Yii::$app->user->id;
-        if (empty($user_id)) {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
         }
-        $table_id = Table::getTableIdByUserId($user_id);
-        $table = new Table($table_id);
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
 
         $type = intval(Yii::$app->request->post("type"));
         $side = intval(Yii::$app->request->post("side"));
@@ -105,12 +105,12 @@ class TableController extends JsonBaseController{
      * @param    array    to
      */
     public function actionMoveCard(){
-        $user_id = Yii::$app->user->id;
-        if (empty($user_id)) {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
         }
-        $table_id = Table::getTableIdByUserId($user_id);
-        $table = new Table($table_id);
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
 
         $id = Yii::$app->request->post("id");
         $to = Yii::$app->request->post("to");
@@ -133,17 +133,17 @@ class TableController extends JsonBaseController{
      * @param    array    to  (0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌)
      */
     public function actionLeaveCard(){
-        $user_id = Yii::$app->user->id;
-        if (empty($user_id)) {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
         }
-        $table_id = Table::getTableIdByUserId($user_id);
-        $table = new Table($table_id);
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
 
         $id = Yii::$app->request->post("id");
         $to = Yii::$app->request->post("to");
 
-        $ret = $table->leaveCard(['id' => $id, 'side' => $table->getSideByUserId($user_id), 'to' => $to]);
+        $ret = $table->leaveCard(['id' => $id, 'side' => $table->getSideByUserId($userId), 'to' => $to]);
 
         if ($ret[0] === true) {
             return ['code' => self::CODE_SUCCESS, 'data' => []];
@@ -162,18 +162,44 @@ class TableController extends JsonBaseController{
      * @param    array    to
      */
     public function actionPlayOntoBoard(){
-        $user_id = Yii::$app->user->id;
-        if (empty($user_id)) {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
         }
-        $table_id = Table::getTableIdByUserId($user_id);
-        $table = new Table($table_id);
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
 
         $id = Yii::$app->request->post("id");
         $from = intval(Yii::$app->request->post("from"));
         $to = Yii::$app->request->post("to");
 
-        $ret = $table->playOntoBoard(['id' => $id, 'to' => $to, 'from' => $from, 'side' => $table->getSideByUserId($user_id)]);
+        $ret = $table->playOntoBoard(['id' => $id, 'to' => $to, 'from' => $from, 'side' => $table->getSideByUserId($userId)]);
+
+        if ($ret[0] === true) {
+            return ['code' => self::CODE_SUCCESS, 'data' => []];
+        }
+
+        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
+    }
+
+    /**
+     * @name  抓牌
+     * @method POST
+     * @author wolfbian
+     * @date 2016-10-09
+     * @param    int       // 抓牌数量
+     */
+    public function actionDrawCards(){
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
+
+        $count = Yii::$app->request->post("count", 1);
+
+        $ret = $table->drawCard(['count' => $count, 'side' => $table->getSideByUserId($userId)]);
 
         if ($ret[0] === true) {
             return ['code' => self::CODE_SUCCESS, 'data' => []];
@@ -190,12 +216,12 @@ class TableController extends JsonBaseController{
      * @param    string      id   // 本场比赛，卡牌的id
      */
     public function actionFlipCard(){
-        $user_id = Yii::$app->user->id;
-        if (empty($user_id)) {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
         }
-        $table_id = Table::getTableIdByUserId($user_id);
-        $table = new Table($table_id);
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
 
         $id = Yii::$app->request->post("id");
 
@@ -220,17 +246,17 @@ class TableController extends JsonBaseController{
      * @date 2016-08-30
      */
     public function actionReady(){
-        $user_id = Yii::$app->user->id;
-        if (empty($user_id)) {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
         }
 
-        $table_id = intval(Yii::$app->request->post("id"));
+        $tableId = intval(Yii::$app->request->post("id"));
         $side = intval(Yii::$app->request->post("side"));
         $deck_id = intval(Yii::$app->request->post("deck_id"));
         $game_id = intval(Yii::$app->request->post("game_id", 0));
 
-        if (!in_array($table_id, Yii::$app->params['tables'])) {
+        if (!in_array($tableId, Yii::$app->params['tables'])) {
             return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "不合法的桌号"];
         }
 
@@ -246,9 +272,9 @@ class TableController extends JsonBaseController{
             return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "不合法的牌组"];
         }
 
-        $table = new Table($table_id);
+        $table = new Table($tableId);
 
-        if( !$table->ready(['user_id' => $user_id, 'game_id' => $game_id,  'side' => $side, 'deck_id' => $deck_id]) ){
+        if( !$table->ready(['user_id' => $userId, 'game_id' => $game_id,  'side' => $side, 'deck_id' => $deck_id]) ){
             return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "系统错误"];
         }
 
@@ -264,21 +290,21 @@ class TableController extends JsonBaseController{
      * @date 2016-08-31
      */
     public function actionUnReady(){
-        $user_id = Yii::$app->user->id;
-        if (empty($user_id)) {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
         }
 
-        $table_id = intval(Yii::$app->request->post("id"));
+        $tableId = intval(Yii::$app->request->post("id"));
         $side = intval(Yii::$app->request->post("side"));
 
-        if (!in_array($table_id, Yii::$app->params['tables'])) {
+        if (!in_array($tableId, Yii::$app->params['tables'])) {
             return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "不合法的桌号"];
         }
 
-        $table = new Table($table_id);
+        $table = new Table($tableId);
 
-        if( !$table->unready(['user_id' => $user_id,  'side' => $side]) ){
+        if( !$table->unready(['user_id' => $userId,  'side' => $side]) ){
             return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "系统错误"];
         }
 

@@ -300,6 +300,20 @@ class Table extends Model{
         return -1;
     }
 
+    public function drawCard($params){
+        $count = $params['count'];
+        $side = $params['side'];
+        $info = $this->info;
+        $fromCards = $info['side'][$side]['library'];
+        $card = array_pop($fromCards);
+        $toCards = $info['side'][$side]['hands'];
+        $toCards[$card['id']] = $card;
+        $info['side'][$side]['library'] = $fromCards;
+        $info['side'][$side]['hands'] = $toCards;
+        $ret = $this->setInfo($info);
+        return [$ret];
+    }
+
     
 
     public static function shuffleAndDivideCards($cards, $l = 7){

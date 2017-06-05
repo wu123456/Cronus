@@ -73,14 +73,26 @@ class GameBoard extends Component {
 		});
     }
 
-
+    drawCards(count){
+    	let self = this;
+    	$.post(
+			'/table/draw-cards',
+			{count : count},
+			function(ret){
+				if (ret.code == 0) {
+					self.getCards();
+				}
+			},
+			'json'
+		);
+    }
 
     // react组件渲染方法，里面包括了对战页面各个组件的渲染逻辑，为前端核心逻辑。
 	render() {
 		let cards = [];
 		let blocks = [
 			<Block onClick={this.showCards.bind(this, "我方战略牌", this.state.plot)} key="my_plot" x={plot_x} y={my_y} height={100} width={75}/>,
-			<Block key="my_library" x={library_x} y={my_y} height={100} width={75}/>,
+			<Block onDoubleClick={this.drawCards.bind(this, 1)} key="my_library" x={library_x} y={my_y} height={100} width={75}/>,
 			<Block onClick={this.showCards.bind(this, "我方弃牌堆", this.state.discard)} key="my_discard" x={discard_x} y={my_y} height={100} width={75}/>,
 			<Block onClick={this.showCards.bind(this, "我方死亡牌堆", this.state.dead)} key="my_dead" x={dead_x} y={my_y} height={100} width={75}/>,
 			<Block key="op_plot" x={plot_x} y={op_y} height={100} width={75}/>,
@@ -173,8 +185,6 @@ class GameBoard extends Component {
 			let c = <Card key={"library"} x={library_x} y={my_y} id={"unknown"} card_id={"back"}/>;
 			cards.push(c);
 		}
-
-
 
 		return (<div className="game-board" ref="t"
 					onDrop = {this.handleDrop.bind(this)}
@@ -286,8 +296,6 @@ class GameBoard extends Component {
 		}
 
 		function inBlock(p, x, y){
-			console.log(board_width + x);
-			console.log(board_width + x - card_width);
 			if(p.y >= y && p.x <= board_width + x && p.x >= board_width + x - card_width){
 				return true;
 			}
@@ -346,6 +354,7 @@ class GameBoard extends Component {
 
 	handleDrop(event) {
 
+		console.log("card move drop");
 		if (moveElement.props.fatherName == this.props.name) {
 			EventManage.trigger("card_move", {id : moveElement._id, from : {x : moveElement.x, y : moveElement.y}, to : {x : event.pageX - moveElement._x, y : event.pageY - moveElement._y}});
 			moveElement.setState({x: event.pageX - moveElement._x, y: event.pageY - moveElement._y});
@@ -437,6 +446,10 @@ class Card extends Component {
 	}
 
 	componentDidMount(){
+		let cardId = parseInt(this.state.card_id || this.props.card_id);
+		if (!cardId) {
+			return;
+		}
 		$.getJSON(
 			'/card/cards',
 			{
@@ -458,7 +471,6 @@ class Card extends Component {
 	}
 
 	handleDragLeave() {
-		console.log(2)
 	}
 
 	handleMover() {
@@ -482,6 +494,7 @@ class Card extends Component {
 	}
 
 	handleDragStart(event) {
+		console.log("card move start");
 		// this.to 为时间计数器变量
 		if(this.to){
 			clearInterval(this.to);
@@ -542,7 +555,10 @@ class Block extends Component{
 		}else{
 			style = {top: this.props.y, right: -(this.props.x), height: this.props.height, width: this.props.width};
 		}
-		return <div onClick={this.props.onClick || function(){}} className="block" style={style}></div>
+		return (
+			<div onClick={this.props.onClick || function(){}} 
+			onDoubleClick={this.props.onDoubleClick || function(){}}
+			className="block" style={style}></div>)
 	}
 }
 
