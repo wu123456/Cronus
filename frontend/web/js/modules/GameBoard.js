@@ -126,7 +126,7 @@ class GameBoard extends Component {
 		let handsCount = Util.count(hands);
 		let handsDistance = 75;
 		if (handsCount > 6) {
-			handsDistance = 450 / handsCount; 
+			handsDistance = (450 - 75) / (handsCount - 1); 
 		}
 		let j = 0; // index
 		for(let i in hands){
