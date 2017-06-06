@@ -249,7 +249,7 @@ class Table extends Model{
      * @name  卡牌进场
      * @param    int            id   卡牌的id
      * @param    int            side    
-     * @param    int            form // (0：手牌，1：牌库，2：弃牌区，3：死亡牌区)
+     * @param    int            form // (0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌库)
      * @param    array          to
      * @author wolfbian
      * @date 2016-10-09
@@ -262,7 +262,7 @@ class Table extends Model{
 
         $info = $this->info;
 
-        $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead'];
+        $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead', '4' => 'plot'];
         if (!isset($type2name[$from])) {
             return [false, '不存在的类型'];
         }

@@ -158,7 +158,7 @@ class TableController extends JsonBaseController{
      * @author wolfbian
      * @date 2016-10-09
      * @param    string      id   // 本场比赛，卡牌的id
-     * @param    int      form // (0：手牌，1：牌库，2：弃牌区，3：死亡牌区)
+     * @param    int      form // (0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌区)
      * @param    array    to
      */
     public function actionPlayOntoBoard(){

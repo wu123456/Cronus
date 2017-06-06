@@ -30,6 +30,21 @@ class Dialog extends Component {
 		let title = this.props.title || "系统提示";
 		let message = this.props.message || "";
 		let visibility = this.state.height ? "" : "hidden";
+		if (this.props.noMask) {
+			return (
+				<div>
+					<div ref="dialog" className="dialog" style={{width: '400px', left: left, top: top, zIndex : 999, visibility: visibility}}>
+						<h3 className="title">{title}</h3>
+						<div className="content">
+							<div className="message">{message}</div>
+							<div className="buttons">
+								<button className="btn bg-color-red-dark text-color-white clickable" onClick={this.close.bind(this)}>确认</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			)
+		}
 		return (
 			<div>
 				<div ref="dialog" className="dialog" style={{width: '400px', left: left, top: top, zIndex : 999, visibility: visibility}}>

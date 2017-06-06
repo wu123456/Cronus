@@ -11,6 +11,7 @@ let board_width = 0;
 let board_high = 700;
 let card_width = 75;
 let card_high = 100;
+let board_point = {}; // 战场左上角距离屏幕左上角的未知
 
 let discard_x = -20;
 let library_x = -350;
@@ -18,6 +19,13 @@ let plot_x = -240;
 let dead_x = -130;
 let my_y = 580; 
 let op_y = 20;
+
+// 0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌区
+let BLOCK_PLOT = 4;
+let BLOCK_DEAD = 3; 
+let BLOCK_DISCARD = 2; 
+let BLOCK_LIBRARY = 1; 
+let BLOCK_HANDS = 0; 
 
 // 展示卡牌详情
 EventManage.on("show_card", function(event, params){
@@ -62,14 +70,15 @@ class GameBoard extends Component {
     }
 
     // 弹窗形式，展示卡牌列表
-    showCards(name, cards) {
+    showCards(name, cards, blockType) {
     	let message = [];
     	for(let i in cards){
-    		message.push(<Card margin="5" key={cards[i]['id']} id={cards[i]['id']} card_id={cards[i]['card_id']}/>);
+    		message.push(<Card block={blockType} margin="5" key={cards[i]['id']} id={cards[i]['id']} card_id={cards[i]['card_id']}/>);
     	}
     	showMessage({
     		title : name,
 			message: <div>{message}<div className="clearfix"></div></div>,
+			noMask : 1
 		});
     }
 
@@ -91,10 +100,10 @@ class GameBoard extends Component {
 	render() {
 		let cards = [];
 		let blocks = [
-			<Block onClick={this.showCards.bind(this, "我方战略牌", this.state.plot)} key="my_plot" x={plot_x} y={my_y} height={100} width={75}/>,
+			<Block onClick={this.showCards.bind(this, "我方战略牌", this.state.plot, BLOCK_PLOT)} key="my_plot" x={plot_x} y={my_y} height={100} width={75}/>,
 			<Block onDoubleClick={this.drawCards.bind(this, 1)} key="my_library" x={library_x} y={my_y} height={100} width={75}/>,
-			<Block onClick={this.showCards.bind(this, "我方弃牌堆", this.state.discard)} key="my_discard" x={discard_x} y={my_y} height={100} width={75}/>,
-			<Block onClick={this.showCards.bind(this, "我方死亡牌堆", this.state.dead)} key="my_dead" x={dead_x} y={my_y} height={100} width={75}/>,
+			<Block onClick={this.showCards.bind(this, "我方弃牌堆", this.state.discard, BLOCK_DISCARD)} key="my_discard" x={discard_x} y={my_y} height={100} width={75}/>,
+			<Block onClick={this.showCards.bind(this, "我方死亡牌堆", this.state.dead, BLOCK_DEAD)} key="my_dead" x={dead_x} y={my_y} height={100} width={75}/>,
 			<Block key="op_plot" x={plot_x} y={op_y} height={100} width={75}/>,
 			<Block key="op_library" x={library_x} y={op_y} height={100} width={75}/>,
 			<Block onClick={this.showCards.bind(this, "对方弃牌堆", this.state.op_discard)} key="op_discard" x={discard_x} y={op_y} height={100} width={75}/>,
@@ -197,6 +206,7 @@ class GameBoard extends Component {
 
 	componentDidMount() {
 		board_width = this.refs.t.clientWidth;
+		board_point = Util.getPoint(this.refs.t);
 		this.bindEvent();
 		this.getCards();
 	}
@@ -252,13 +262,13 @@ class GameBoard extends Component {
 		// 0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌
 		function getBlockType(p){
 			if(inLibrary(p)){
-				return 1;
+				return BLOCK_LIBRARY;
 			}else if(inDiscard(p)){
-				return 2;
+				return BLOCK_DISCARD;
 			}else if(inDead(p)){
-				return 3;
+				return BLOCK_DEAD;
 			}else if(inPlot(p)){
-				return 4;
+				return BLOCK_PLOT;
 			}else if(inHand(p)){
 				return 0;
 			}
@@ -280,18 +290,30 @@ class GameBoard extends Component {
 		}
 
 		function inLibrary(p){
+			if (p.block === BLOCK_LIBRARY) {
+				return true;
+			}
 			return inBlock(p, library_x, my_y);
 		}
 
 		function inDiscard(p){
+			if (p.block === BLOCK_DISCARD) {
+				return true;
+			}
 			return inBlock(p, discard_x, my_y);
 		}
 
 		function inPlot(p){
+			if (p.block === BLOCK_PLOT) {
+				return true;
+			}
 			return inBlock(p, plot_x, my_y);
 		}
 
 		function inDead(p){
+			if (p.block === BLOCK_DEAD) {
+				return true;
+			}
 			return inBlock(p, dead_x, my_y);
 		}
 
@@ -354,9 +376,8 @@ class GameBoard extends Component {
 
 	handleDrop(event) {
 
-		console.log("card move drop");
 		if (moveElement.props.fatherName == this.props.name) {
-			EventManage.trigger("card_move", {id : moveElement._id, from : {x : moveElement.x, y : moveElement.y}, to : {x : event.pageX - moveElement._x, y : event.pageY - moveElement._y}});
+			EventManage.trigger("card_move", {id : moveElement._id, from : {x : moveElement.x, y : moveElement.y, block : moveElement.block}, to : {x : event.pageX - moveElement._x, y : event.pageY - moveElement._y}});
 			moveElement.setState({x: event.pageX - moveElement._x, y: event.pageY - moveElement._y});
 			return;
 		}
@@ -393,6 +414,7 @@ class Card extends Component {
     }
 
 	render() {
+		// x, y 用于绝对定位
 		let x = this.state.x || this.props.x || 0;
 		let y = this.state.y || this.props.y || 0;
 		let margin = this.state.margin || this.props.margin || 0;
@@ -494,17 +516,25 @@ class Card extends Component {
 	}
 
 	handleDragStart(event) {
-		console.log("card move start");
 		// this.to 为时间计数器变量
 		if(this.to){
 			clearInterval(this.to);
 		}
 
 	    this.setState({opacity:0.2});
-	    this._x = event.pageX - this.refs.s.offsetLeft;
-	    this._y = event.pageY - this.refs.s.offsetTop;
+	    // _x, _y 为鼠标位置 - 卡牌左端与战场左端的距离
+	    // 包括战场左端到屏幕左端的距离 和 鼠标到卡牌左端的距离
+	    // this._x = event.pageX - this.refs.s.offsetLeft;
+	    // this._y = event.pageY - this.refs.s.offsetTop;
+	    // 换为以下计算方式，之前只能计算在board中的card值，在其他容器中的会有偏差
+	    let point = Util.getPoint(this.refs.s);
+	    this._x = event.pageX - point.left + board_point.left;
+	    this._y = event.pageY - point.top + board_point.top;
+	    
+	    // x, y为相对于战场左上角的偏移量
 	    this.x = this.state.x || this.props.x || 0;
 		this.y = this.state.y || this.props.y || 0;
+		this.block = this.state.block || this.props.block;
 	    this._id = this.state.id || this.props.id || "";
 	    moveElement = this;
 	}
