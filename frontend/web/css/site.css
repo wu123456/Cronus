@@ -176,5 +176,8 @@ a.desc:after {
 .text-color-gray-light { color: #f7f7f7 !important; }
 .text-color-gray-dark { color: #666666 !important; }
 
-
+/* PopupMenus样式 */
+.popup-menus { position: fixed; border-radius: 0px; font-size: 16px; background: white; }
+.popup-menus .message { padding: 0px; margin: 0px; text-align: left; }
+.popup-menus .message .item { line-height: 36px; min-width: 160px; font-size: 22px; }
 

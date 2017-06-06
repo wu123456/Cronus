@@ -1,6 +1,7 @@
 import React  from 'react'
 import $  from 'jquery'
 import showMessage  from './Dialog' 
+import showMenuWithMouse  from './PopupMenu' 
 import Util from './Util'
 
 const Component = React.Component;
@@ -20,12 +21,13 @@ let dead_x = -130;
 let my_y = 580; 
 let op_y = 20;
 
-// 0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌区
+// 0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌区，5：战场
 let BLOCK_PLOT = 4;
 let BLOCK_DEAD = 3; 
 let BLOCK_DISCARD = 2; 
 let BLOCK_LIBRARY = 1; 
 let BLOCK_HANDS = 0; 
+let BLOCK_PLAYGROUND = 5;
 
 // 展示卡牌详情
 EventManage.on("show_card", function(event, params){
@@ -151,7 +153,19 @@ class GameBoard extends Component {
 				y = board_high - card_high - y;
 			}
 
-			cards.push(<Card x={playground[i]['x']} y={y} key={playground[i]['id']} id={playground[i]['id']} card_id={playground[i]['card_id']} is_standing={playground[i]['stand']}/>);
+			cards.push(<Card x={playground[i]['x']} y={y} key={playground[i]['id']} 
+				id={playground[i]['id']} card_id={playground[i]['card_id']} 
+				is_standing={playground[i]['stand']}
+				inPlayground={true} 
+				contextMenu={[
+					{name:"返回手牌",event:function(){console.log(10)}}, 
+					{name:"进入死亡牌堆",event:function(){console.log(11)}}, 
+					{name:"进入弃牌堆",event:function(){console.log(11)}}, 
+					{
+						name: "横置/竖立卡牌",
+						event: this.handleDbClick
+					}, 
+				]}/>);
 		}
 
 		// for(let i = 0; i < op_hands; i++){
@@ -255,11 +269,12 @@ class GameBoard extends Component {
 					'json'
 				)
 			}else{
+				console.log(params, inPlayground(params['from']), inPlayground(params['to']));
 				self.getCards();
 			}
 		})
 
-		// 0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌
+		// 0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌，5：战场
 		function getBlockType(p){
 			if(inLibrary(p)){
 				return BLOCK_LIBRARY;
@@ -270,12 +285,17 @@ class GameBoard extends Component {
 			}else if(inPlot(p)){
 				return BLOCK_PLOT;
 			}else if(inHand(p)){
-				return 0;
+				return BLOCK_HANDS;
+			}else if (inPlayground) {
+				return BLOCK_PLAYGROUND;
 			}
 			return -1;
 		}
 
 		function inHand(p){
+			if (p.block === BLOCK_HANDS) {
+				return true;
+			}
 			if(p.y >= my_y){
 				return true;
 			}
@@ -283,6 +303,12 @@ class GameBoard extends Component {
 		}
 
 		function inPlayground(p){
+			if (p.block === BLOCK_PLAYGROUND) {
+				return true;
+			}
+			if (p.block !== undefined) {
+				return false;
+			}
 			if(p.y > op_y + card_high && p.y < my_y){
 				return true;
 			}
@@ -371,8 +397,6 @@ class GameBoard extends Component {
 			}
 		)
 	}
-
-
 
 	handleDrop(event) {
 
@@ -504,8 +528,66 @@ class Card extends Component {
 		}
 	}
 
-	handleContextMenu(){
-		
+	handleContextMenu(event){
+		if (!this.props.inPlayground) {
+			return false;
+		}
+		let self = this;
+		showMenuWithMouse([
+					{
+						name: "返回手牌",
+						event: function(){
+							EventManage.trigger("card_move", 
+								{
+									id : self.props.id, 
+									from : {
+										block : BLOCK_PLAYGROUND
+									}, 
+									to : {
+										block : BLOCK_HANDS
+									}
+								});
+
+						}
+					},  
+					{
+						name: "进入死亡牌堆",
+						event: function(){
+							EventManage.trigger("card_move", 
+								{
+									id : self.props.id, 
+									from : {
+										block : BLOCK_PLAYGROUND
+									}, 
+									to : {
+										block : BLOCK_DEAD
+									}
+								});
+
+						}
+					}, 
+					{
+						name: "进入弃牌堆",
+						event: function(){
+							EventManage.trigger("card_move", 
+								{
+									id : self.props.id, 
+									from : {
+										block : BLOCK_PLAYGROUND
+									}, 
+									to : {
+										block : BLOCK_DISCARD
+									}
+								});
+
+						}
+					}, 
+					{
+						name: "横置/竖立卡牌",
+						event: this.handleDbClick.bind(this)
+					}, 
+		], event);
+
 	}
 
 	handleMout() {
@@ -547,6 +629,7 @@ class Card extends Component {
 	}
 
 	handleDbClick() {
+		console.log(123);
 		// 手牌不需要躺下来_(:з」∠)_
 		let isInHand = this.props.is_in_hand;
 		if (isInHand) {
