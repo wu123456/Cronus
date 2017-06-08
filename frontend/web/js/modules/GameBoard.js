@@ -3,6 +3,8 @@ import $  from 'jquery'
 import showMessage  from './Dialog' 
 import showMenuWithMouse  from './PopupMenu' 
 import Util from './Util'
+import ChatBox from './ChatBox'
+
 
 const Component = React.Component;
 const EventManage = $("<div></div>");
@@ -67,7 +69,6 @@ class GameBoard extends Component {
             op_discard: [{id: 105, card_id: 3}],
             op_dead: [{id: 108, card_id: 6},{id: 109, card_id: 6}],
             side: 0,
-
         };
     }
 
@@ -156,16 +157,7 @@ class GameBoard extends Component {
 			cards.push(<Card x={playground[i]['x']} y={y} key={playground[i]['id']} 
 				id={playground[i]['id']} card_id={playground[i]['card_id']} 
 				is_standing={playground[i]['stand']}
-				inPlayground={true} 
-				contextMenu={[
-					{name:"返回手牌",event:function(){console.log(10)}}, 
-					{name:"进入死亡牌堆",event:function(){console.log(11)}}, 
-					{name:"进入弃牌堆",event:function(){console.log(11)}}, 
-					{
-						name: "横置/竖立卡牌",
-						event: this.handleDbClick
-					}, 
-				]}/>);
+				inPlayground={true}/>);
 		}
 
 		// for(let i = 0; i < op_hands; i++){
@@ -208,6 +200,7 @@ class GameBoard extends Component {
 			let c = <Card key={"library"} x={library_x} y={my_y} id={"unknown"} card_id={"back"}/>;
 			cards.push(c);
 		}
+					
 
 		return (<div className="game-board" ref="t"
 					onDrop = {this.handleDrop.bind(this)}
@@ -215,6 +208,7 @@ class GameBoard extends Component {
 					>
 					{cards}
 					{blocks}
+					<ChatBox ref="chatBox"/>
 				</div>);
 	}
 
@@ -228,6 +222,11 @@ class GameBoard extends Component {
 	bindEvent(){
 
 		let self = this;
+
+		EventManage.on('refresh_chat_box', function(){
+			self.refs.chatBox.refresh();
+		});
+
 		EventManage.on('card_move', function(event, params){
 			if(!inPlayground(params['from']) && inPlayground(params['to'])){
 				params['to'] = opPosition(params['to'], self.state.side);
@@ -252,7 +251,10 @@ class GameBoard extends Component {
 						to : params['to']
 					},
 					function(ret){
-						self.getCards();
+						// 如果出错，再刷新页面
+						if (ret.code != 0) {
+							self.getCards();
+						};
 					},
 					'json'
 				)
@@ -269,7 +271,6 @@ class GameBoard extends Component {
 					'json'
 				)
 			}else{
-				console.log(params, inPlayground(params['from']), inPlayground(params['to']));
 				self.getCards();
 			}
 		})
@@ -395,23 +396,32 @@ class GameBoard extends Component {
 					side: side
 				});
 			}
-		)
+		);
+		EventManage.trigger("refresh_chat_box");
 	}
 
 	handleDrop(event) {
-
-		if (moveElement.props.fatherName == this.props.name) {
-			EventManage.trigger("card_move", {id : moveElement._id, from : {x : moveElement.x, y : moveElement.y, block : moveElement.block}, to : {x : event.pageX - moveElement._x, y : event.pageY - moveElement._y}});
-			moveElement.setState({x: event.pageX - moveElement._x, y: event.pageY - moveElement._y});
+		if (!moveElement) {
 			return;
 		}
 
-		let a = <Card key={new Date() - 0} {...moveElement.props} fatherName={this.props.name} x={event.pageX - this.refs.t.offsetLeft - moveElement._x} y={event.pageY - this.refs.t.offsetTop - moveElement._y}/>;
+		let srcElement = moveElement;
+		moveElement = null;
+		EventManage.trigger("card_move", {id : srcElement._id, from : {x : srcElement.x, y : srcElement.y, block : srcElement.block}, to : {x : event.pageX - srcElement._x, y : event.pageY - srcElement._y}});
+
+		if (srcElement.props.block === undefined || [BLOCK_DISCARD, BLOCK_PLOT, BLOCK_DEAD, BLOCK_LIBRARY].indexOf(srcElement.props.block) == -1 ) {
+			srcElement.setState({x: event.pageX - srcElement._x, y: event.pageY - srcElement._y});
+			return;
+		}
+		srcElement.setState({gone: true});
+		return;
+
+		// let a = <Card key={new Date() - 0} {...srcElement.props} fatherName={this.props.name} x={event.pageX - this.refs.t.offsetLeft - srcElement._x} y={event.pageY - this.refs.t.offsetTop - srcElement._y}/>;
 		
-		this.setState(function(oldState){
-			oldState.cards.push(a);
-			return oldState;
-		});
+		// this.setState(function(oldState){
+		// 	oldState.cards.push(a);
+		// 	return oldState;
+		// });
 
 	}
 
@@ -438,6 +448,12 @@ class Card extends Component {
     }
 
 	render() {
+
+		let gone = this.state.gone || false;
+		if (gone) {
+			return null;
+		}
+
 		// x, y 用于绝对定位
 		let x = this.state.x || this.props.x || 0;
 		let y = this.state.y || this.props.y || 0;
@@ -529,6 +545,11 @@ class Card extends Component {
 	}
 
 	handleContextMenu(event){
+		// this.to 为时间计数器变量
+		if(this.to){
+			clearInterval(this.to);
+		}
+
 		if (!this.props.inPlayground) {
 			return false;
 		}
@@ -629,7 +650,12 @@ class Card extends Component {
 	}
 
 	handleDbClick() {
-		console.log(123);
+
+		// this.to 为时间计数器变量
+		if(this.to){
+			clearInterval(this.to);
+		}
+
 		// 手牌不需要躺下来_(:з」∠)_
 		let isInHand = this.props.is_in_hand;
 		if (isInHand) {
@@ -650,6 +676,7 @@ class Card extends Component {
 	}
 
 	setStandingState(isStanding) {
+		EventManage.trigger("refresh_chat_box");
 		this.setState({isStanding: isStanding});
 	}
 }

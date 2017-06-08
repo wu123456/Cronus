@@ -181,3 +181,9 @@ a.desc:after {
 .popup-menus .message { padding: 0px; margin: 0px; text-align: left; }
 .popup-menus .message .item { line-height: 36px; min-width: 160px; font-size: 22px; }
 
+.chat-box { border-top-radius: 5px; border: 1px solid black; position: fixed; background: yellow; width: 402px; line-height: 16px; left: 50px; bottom: 0; z-index: 990 }
+.chat-box .title { cursor: move; background: #FF6A6A; height: 30px; width: 400px; color: white; line-height: 30px; }
+.chat-box .content { margin-bottom: 24px; max-height: 300px; overflow-x: hidden; overflow-y: scroll; }
+.chat-box .content .line { background: #EED2EE; border-bottom: 1px solid white; width: 400px; text-indent: -20px; padding-left: 30px; padding-right: 10px; }
+.chat-box input { position: absolute; height: 24px; left: 0; bottom: 0; width: 360px; }
+.chat-box .button { cursor: pointer; text-align: center; position: absolute; height: 24px; right: 0; bottom: 0; width: 40px; line-height: 24px; background: #FF6A6A; }

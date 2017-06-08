@@ -17,6 +17,7 @@ use yii\db\ActiveRecord;
  * @property string $update_time
  */
 class AgotBase extends ActiveRecord{
+    
     const STATUS_DELETED = 1;
     const STATUS_ACTIVE = 0;
 

@@ -25,19 +25,6 @@ class Deck extends AgotBase{
     const TYPE_PUBLIC = 0;
     const TYPE_PRIVATE = 1;
 
-    /**
-     * @inheritdoc
-     */
-    public function rules(){
-        return [
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
     public static function tableName()
     {
         return '{{%deck}}';

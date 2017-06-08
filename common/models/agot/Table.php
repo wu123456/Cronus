@@ -10,19 +10,23 @@ use yii\base\Model;
  *
  * Table model
  */
-class Table extends Model{
+class Table extends Model
+{
 
     private $_table_id;
 
-    public static function getTableIdByUserId($user_id){
+    public static function getTableIdByUserId($userId)
+    {
         return 1;
     }
 
-    public function __construct($table_id) {
-        $this->_table_id = $table_id;
+    public function __construct($tableId) 
+    {
+        $this->_table_id = $tableId;
     }
 
-    public function getInfo(){
+    public function getInfo()
+    {
         $ret = json_decode(Yii::$app->redis->get("table" . $this->_table_id), true);
         if (empty($ret)) {
             $ret = [];
@@ -30,8 +34,14 @@ class Table extends Model{
         return $ret;
     }
 
-    public function setInfo($info){
+    public function setInfo($info)
+    {
         return Yii::$app->redis->set("table" . $this->_table_id, json_encode($info));
+    }
+
+    public function getPlayId()
+    {
+        return isset($this->info['play_id']) ? $this->info['play_id'] : 0;
     }
 
     /**
@@ -43,7 +53,8 @@ class Table extends Model{
      * @author wolfbian
      * @date 2016-08-31
      */
-    public function ready($params){
+    public function ready($params)
+    {
         $info = $this->info;
 
         if (isset($info['game_id'])) {
@@ -81,7 +92,8 @@ class Table extends Model{
      * @author wolfbian
      * @date 2016-08-31
      */
-    public function unready($params){
+    public function unready($params)
+    {
         $info = $this->info;
 
         if (!isset($info['side'])) {
@@ -110,7 +122,8 @@ class Table extends Model{
      * @author wolfbian
      * @date 2016-08-31
      */
-    public function start($game_sides){
+    public function start($gameSides)
+    {
         $info = $this->info;
 
         if (isset($info['start']) && $info['start']) {
@@ -123,11 +136,13 @@ class Table extends Model{
             return false;
         } 
 
-        if (!isset($game_sides[$info['game_id']])) {
+        if (!isset($gameSides[$info['game_id']])) {
             return false;
         } 
 
-        foreach ($game_sides[$info['game_id']] as $value) {
+        $cards = [];
+
+        foreach ($gameSides[$info['game_id']] as $value) {
             if (!isset($info['side'][$value])) {
                 return false;
             }
@@ -139,7 +154,9 @@ class Table extends Model{
             $plot_temp = $deck->getPlots();
             $plot = [];
             foreach ($plot_temp as $key => $p) {
-                $plot['p' . $p . $key] = ['id' => 'p' . $p . $key, 'card_id' => $p];
+                $id = 'p' . $value . $key;
+                $plot[$id] = ['id' => $id, 'card_id' => $p];
+                $cards[$id] = $p;
             }
             $info['side'][$value]['plot'] = $plot;
             $info['side'][$value]['discard'] =  [];
@@ -148,7 +165,9 @@ class Table extends Model{
             $normal_temp = $deck->getNormalCards();
             $normal = [];
             foreach ($normal_temp as $k => $v) {
-                $normal[] = ['id' => 'c' . $value . $k, 'card_id' => $v];
+                $id = 'c' . $value . $k;
+                $normal[] = ['id' => $id, 'card_id' => $v];
+                $cards[$id] = $v;
             }
             list($hands, $library) = Table::shuffleAndDivideCards($normal);
 
@@ -165,10 +184,15 @@ class Table extends Model{
 
         $info['playground'] = [];
 
+        $playId = PlayRecord::record($this->_table_id, $info, $cards);
+
+        $info['play_id'] = $playId;
+
         return $this->info = $info;
     }
 
-    public function getTableInfo(){
+    public function getTableInfo()
+    {
         $info = $this->info;
 
         $info['name'] = "第".$this->_table_id."桌";
@@ -178,10 +202,11 @@ class Table extends Model{
     }
 
     // type , side
-    public function shuffle($params){
+    public function shuffle($params)
+    {
         $info = $this->info;
         // type (0：手牌，1：牌库，2：弃牌区，3：死亡牌区， 4：战略牌)
-        $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead', '4' => 'plot'];
+        $type2name = Yii::$app->params['type2name'];
         if (!isset($type2name[$params['type']])) {
             return [false, '不存在的类型'];
         }
@@ -202,7 +227,8 @@ class Table extends Model{
      * @author caohui
      * @date 2016-10-08
      */
-    public function moveCard($params){
+    public function moveCard($params)
+    {
         $id = $params['id'];
         $to = $params['to'];
         $info = $this->info;
@@ -222,12 +248,12 @@ class Table extends Model{
      * @author wolfbian
      * @date 2016-10-16
      */
-    public function leaveCard($params){
+    public function leaveCard($params)
+    {
         $id = $params['id'];
         $to = $params['to'];
         $info = $this->info;
-
-        $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead', '4' => 'plot'];
+        $type2name = Yii::$app->params['type2name'];
         if (!isset($type2name[$to])) {
             return [false, '不存在的类型'];
         }
@@ -254,15 +280,15 @@ class Table extends Model{
      * @author wolfbian
      * @date 2016-10-09
      */
-    public function playOntoBoard($params){
+    public function playOntoBoard($params)
+    {
         $id = $params['id'];
         $from = $params['from'];
         $to = $params['to'];
         $side = $params['side'];
 
         $info = $this->info;
-
-        $type2name = ['0' => 'hands', '1' => 'library', '2' => 'discard' , '3' => 'dead', '4' => 'plot'];
+        $type2name = Yii::$app->params['type2name'];
         if (!isset($type2name[$from])) {
             return [false, '不存在的类型'];
         }
@@ -278,7 +304,8 @@ class Table extends Model{
         return [$ret];
     }
 
-    public function changeCardState($params){
+    public function changeCardState($params)
+    {
         $id = $params['id'];
         $type = $params['type'];
         $info = $this->info;
@@ -294,7 +321,8 @@ class Table extends Model{
         return [$ret];
     }
 
-    public function getSideByUserId($user_id){
+    public function getSideByUserId($user_id)
+    {
         $info = $this->info;
         $sides = $info['side'];
         foreach ($sides as $key => $side) {
@@ -305,7 +333,8 @@ class Table extends Model{
         return -1;
     }
 
-    public function drawCard($params){
+    public function drawCard($params)
+    {
         $count = $params['count'];
         $side = $params['side'];
         $info = $this->info;
@@ -321,7 +350,8 @@ class Table extends Model{
 
     
 
-    public static function shuffleAndDivideCards($cards, $l = 7){
+    public static function shuffleAndDivideCards($cards, $l = 7)
+    {
         shuffle($cards);
         return [array_slice($cards, 0, $l), array_slice($cards, $l)];
     }

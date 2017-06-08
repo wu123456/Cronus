@@ -3,6 +3,8 @@ namespace frontend\controllers;
 
 use Yii;
 use common\models\agot\Table;
+use common\filters\PlayerActionRecorder;
+use common\models\agot\PlayRecord;
 
 /**
  * Table controller
@@ -11,13 +13,24 @@ use common\models\agot\Table;
  */
 class TableController extends JsonBaseController{
 
+    public function behaviors()
+    {  
+        return [  
+            'access' => [  
+                'class' => PlayerActionRecorder::className(),  
+                'only'=>['speak', 'shuffle-card', 'move-card', 'leave-card', 'play-onto-board', 'draw-cards', 'flip-card',],  
+            ],
+        ];  
+    }  
+
     /**
      * @name  获取桌子列表情况
      * @method GET
      * @author wolfbian
      * @date 2016-09-07
      */
-    public function actionTables(){
+    public function actionTables()
+    {
         $tables = Yii::$app->params['tables'];
         $data = [];
         foreach ($tables as $key => $value) {
@@ -28,12 +41,42 @@ class TableController extends JsonBaseController{
     }
 
     /**
+     * @name  获取该局比赛玩家行动记录
+     * @method GET
+     * @author wolfbian
+     * @date 2017-06-08
+     */
+    public function actionActionRecords()
+    {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
+        $records = PlayRecord::getPlayActions($table->getPlayId());
+        return ['code' => self::CODE_SUCCESS, 'data' => $records];
+    }
+
+    /**
+     * @name  玩家发言
+     * @method POST
+     * @author wolfbian
+     * @date 2017-06-08
+     */
+    public function actionSpeak()
+    {
+        return ['code' => self::CODE_SUCCESS, 'data' => ""];
+    }
+
+    /**
      * @name  获取桌子详情
      * @method GET
      * @author wolfbian,chui
      * @date 2016-10-11
      */
-    public function actionTable(){
+    public function actionTable()
+    {
 
         $userId = Yii::$app->user->id;
         if (empty($userId)) {
@@ -76,7 +119,8 @@ class TableController extends JsonBaseController{
      * @date 2016-10-04
      * @param    int            type (0：手牌，1：牌库，2：弃牌区，3：死亡牌区)
      */
-    public function actionShuttleCard(){
+    public function actionShuffleCard()
+    {
         $userId = Yii::$app->user->id;
         if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
@@ -87,7 +131,7 @@ class TableController extends JsonBaseController{
         $type = intval(Yii::$app->request->post("type"));
         $side = intval(Yii::$app->request->post("side"));
 
-        $ret = $table->shuttle(['type' => $type, 'side' => $side]);
+        $ret = $table->shuffle(['type' => $type, 'side' => $side]);
 
         if ($ret[0] === true) {
             return ['code' => self::CODE_SUCCESS, 'data' => $ret[1]];
@@ -104,7 +148,8 @@ class TableController extends JsonBaseController{
      * @param    string      id   // 本场比赛，卡牌的id
      * @param    array    to
      */
-    public function actionMoveCard(){
+    public function actionMoveCard()
+    {
         $userId = Yii::$app->user->id;
         if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
@@ -132,7 +177,8 @@ class TableController extends JsonBaseController{
      * @param    string      id   // 本场比赛，卡牌的id
      * @param    array    to  (0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌)
      */
-    public function actionLeaveCard(){
+    public function actionLeaveCard()
+    {
         $userId = Yii::$app->user->id;
         if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
@@ -161,7 +207,8 @@ class TableController extends JsonBaseController{
      * @param    int      form // (0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌区)
      * @param    array    to
      */
-    public function actionPlayOntoBoard(){
+    public function actionPlayOntoBoard()
+    {
         $userId = Yii::$app->user->id;
         if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
@@ -189,7 +236,8 @@ class TableController extends JsonBaseController{
      * @date 2016-10-09
      * @param    int       // 抓牌数量
      */
-    public function actionDrawCards(){
+    public function actionDrawCards()
+    {
         $userId = Yii::$app->user->id;
         if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
@@ -215,7 +263,8 @@ class TableController extends JsonBaseController{
      * @date 2016-10-09
      * @param    string      id   // 本场比赛，卡牌的id
      */
-    public function actionFlipCard(){
+    public function actionFlipCard()
+    {
         $userId = Yii::$app->user->id;
         if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
@@ -245,7 +294,8 @@ class TableController extends JsonBaseController{
      * @author wolfbian
      * @date 2016-08-30
      */
-    public function actionReady(){
+    public function actionReady()
+    {
         $userId = Yii::$app->user->id;
         if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
@@ -289,7 +339,8 @@ class TableController extends JsonBaseController{
      * @author wolfbian
      * @date 2016-08-31
      */
-    public function actionUnReady(){
+    public function actionUnReady()
+    {
         $userId = Yii::$app->user->id;
         if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
