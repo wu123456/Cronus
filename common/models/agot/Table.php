@@ -322,12 +322,12 @@ class Table extends Model
         return [$ret, $info['playground'][$id]['card_id']];
     }
 
-    public function getSideByUserId($user_id)
+    public function getSideByUserId($userId)
     {
         $info = $this->info;
         $sides = $info['side'];
         foreach ($sides as $key => $side) {
-            if ($side['user_id'] == $user_id) {
+            if ($side['user_id'] == $userId) {
                 return $key;
             }
         }
@@ -349,16 +349,22 @@ class Table extends Model
         return [$ret];
     }
 
-    public function getOpUserId($user_id)
+    public function getOpUserId($userId)
     {
         $info = $this->info;
         $sides = $info['side'];
         foreach ($sides as $key => $side) {
-            if ($side['user_id'] != $user_id) {
+            if ($side['user_id'] != $userId) {
                 return $side['user_id'];
             }
         }
         return -1;
+    }
+
+    public function noticeOp($userId)
+    {
+        $opUserId = $this->getOpUserId($userId);
+        self::setNeedRefresh($opUserId);
     }
 
     
@@ -374,9 +380,14 @@ class Table extends Model
         return Yii::$app->redis->get("need_refresh_" . $userId);
     }
 
-    public static function setNeedRefresh($userId, $value)
+    public static function setNeedRefresh($userId)
     {
-        return Yii::$app->redis->set("need_refresh_" . $userId, $value);
+        return Yii::$app->redis->set("need_refresh_" . $userId, 1);
+    }
+
+    public static function clearNeedRefresh($userId)
+    {
+        return Yii::$app->redis->del("need_refresh_" . $userId);
     }
 
 }

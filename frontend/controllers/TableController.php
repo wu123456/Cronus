@@ -115,6 +115,7 @@ class TableController extends JsonBaseController{
                     'playground' => $info['playground'],
                 ];
 
+        Table::clearNeedRefresh($userId);
 
         return ['code' => self::CODE_SUCCESS, 'data' => $data];
     }
@@ -304,8 +305,8 @@ class TableController extends JsonBaseController{
         if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
         }
-
-        
+        $ret = Table::getNeedRefresh($userId);
+        return ['code' => self::CODE_SUCCESS, 'data' => $ret];
     }
     
     /**

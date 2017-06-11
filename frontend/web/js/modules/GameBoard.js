@@ -49,6 +49,25 @@ window.document.oncontextmenu = function(){
 	return false;
 }  
 
+// 定时刷新战场
+setInterval(function(){
+	$.getJSON(
+		'/table/need-refresh',
+		{
+			t : new Date() - 0
+		},
+		function(ret){
+			if (ret.code == 0 && ret.data) {
+				EventManage.trigger("refresh_cards");
+				EventManage.trigger("refresh_chat_box");
+			};
+		}
+	)
+
+
+},1000);
+
+
 // 战场定义
 class GameBoard extends Component {
 
@@ -153,10 +172,13 @@ class GameBoard extends Component {
 			if(side == 1){
 				y = board_high - card_high - y;
 			}
-
-			cards.push(<Card x={playground[i]['x']} y={y} key={playground[i]['id']} 
+			let cardId = playground[i]['face'] !== 0 ? playground[i]['card_id'] : 'back';
+			let isStanding = playground[i]['stand'] !== 0 ? 1 : 0;
+			let key = "play" + playground[i]['id'] + "x" + playground[i]['x'] + "y" + y
+						+ 'card_id' + cardId + 'isStanding' + isStanding;
+			cards.push(<Card x={playground[i]['x']} y={y} key={key} 
 				id={playground[i]['id']} card_id={playground[i]['face'] !== 0 ? playground[i]['card_id'] : 'back'} 
-				is_standing={playground[i]['stand']}
+				is_standing={isStanding}
 				inPlayground={true}/>);
 		}
 
@@ -228,7 +250,6 @@ class GameBoard extends Component {
 		});
 
 		EventManage.on('refresh_cards', function(){
-			console.log('refresh_cards');
 			let my_side = 0;
 			$.getJSON(
 				'/table/table',

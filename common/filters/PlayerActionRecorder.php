@@ -38,6 +38,8 @@ class PlayerActionRecorder extends ActionFilter
             ]);
 
         $playerActionRecord->save();
+
+        $table->noticeOp($userId);
         return true;
     }
 
