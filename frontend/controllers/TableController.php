@@ -102,6 +102,13 @@ class TableController extends JsonBaseController{
                 unset($other_side[$key]);
             }
         }
+
+        foreach ($info['playground'] as $key => $v) {
+            if (isset($v['face']) && $v['face'] == 0) {
+                unset($info['playground'][$key]['card_id']);
+            }
+        }
+
         $data = [   'side' => $side,
                     'self_side' => $self_side,
                     'other_side' => $other_side,
@@ -219,11 +226,12 @@ class TableController extends JsonBaseController{
         $id = Yii::$app->request->post("id");
         $from = intval(Yii::$app->request->post("from"));
         $to = Yii::$app->request->post("to");
+        $face = Yii::$app->request->post("face");
 
-        $ret = $table->playOntoBoard(['id' => $id, 'to' => $to, 'from' => $from, 'side' => $table->getSideByUserId($userId)]);
+        $ret = $table->playOntoBoard(['id' => $id, 'to' => $to, 'from' => $from, 'face' => $face, 'side' => $table->getSideByUserId($userId)]);
 
         if ($ret[0] === true) {
-            return ['code' => self::CODE_SUCCESS, 'data' => []];
+            return ['code' => self::CODE_SUCCESS, 'data' => $ret[1]];
         }
 
         return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
@@ -262,6 +270,7 @@ class TableController extends JsonBaseController{
      * @author wolfbian
      * @date 2016-10-09
      * @param    string      id   // 本场比赛，卡牌的id
+     * @param    integer     type // 0 横置或者竖立 1 正面或者反面
      */
     public function actionFlipCard()
     {
@@ -274,15 +283,30 @@ class TableController extends JsonBaseController{
 
         $id = Yii::$app->request->post("id");
 
-        $ret = $table->changeCardState(['id' => $id, 'type' => 'stand']);
+        $type = Yii::$app->request->post("type", 0);
+        if ($type == 0) {
+            $ret = $table->changeCardState(['id' => $id, 'type' => 'stand']);
+        } elseif ($type == 1) {
+            $ret = $table->changeCardState(['id' => $id, 'type' => 'face']);
+        }
 
         if ($ret[0] === true) {
-            return ['code' => self::CODE_SUCCESS, 'data' => []];
+            return ['code' => self::CODE_SUCCESS, 'data' => $ret[1]];
         }
 
         return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
     }
 
+
+    public function actionNeedRefresh()
+    {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+
+        
+    }
     
     /**
      * @name  准备

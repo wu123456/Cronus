@@ -155,7 +155,7 @@ class GameBoard extends Component {
 			}
 
 			cards.push(<Card x={playground[i]['x']} y={y} key={playground[i]['id']} 
-				id={playground[i]['id']} card_id={playground[i]['card_id']} 
+				id={playground[i]['id']} card_id={playground[i]['face'] !== 0 ? playground[i]['card_id'] : 'back'} 
 				is_standing={playground[i]['stand']}
 				inPlayground={true}/>);
 		}
@@ -227,6 +227,48 @@ class GameBoard extends Component {
 			self.refs.chatBox.refresh();
 		});
 
+		EventManage.on('refresh_cards', function(){
+			console.log('refresh_cards');
+			let my_side = 0;
+			$.getJSON(
+				'/table/table',
+				{},
+				function(ret){
+					if(ret.code != 0){
+						showMessage(ret.msg);
+					}
+					let my_hand = ret.data['self_side']['hands'];
+					let my_discard = ret.data['self_side']['discard'];
+					let my_dead = ret.data['self_side']['dead'];
+					let my_library = ret.data['self_side']['library'];
+					let my_plot = ret.data['self_side']['plot'];
+					let op_hand = ret.data['other_side']['hands'];
+					let op_discard = ret.data['other_side']['discard'];
+					let op_dead = ret.data['other_side']['dead'];
+					let op_library = ret.data['other_side']['library'];
+					let op_plot = ret.data['other_side']['plot'];
+					let playground = ret.data['playground'];
+					let side = ret.data['side'];
+					self.setState({
+						hands: my_hand, 
+						discard: my_discard,
+						dead: my_dead,
+						library: my_library,
+						plot: my_plot,
+						playground: playground,
+						op_hands: op_hand,
+						op_discard: op_discard,
+						op_dead: op_dead,
+						op_library: op_library,
+						op_plot: op_plot,
+						side: side
+					});
+				}
+			);
+		});
+
+		
+
 		EventManage.on('card_move', function(event, params){
 			if(!inPlayground(params['from']) && inPlayground(params['to'])){
 				params['to'] = opPosition(params['to'], self.state.side);
@@ -235,7 +277,8 @@ class GameBoard extends Component {
 					{
 						id : params['id'],
 						from : getBlockType(params['from']),
-						to : params['to']
+						to : params['to'],
+						face : params['face']
 					},
 					function(ret){
 						self.getCards();
@@ -360,43 +403,8 @@ class GameBoard extends Component {
 	}
 
 	getCards() {
-		let my_side = 0;
-		let self = this;
-		$.getJSON(
-			'/table/table',
-			{},
-			function(ret){
-				if(ret.code != 0){
-					showMessage(ret.msg);
-				}
-				let my_hand = ret.data['self_side']['hands'];
-				let my_discard = ret.data['self_side']['discard'];
-				let my_dead = ret.data['self_side']['dead'];
-				let my_library = ret.data['self_side']['library'];
-				let my_plot = ret.data['self_side']['plot'];
-				let op_hand = ret.data['other_side']['hands'];
-				let op_discard = ret.data['other_side']['discard'];
-				let op_dead = ret.data['other_side']['dead'];
-				let op_library = ret.data['other_side']['library'];
-				let op_plot = ret.data['other_side']['plot'];
-				let playground = ret.data['playground'];
-				let side = ret.data['side'];
-				self.setState({
-					hands: my_hand, 
-					discard: my_discard,
-					dead: my_dead,
-					library: my_library,
-					plot: my_plot,
-					playground: playground,
-					op_hands: op_hand,
-					op_discard: op_discard,
-					op_dead: op_dead,
-					op_library: op_library,
-					op_plot: op_plot,
-					side: side
-				});
-			}
-		);
+		
+		EventManage.trigger("refresh_cards");
 		EventManage.trigger("refresh_chat_box");
 	}
 
@@ -406,8 +414,14 @@ class GameBoard extends Component {
 		}
 
 		let srcElement = moveElement;
+		event.persist();
 		moveElement = null;
-		EventManage.trigger("card_move", {id : srcElement._id, from : {x : srcElement.x, y : srcElement.y, block : srcElement.block}, to : {x : event.pageX - srcElement._x, y : event.pageY - srcElement._y}});
+		EventManage.trigger("card_move", {
+			id : srcElement._id, 
+			from : {x : srcElement.x, y : srcElement.y, block : srcElement.block}, 
+			to : {x : event.pageX - srcElement._x, y : event.pageY - srcElement._y},
+			face : event.shiftKey ? 0 : 1
+		});
 
 		if (srcElement.props.block === undefined || [BLOCK_DISCARD, BLOCK_PLOT, BLOCK_DEAD, BLOCK_LIBRARY].indexOf(srcElement.props.block) == -1 ) {
 			srcElement.setState({x: event.pageX - srcElement._x, y: event.pageY - srcElement._y});
@@ -441,8 +455,18 @@ class Card extends Component {
 		// 如果standingCode是undefined，则默认为1，isStanding=true
 		let isStanding = (standingCode != 0);
 
+		// 生成正反面状态
+		let faceCode = this.props.card_id; // 1表示正面，0表示反面
+		// 如果FaceCode是undefined，则默认为1，isFace=true
+		let isFace = 1;
+
+		if (faceCode == "back") {
+			isFace = 0;
+		};
+
         this.state = {
             opacity: 1,
+            isFace: isFace,
             isStanding: isStanding,
         }
     }
@@ -465,9 +489,14 @@ class Card extends Component {
 		let isStanding = this.state.isStanding;
 		const LYING_DOWN_CLASS = 'card-lying-down';
 
-		if(this.state.url){
+		if(this.state.isFace && this.state.url){
 			style['backgroundImage'] = "url(" + this.state.url + ")";
 			style['backgroundSize'] = "100% 100%";
+			name = "";
+		}
+
+		if (!this.state.isFace) {
+			style['background'] = "blue";
 			name = "";
 		}
 
@@ -512,11 +541,16 @@ class Card extends Component {
 		if (!cardId) {
 			return;
 		}
+		this.showPic(cardId);
+	}
+
+	showPic(cardId){
+		
 		$.getJSON(
 			'/card/cards',
 			{
 				condition : {
-					'id' : this.state.card_id || this.props.card_id
+					'id' : cardId
 				}
 			},
 			function(ret){
@@ -604,8 +638,26 @@ class Card extends Component {
 						}
 					}, 
 					{
-						name: "横置/竖立卡牌",
+						name: "横置/竖立",
 						event: this.handleDbClick.bind(this)
+					}, 
+					{
+						name: "翻面",
+						event: function(){
+							$.post(
+								'/table/flip-card',
+								{
+									id : self.props.id,
+									type : 1
+								},
+								function(ret){
+									if (ret.code == 0) {
+										self.setFaceState(!self.state.isFace, ret.data);
+									};
+								},
+								'json'
+							);
+						}
 					}, 
 		], event);
 
@@ -678,6 +730,14 @@ class Card extends Component {
 	setStandingState(isStanding) {
 		EventManage.trigger("refresh_chat_box");
 		this.setState({isStanding: isStanding});
+	}
+
+	setFaceState(isFace, cardId) {
+		if (!parseInt(this.state.card_id || this.props.card_id)) {
+			this.showPic(cardId);
+		}
+		EventManage.trigger("refresh_chat_box");
+		this.setState({isFace: isFace});
 	}
 }
 

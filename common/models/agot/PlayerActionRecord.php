@@ -47,9 +47,15 @@ class PlayerActionRecord extends AgotBase
             return $userName . "将[" . $card->name . "]从场上移到" . Yii::$app->params['type2chinese'][$params['to']];
         } else if ($action == 'table/play-onto-board') {
             $card = Card::find()->where(['id' => $cards[$params['id']], 'status' => Card::STATUS_ACTIVE])->one();
+            if (isset($params['face']) && $params['face'] == 0) {
+                return $userName . "将一张牌反面朝上地从" . Yii::$app->params['type2chinese'][$params['from']] . "移到场上";
+            }
             return $userName . "将[" . $card->name . "]从" . Yii::$app->params['type2chinese'][$params['from']] . "移到场上";
         } else if ($action == 'table/flip-card') {
             $card = Card::find()->where(['id' => $cards[$params['id']], 'status' => Card::STATUS_ACTIVE])->one();
+            if (isset($params['type']) && $params['type'] == 1) {
+                return $userName . "翻面了[" . $card->name . "]";
+            }
             return $userName . "转动了[" . $card->name . "]";
         } else if ($action == 'table/speak') {
             return $userName . " ： " . $params['content'];

@@ -217,7 +217,6 @@ class Table extends Model
         $info['side'][$params['side']][$name] = $cards;
         $ret = $this->setInfo($info);
         return [$ret, $cards];
-
     }
 
     /**
@@ -286,6 +285,7 @@ class Table extends Model
         $from = $params['from'];
         $to = $params['to'];
         $side = $params['side'];
+        $face = intval($params['face']);
 
         $info = $this->info;
         $type2name = Yii::$app->params['type2name'];
@@ -300,8 +300,9 @@ class Table extends Model
         $info['playground'][$id] = $card;
         $info['playground'][$id]['x'] = $to['x'];
         $info['playground'][$id]['y'] = $to['y'];
+        $info['playground'][$id]['face'] = $face;
         $ret = $this->setInfo($info);
-        return [$ret];
+        return [$ret, $info['playground'][$id]['card_id']];
     }
 
     public function changeCardState($params)
@@ -318,7 +319,7 @@ class Table extends Model
             $info['playground'][$id][$type] = ($state + 1) % 2;
         }
         $ret = $this->setInfo($info);
-        return [$ret];
+        return [$ret, $info['playground'][$id]['card_id']];
     }
 
     public function getSideByUserId($user_id)
@@ -348,12 +349,34 @@ class Table extends Model
         return [$ret];
     }
 
+    public function getOpUserId($user_id)
+    {
+        $info = $this->info;
+        $sides = $info['side'];
+        foreach ($sides as $key => $side) {
+            if ($side['user_id'] != $user_id) {
+                return $side['user_id'];
+            }
+        }
+        return -1;
+    }
+
     
 
     public static function shuffleAndDivideCards($cards, $l = 7)
     {
         shuffle($cards);
         return [array_slice($cards, 0, $l), array_slice($cards, $l)];
+    }
+
+    public static function getNeedRefresh($userId)
+    {
+        return Yii::$app->redis->get("need_refresh_" . $userId);
+    }
+
+    public static function setNeedRefresh($userId, $value)
+    {
+        return Yii::$app->redis->set("need_refresh_" . $userId, $value);
     }
 
 }
