@@ -289,6 +289,8 @@ class TableController extends JsonBaseController{
             $ret = $table->changeCardState(['id' => $id, 'type' => 'stand']);
         } elseif ($type == 1) {
             $ret = $table->changeCardState(['id' => $id, 'type' => 'face']);
+        } elseif ($type == 2) {
+            $ret = $table->changeCardState(['id' => $id, 'type' => 'nofocus']);
         }
 
         if ($ret[0] === true) {

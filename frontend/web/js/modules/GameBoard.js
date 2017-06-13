@@ -174,11 +174,14 @@ class GameBoard extends Component {
 			}
 			let cardId = playground[i]['face'] !== 0 ? playground[i]['card_id'] : 'back';
 			let isStanding = playground[i]['stand'] !== 0 ? 1 : 0;
+			let isNoFocus = playground[i]['nofocus'] !== 0 ? 1 : 0;
 			let key = "play" + playground[i]['id'] + "x" + playground[i]['x'] + "y" + y
-						+ 'card_id' + cardId + 'isStanding' + isStanding;
+						+ 'card_id' + cardId + 'isStanding' + isStanding + 'isNoFocus' + isNoFocus;
 			cards.push(<Card x={playground[i]['x']} y={y} key={key} 
-				id={playground[i]['id']} card_id={playground[i]['face'] !== 0 ? playground[i]['card_id'] : 'back'} 
+				id={playground[i]['id']} 
+				card_id={playground[i]['face'] !== 0 ? playground[i]['card_id'] : 'back'} 
 				is_standing={isStanding}
+				isNoFocus={isNoFocus}
 				inPlayground={true}/>);
 		}
 
@@ -489,6 +492,7 @@ class Card extends Component {
             opacity: 1,
             isFace: isFace,
             isStanding: isStanding,
+            isNoFocus: this.props.isNoFocus === 0 ? 0 : 1
         }
     }
 
@@ -503,11 +507,13 @@ class Card extends Component {
 		let x = this.state.x || this.props.x || 0;
 		let y = this.state.y || this.props.y || 0;
 		let margin = this.state.margin || this.props.margin || 0;
-		let name = this.state.name || this.state.card_id || this.props.card_id || this.state.id || this.props.id ||"";
+		let cardId = this.state.card_id || this.props.card_id;
+		let name = this.state.name || cardId || this.state.id || this.props.id ||"";
 		let unmovable = this.props.unmovable;
 		let class_name = 'card';
 		let style = {opacity:this.state.opacity, margin:margin + "px", background: this.props.color};
 		let isStanding = this.state.isStanding;
+		let isNoFocus = this.state.isNoFocus;
 		const LYING_DOWN_CLASS = 'card-lying-down';
 
 		if(this.state.isFace && this.state.url){
@@ -517,8 +523,12 @@ class Card extends Component {
 		}
 
 		if (!this.state.isFace) {
-			style['background'] = "blue";
+			style['backgroundImage'] = "url(/image/back.png)";
 			name = "";
+		}
+
+		if (!isNoFocus) {
+			style['border'] = "3px solid red";
 		}
 
 		if(x || y){
@@ -541,6 +551,7 @@ class Card extends Component {
 						onDragEnd = {this.handleDragEnd.bind(this)}
 						onDrag = {this.handleDrag.bind(this)}
 						onDoubleClick = {this.handleDbClick.bind(this)}
+						onClick = {this.handleClick.bind(this)}
 						onMouseOver = {this.handleMover.bind(this)}
 						onMouseOut = {this.handleMout.bind(this)}
 						onContextMenu = {this.handleContextMenu.bind(this)}
@@ -588,6 +599,25 @@ class Card extends Component {
 	}
 
 	handleDragLeave() {
+	}
+
+	handleClick(event) {
+		if (event.shiftKey) {
+			let self = this;
+			$.post(
+				'/table/flip-card',
+				{
+					id : self.props.id,
+					type : 2
+				},
+				function(ret){
+					if (ret.code == 0) {
+						self.setNoFocusState(!self.state.isNoFocus);
+					};
+				},
+				'json'
+			);
+		}
 	}
 
 	handleMover() {
@@ -759,6 +789,11 @@ class Card extends Component {
 		}
 		EventManage.trigger("refresh_chat_box");
 		this.setState({isFace: isFace});
+	}
+
+	setNoFocusState(isNoFocus) {
+		EventManage.trigger("refresh_chat_box");
+		this.setState({isNoFocus: isNoFocus});
 	}
 }
 

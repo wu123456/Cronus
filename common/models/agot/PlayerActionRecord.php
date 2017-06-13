@@ -55,10 +55,14 @@ class PlayerActionRecord extends AgotBase
             $card = Card::find()->where(['id' => $cards[$params['id']], 'status' => Card::STATUS_ACTIVE])->one();
             if (isset($params['type']) && $params['type'] == 1) {
                 return $userName . "翻面了[" . $card->name . "]";
+            }elseif (isset($params['type']) && $params['type'] == 2) {
+                return $userName . "选中了[" . $card->name . "]";
             }
             return $userName . "转动了[" . $card->name . "]";
         } else if ($action == 'table/speak') {
             return $userName . " ： " . $params['content'];
+        } else if ($action == 'table/draw-cards') {
+            return $userName . "抓了" . $params['count'] . "张牌";
         }
         return false;
     }
