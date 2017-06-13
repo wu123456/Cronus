@@ -524,6 +524,7 @@ class Card extends Component {
 
 		if (!this.state.isFace) {
 			style['backgroundImage'] = "url(/image/back.png)";
+			style['backgroundSize'] = "100% 100%";
 			name = "";
 		}
 
