@@ -161,6 +161,16 @@ class Table extends Model
             $info['side'][$value]['plot'] = $plot;
             $info['side'][$value]['discard'] =  [];
             $info['side'][$value]['dead'] =  [];
+            // 家族牌
+            $houseCardId = $deck->getHouse();
+            $houseId = 'h' . $value . $houseCardId;
+            $info['side'][$value]['house'] = ['id' => $houseId, 'card_id' => $houseCardId];
+            $cards[$houseId] = $houseCardId;
+            // 议政牌
+            $agendaCardId = $deck->getAgenda();
+            $agendaId = 'a' . $value . $agendaCardId;
+            $info['side'][$value]['agenda'] = ['id' => $agendaId, 'card_id' => $agendaCardId];
+            $cards[$agendaId] = $agendaCardId;
 
             $normal_temp = $deck->getNormalCards();
             $normal = [];

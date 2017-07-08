@@ -41,7 +41,8 @@ class Deck extends AgotBase{
         return DeckCard::getCards($this->id, DeckCard::SNAP);
     }
 
-    public function getPlots(){
+    public function getPlots()
+    {
         $cards = $this->cards;
         $plots = [];
         foreach ($cards as $card) {
@@ -52,11 +53,41 @@ class Deck extends AgotBase{
         return $plots;
     }
 
-    public function getNormalCards(){
+    // 家族牌 
+    // 一套牌中只能有一张家族牌，所以获取到就返回咯
+    public function getHouse()
+    {
+        $cards = $this->cards;
+        foreach ($cards as $card) {
+            if ($card->type == Card::TYPE_HOUSE) {
+                return $card->id;
+            }
+        }
+        return 0;
+    }
+
+    // 议政牌 
+    // 一套牌中只能有一张议政牌，所以获取到就返回咯
+    public function getAgenda()
+    {
+        $cards = $this->cards;
+        foreach ($cards as $card) {
+            if ($card->type == Card::TYPE_AGENDA) {
+                return $card->id;
+            }
+        }
+        return 0;
+    }
+
+    public function getNormalCards()
+    {
         $cards = $this->cards;
         $normal = [];
         foreach ($cards as $card) {
-            if ($card->type != Card::TYPE_PLOT) {
+            if ($card->type != Card::TYPE_PLOT
+                && $card->type != Card::TYPE_HOUSE
+                && $card->type != Card::TYPE_AGENDA
+                ) {
                 $normal[] = $card->id;
             }
         }
@@ -134,7 +165,7 @@ class Deck extends AgotBase{
     }
 
     public static function getDeckArray($user_id){
-        $decks = self::find()->where(['user_id' => $user_id, 'status' => self::STATUS_ACTIVE])->asArray()->all();
+        $decks = self::find()->where(['user_id' => [0, $user_id], 'status' => self::STATUS_ACTIVE])->asArray()->all();
         if (empty($decks)) {
             return [];
         }

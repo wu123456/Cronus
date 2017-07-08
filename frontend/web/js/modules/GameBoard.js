@@ -22,6 +22,10 @@ let plot_x = -240;
 let dead_x = -130;
 let my_y = 580; 
 let op_y = 20;
+let my_house_y = 380;
+let op_house_y = 230;
+let house_x = -20;
+let agenda_x = -130;
 
 // 0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌区，5：战场
 let BLOCK_PLOT = 4;
@@ -74,19 +78,22 @@ class GameBoard extends Component {
 	constructor(props) {
 		super(props);
         this.state = {
-            // cards: [<Card key="0"/>],
             playground: {},
             hands: {},
             discard: {},
             library: 0,
             plot: {},
             dead: {},
+            house: {},
+            agenda: {},
 
             op_hands: 0,
             op_plot: 0,
             op_library: 0,
-            op_discard: [{id: 105, card_id: 3}],
-            op_dead: [{id: 108, card_id: 6},{id: 109, card_id: 6}],
+            op_discard: 0,
+            op_dead: 0,
+            op_house: {},
+            op_agenda: {},
             side: 0,
         };
     }
@@ -131,7 +138,7 @@ class GameBoard extends Component {
 			<Block onClick={this.showCards.bind(this, "对方弃牌堆", this.state.op_discard)} key="op_discard" x={discard_x} y={op_y} height={100} width={75}/>,
 			<Block onClick={this.showCards.bind(this, "对方死亡牌堆", this.state.op_dead)} key="op_dead" x={dead_x} y={op_y} height={100} width={75}/>,
 			];
-			// blocks=[];
+
 		let hands = this.state.hands;
 		let playground = this.state.playground;
 		let discard = this.state.discard;
@@ -140,17 +147,12 @@ class GameBoard extends Component {
 		let dead = this.state.dead;
 		let op_hands = this.state.op_hands;
 		let side = this.state.side;
+		let house = this.state.house;
+		let agenda = this.state.agenda;
+		let op_house = this.state.op_house;
+		let op_agenda = this.state.op_agenda;
 
-		// // 渲染手牌区域
-		// let j = 0;
-		// for(let i in hands){
-		// 	let x = 20 + 110 * j;
-		// 	let y = 580;
-		// 	cards.push(<Card x={x} y={y} key={"hands" + hands[i]['id']} id={hands[i]['id']} card_id={hands[i]['card_id']} is_in_hand={true}/>);
-		// 	j++;
-		// }
-
-		// 新渲染手牌区域方法
+		// 渲染手牌区域
 		// 手牌区域最大宽度定好，450，
 		// 每张牌大小为75，正常情况显示6张牌
 		// 当手牌多于6张，牌的部分将被覆盖
@@ -185,13 +187,7 @@ class GameBoard extends Component {
 				inPlayground={true}/>);
 		}
 
-		// for(let i = 0; i < op_hands; i++){
-		// 	let x = 20 + 110 * i;
-		// 	let y = 20;
-		// 	cards.push(<Card unmovable={true} x={x} y={y} key={"op_hands" + i} id={"unknown"} card_id={"back"}/>);
-		// }
-
-		// 新渲染手牌区域方法
+		// 渲染对手手牌区域方法
 		// 手牌区域最大宽度定好，450，
 		// 每张牌大小为75，正常情况显示6张牌
 		// 当手牌多于6张，牌的部分将被覆盖
@@ -206,10 +202,10 @@ class GameBoard extends Component {
 			cards.push(<Card unmovable={true} x={x} y={y} key={"op_hands" + i} id={"unknown"} card_id={"back"}/>);
 		}
 
+		// 设置弃牌区域，死亡牌区域，战略牌区域，牌库区域
 		setCard(discard, discard_x, my_y);
 		setCard(dead, dead_x, my_y);
 		setCard(plot, plot_x, my_y);
-
 
 		function setCard(type, x, y){
 			if(!Util.empty(type)){
@@ -222,7 +218,28 @@ class GameBoard extends Component {
 		}
 
 		if(!Util.empty(library)){
-			let c = <Card key={"library"} x={library_x} y={my_y} id={"unknown"} card_id={"back"}/>;
+			let c = <Card key={"my_library"} x={library_x} y={my_y} id={"unknown"} card_id={"back"}/>;
+			cards.push(c);
+		}
+
+		// 设置家族牌、议政牌
+		if (!Util.empty(house)) {
+			let c = <Card key={"my_house"} x={house_x} y={my_house_y} id={house['id']} card_id={house['card_id']}/>;
+			cards.push(c);
+		}
+
+		if (!Util.empty(agenda)) {
+			let c = <Card key={"my_agenda"} x={agenda_x} y={my_house_y} id={agenda['id']} card_id={agenda['card_id']}/>;
+			cards.push(c);
+		}
+
+		if (!Util.empty(op_house)) {
+			let c = <Card key={"op_house"} x={house_x} y={op_house_y} id={op_house['id']} card_id={op_house['card_id']}/>;
+			cards.push(c);
+		}
+
+		if (!Util.empty(op_agenda)) {
+			let c = <Card key={"op_agenda"} x={agenda_x} y={op_house_y} id={op_agenda['id']} card_id={op_agenda['card_id']}/>;
 			cards.push(c);
 		}
 					
@@ -266,11 +283,17 @@ class GameBoard extends Component {
 					let my_dead = ret.data['self_side']['dead'];
 					let my_library = ret.data['self_side']['library'];
 					let my_plot = ret.data['self_side']['plot'];
+					let my_house = ret.data['self_side']['house'];
+					let my_agenda = ret.data['self_side']['agenda'];
+					
 					let op_hand = ret.data['other_side']['hands'];
 					let op_discard = ret.data['other_side']['discard'];
 					let op_dead = ret.data['other_side']['dead'];
 					let op_library = ret.data['other_side']['library'];
 					let op_plot = ret.data['other_side']['plot'];
+					let op_house = ret.data['other_side']['house'];
+					let op_agenda = ret.data['other_side']['agenda'];
+
 					let playground = ret.data['playground'];
 					let side = ret.data['side'];
 					self.setState({
@@ -279,12 +302,16 @@ class GameBoard extends Component {
 						dead: my_dead,
 						library: my_library,
 						plot: my_plot,
+						house: my_house,
+						agenda: my_agenda,
 						playground: playground,
 						op_hands: op_hand,
 						op_discard: op_discard,
 						op_dead: op_dead,
 						op_library: op_library,
 						op_plot: op_plot,
+						op_house: op_house,
+						op_agenda: op_agenda,
 						side: side
 					});
 				}
@@ -453,13 +480,6 @@ class GameBoard extends Component {
 		}
 		srcElement.setState({gone: true});
 		return;
-
-		// let a = <Card key={new Date() - 0} {...srcElement.props} fatherName={this.props.name} x={event.pageX - this.refs.t.offsetLeft - srcElement._x} y={event.pageY - this.refs.t.offsetTop - srcElement._y}/>;
-		
-		// this.setState(function(oldState){
-		// 	oldState.cards.push(a);
-		// 	return oldState;
-		// });
 
 	}
 

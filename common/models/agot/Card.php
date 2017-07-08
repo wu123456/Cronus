@@ -19,6 +19,8 @@ use yii\db\ActiveRecord;
 class Card extends AgotBase{
 
     const TYPE_PLOT = '战略';
+    const TYPE_HOUSE = '阵营';
+    const TYPE_AGENDA = '议政';
     // const TYPE_NORMAL = 2;
 
     /**

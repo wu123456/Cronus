@@ -88,6 +88,27 @@ class DeckCard extends AgotBase
             ['deck_id', 'card_id' ,'count', 'status'], $inserts)->execute();
     }
 
+    public static function changeCardsBySourceId($deckId, $cards)
+    {
+
+        self::updateAll(['status' => self::STATUS_DELETED], ['deck_id' => $deckId, 'status' => self::STATUS_ACTIVE]);
+
+        if (empty($cards)) {
+            return true;
+        }
+
+        $inserts = [];
+
+        foreach ($cards as $card) {
+            $c = Card::find()->where(['picture_url' => $card[1]])->one();
+            $inserts[] = [$deckId, $c->id, $card[0], self::STATUS_ACTIVE];
+        }
+
+        //批量插入
+        return self::getDb()->createCommand()->batchInsert(self::tableName(), 
+            ['deck_id', 'card_id' ,'count', 'status'], $inserts)->execute();
+    }
+
 
 
 }

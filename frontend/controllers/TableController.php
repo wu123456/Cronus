@@ -96,7 +96,9 @@ class TableController extends JsonBaseController{
             $other_side = $sides[0];
         }
         foreach ($other_side as $key => $value) {
-            if(is_array($value)){
+            if (in_array($key, ['house', 'agenda'])) {
+                // do nothing
+            }elseif(is_array($value)){
                 $other_side[$key] = count($value);
             }else{
                 unset($other_side[$key]);
