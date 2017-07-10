@@ -4,6 +4,7 @@ import showMessage  from './Dialog'
 import showMenuWithMouse  from './PopupMenu' 
 import Util from './Util'
 import ChatBox from './ChatBox'
+import SocketClient from './SocketClient'
 
 
 const Component = React.Component;
@@ -54,22 +55,36 @@ window.document.oncontextmenu = function(){
 }  
 
 // 定时刷新战场
-setInterval(function(){
-	$.getJSON(
-		'/table/need-refresh',
-		{
-			t : new Date() - 0
-		},
-		function(ret){
-			if (ret.code == 0 && ret.data) {
-				EventManage.trigger("refresh_cards");
-				EventManage.trigger("refresh_chat_box");
-			};
-		}
-	)
+// setInterval(function(){
+// 	$.getJSON(
+// 		'/table/need-refresh',
+// 		{
+// 			t : new Date() - 0
+// 		},
+// 		function(ret){
+// 			if (ret.code == 0 && ret.data) {
+// 				EventManage.trigger("refresh_cards");
+// 				EventManage.trigger("refresh_chat_box");
+// 			};
+// 		}
+// 	)
 
 
-},1000);
+// },1000);
+
+const socketClient = new SocketClient(window.location.protocol + "//" + document.domain + ":8005" , {
+			path: "/agot-chat"
+		});
+
+socketClient.addListener('refresh', function(ret){
+	if (ret.code == 0 && ret.data['need_refresh']) {
+		console.log(1)
+		EventManage.trigger("refresh_cards");
+		EventManage.trigger("refresh_chat_box");
+	}else{
+		console.log(2)
+	}
+});
 
 
 // 战场定义
@@ -278,6 +293,14 @@ class GameBoard extends Component {
 					if(ret.code != 0){
 						showMessage(ret.msg);
 					}
+
+					// 想让该方法只执行一次
+					if (!self.socketClientSend) {
+						self.socketClientSend = true;
+						socketClient.send('game/refresh', {user_id : ret.data['self_side']['user_id']});
+					}
+					
+
 					let my_hand = ret.data['self_side']['hands'];
 					let my_discard = ret.data['self_side']['discard'];
 					let my_dead = ret.data['self_side']['dead'];
