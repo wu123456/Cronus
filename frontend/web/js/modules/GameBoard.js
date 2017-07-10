@@ -143,16 +143,6 @@ class GameBoard extends Component {
     // react组件渲染方法，里面包括了对战页面各个组件的渲染逻辑，为前端核心逻辑。
 	render() {
 		let cards = [];
-		let blocks = [
-			<Block onClick={this.showCards.bind(this, "我方战略牌", this.state.plot, BLOCK_PLOT)} key="my_plot" x={plot_x} y={my_y} height={100} width={75}/>,
-			<Block onDoubleClick={this.drawCards.bind(this, 1)} key="my_library" x={library_x} y={my_y} height={100} width={75}/>,
-			<Block onClick={this.showCards.bind(this, "我方弃牌堆", this.state.discard, BLOCK_DISCARD)} key="my_discard" x={discard_x} y={my_y} height={100} width={75}/>,
-			<Block onClick={this.showCards.bind(this, "我方死亡牌堆", this.state.dead, BLOCK_DEAD)} key="my_dead" x={dead_x} y={my_y} height={100} width={75}/>,
-			<Block key="op_plot" x={plot_x} y={op_y} height={100} width={75}/>,
-			<Block key="op_library" x={library_x} y={op_y} height={100} width={75}/>,
-			<Block onClick={this.showCards.bind(this, "对方弃牌堆", this.state.op_discard)} key="op_discard" x={discard_x} y={op_y} height={100} width={75}/>,
-			<Block onClick={this.showCards.bind(this, "对方死亡牌堆", this.state.op_dead)} key="op_dead" x={dead_x} y={op_y} height={100} width={75}/>,
-			];
 
 		let hands = this.state.hands;
 		let playground = this.state.playground;
@@ -164,8 +154,32 @@ class GameBoard extends Component {
 		let side = this.state.side;
 		let house = this.state.house;
 		let agenda = this.state.agenda;
+		let op_library = this.state.op_library;
+		let op_discard = this.state.op_discard;
+		let op_dead = this.state.op_dead;
+		let op_plot = this.state.op_plot;
 		let op_house = this.state.op_house;
 		let op_agenda = this.state.op_agenda;
+
+		let blocks = [
+			<Block onClick={this.showCards.bind(this, "我方战略牌", this.state.plot, BLOCK_PLOT)} key="my_plot" x={plot_x} y={my_y} height={100} width={75} title={"plot"} number={Util.count(plot)}/>,
+
+			<Block onDoubleClick={this.drawCards.bind(this, 1)} key="my_library" x={library_x} y={my_y} height={100} width={75} title={"lib"} number={library}/>,
+
+			<Block onClick={this.showCards.bind(this, "我方弃牌堆", this.state.discard, BLOCK_DISCARD)} key="my_discard" x={discard_x} y={my_y} height={100} width={75} title={"discard"} number={Util.count(discard)}/>,
+
+			<Block onClick={this.showCards.bind(this, "我方死亡牌堆", this.state.dead, BLOCK_DEAD)} key="my_dead" x={dead_x} y={my_y} height={100} width={75} title={"dead"} number={Util.count(dead)}/>,
+
+			<Block key="op_plot" x={plot_x} y={op_y} height={100} width={75} title={"plot"} number={op_plot}/>,
+
+			<Block key="op_library" x={library_x} y={op_y} height={100} width={75} title={"lib"} number={op_library}/>,
+
+			<Block onClick={this.showCards.bind(this, "对方弃牌堆", this.state.op_discard)} key="op_discard" x={discard_x} y={op_y} height={100} width={75} title={"discard"} number={op_discard}/>,
+
+			<Block onClick={this.showCards.bind(this, "对方死亡牌堆", this.state.op_dead)} key="op_dead" x={dead_x} y={op_y} height={100} width={75} title={"dead"} number={op_dead}/>,
+			];
+
+
 
 		// 渲染手牌区域
 		// 手牌区域最大宽度定好，450，
@@ -232,10 +246,31 @@ class GameBoard extends Component {
 			}
 		}
 
-		if(!Util.empty(library)){
+		if(library > 0){
 			let c = <Card key={"my_library"} x={library_x} y={my_y} id={"unknown"} card_id={"back"}/>;
 			cards.push(c);
 		}
+
+		if(op_library > 0){
+			let c = <Card key={"op_library"} x={library_x} y={op_y} id={"unknown"} card_id={"back"}/>;
+			cards.push(c);
+		}
+
+		if(op_dead > 0){
+			let c = <Card key={"op_dead"} x={dead_x} y={op_y} id={"unknown"} card_id={"back"}/>;
+			cards.push(c);
+		}
+
+		if(op_plot > 0){
+			let c = <Card key={"op_plot"} x={plot_x} y={op_y} id={"unknown"} card_id={"back"}/>;
+			cards.push(c);
+		}
+
+		if(op_discard > 0){
+			let c = <Card key={"op_discard"} x={discard_x} y={op_y} id={"unknown"} card_id={"back"}/>;
+			cards.push(c);
+		}
+
 
 		// 设置家族牌、议政牌
 		if (!Util.empty(house)) {
@@ -855,10 +890,14 @@ class Block extends Component{
 		}else{
 			style = {top: this.props.y, right: -(this.props.x), height: this.props.height, width: this.props.width};
 		}
+		let number = (this.state && this.state.number) || this.props.number || 0;
+		let text = (this.props.title || "") + " " + number;
 		return (
 			<div onClick={this.props.onClick || function(){}} 
 			onDoubleClick={this.props.onDoubleClick || function(){}}
-			className="block" style={style}></div>)
+			className="block" style={style}>
+				{text}
+			</div>)
 	}
 }
 
