@@ -17,7 +17,7 @@ class Table extends Model
 
     public static function getTableIdByUserId($userId)
     {
-        return 1;
+        return Yii::$app->redis->get("user::" . $userId);
     }
 
     public function __construct($tableId) 
@@ -55,6 +55,12 @@ class Table extends Model
      */
     public function ready($params)
     {
+
+        // 如果用户已经坐下了，不能再在其他位置坐下
+        if (Yii::$app->redis->get("user::" . $params['user_id']);) {
+            return false;
+        }
+
         $info = $this->info;
 
         if (isset($info['game_id'])) {
@@ -81,6 +87,8 @@ class Table extends Model
                 'deck_id' => $params['deck_id'] 
             ];
         }
+
+        Yii::$app->redis->set("user::" . $params['user_id'], $this->_table_id);
 
         return $this->info = $info;
     }
@@ -113,6 +121,8 @@ class Table extends Model
         }
 
         unset($info['side'][$params['side']]);
+
+        Yii::$app->redis->del("user::" . $params['user_id']);
 
         return $this->info = $info;
     }
@@ -190,6 +200,8 @@ class Table extends Model
             foreach ($library as $l) {
                 $info['side'][$value]['library'][$l['id']] = $l;
             }
+
+            Yii::$app->redis->set("user::" . $info['side'][$value]['user_id'], $this->_table_id);
         }
 
         $info['playground'] = [];
@@ -197,6 +209,7 @@ class Table extends Model
         $playId = PlayRecord::record($this->_table_id, $info, $cards);
 
         $info['play_id'] = $playId;
+
 
         return $this->info = $info;
     }

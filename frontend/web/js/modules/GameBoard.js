@@ -815,9 +815,21 @@ class Card extends Component {
 						}
 					}, 
 					{
-						name: "添加权力标记",
+						name: "+1 标记",
 						event: this.addMark.bind(this, 2, 1)
-					}
+					},
+					{
+						name: "-1 标记",
+						event: this.addMark.bind(this, 2, 2)
+					},
+					{
+						name: "+1 金币",
+						event: this.addMark.bind(this, 1, 1)
+					},
+					{
+						name: "-1 金币",
+						event: this.addMark.bind(this, 1, 2)
+					},
 		], event);
 
 	}
