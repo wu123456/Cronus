@@ -31,6 +31,7 @@ class PlayerActionRecord extends AgotBase
         'table/draw-cards' => '抓牌',
         'table/flip-card' => '翻转卡牌',
         'table/speak' => '发言',
+        'table/change-mark' => '改变标记',
     ];
 
     public static function tableName()
@@ -63,6 +64,13 @@ class PlayerActionRecord extends AgotBase
             return $userName . " ： " . $params['content'];
         } else if ($action == 'table/draw-cards') {
             return $userName . "抓了" . $params['count'] . "张牌";
+        } else if ($action == 'table/change-mark') {
+            $card = Card::find()->where(['id' => $cards[$params['id']], 'status' => Card::STATUS_ACTIVE])->one();
+            $operateList = ['1' => '增加', '2' => '减少'];
+            $typeList = ['1' => '金币', '2' => '权利标记', '3' =>];
+            $operate = $operateList[$params['operate']];
+            $type = $typeList[$params['type']];
+            return $userName . "给[" . $card->name . "]" . $operate . "1个" . $type;
         }
         return false;
     }

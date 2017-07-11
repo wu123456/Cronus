@@ -55,6 +55,7 @@ class PlayRecord extends AgotBase
             $user = User::find()->where(['id' => $v->user_id])->one();
             $a = PlayerActionRecord::translateRecord($user->username, $v->action, json_decode($v->params, true), $cards);
             if ($a) {
+                // 前面 yyyy-mm-dd 以及空格占11位
                 $actions[] = substr($v->create_time, 11) . " : " . $a;
             }
         }
