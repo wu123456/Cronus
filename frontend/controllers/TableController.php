@@ -18,7 +18,7 @@ class TableController extends JsonBaseController{
         return [  
             'access' => [  
                 'class' => PlayerActionRecorder::className(),  
-                'only'=>['speak', 'shuffle-card', 'move-card', 'leave-card', 'play-onto-board', 'draw-cards', 'flip-card',],  
+                'only'=>['speak', 'shuffle-card', 'move-card', 'leave-card', 'play-onto-board', 'draw-cards', 'flip-card', 'change-mark'],  
             ],
         ];  
     }  
@@ -288,13 +288,27 @@ class TableController extends JsonBaseController{
         $id = Yii::$app->request->post("id");
 
         $type = Yii::$app->request->post("type", 0);
-        if ($type == 0) {
-            $ret = $table->changeCardState(['id' => $id, 'type' => 'stand']);
-        } elseif ($type == 1) {
-            $ret = $table->changeCardState(['id' => $id, 'type' => 'face']);
-        } elseif ($type == 2) {
-            $ret = $table->changeCardState(['id' => $id, 'type' => 'nofocus']);
+        $ret = $table->changeCardState(['id' => $id, 'type' => $type]);
+
+        if ($ret[0] === true) {
+            return ['code' => self::CODE_SUCCESS, 'data' => $ret[1]];
         }
+
+        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
+    }
+
+    public function actionChangeMark(){
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
+
+        $id = Yii::$app->request->post("id");
+        $type = Yii::$app->request->post("type", 0);
+        $operate = Yii::$app->request->post("operate", 0);
+        $ret = $table->changeCardMark(['id' => $id, 'type' => $type, 'operate' => $operate]);
 
         if ($ret[0] === true) {
             return ['code' => self::CODE_SUCCESS, 'data' => $ret[1]];

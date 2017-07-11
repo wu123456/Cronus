@@ -319,7 +319,12 @@ class Table extends Model
     {
         $id = $params['id'];
         $type = $params['type'];
+        $typeList = ['0' => 'stand', '1' => 'face', '2' => 'nofocus'];
+        if (!isset($typeList[$type])) {
+            return [false, '不存在的类型'];
+        }
         $info = $this->info;
+        $type = $typeList[$type];
         // if no target state, just change state follow the rule : 0 => 1, 1 => 0
         // if no old state, default value is 1
         if(isset($params['target_state'])){
@@ -330,6 +335,33 @@ class Table extends Model
         }
         $ret = $this->setInfo($info);
         return [$ret, $info['playground'][$id]['card_id']];
+    }
+
+    public function changeCardMark($params)
+    {
+        $id = $params['id'];
+        $type = $params['type'];
+        $typeList = ['1' => 'gold', '2' => 'power', '3' => 'strength'];
+        if (!isset($typeList[$type])) {
+            return [false, '不存在的类型'];
+        }
+        $operate = $params['operate'];
+        // 1为加， 2为减
+        if ($operate != 1 && $operate != 2) {
+            return [false, '不存在的操作'];
+        }
+        $info = $this->info;
+        $type = $typeList[$type];
+        
+        $info['playground'][$id][$type] = isset($info['playground'][$id][$type]) ? $info['playground'][$id][$type] : 0;
+        if ($operate == 1) {
+            $info['playground'][$id][$type]++;
+        }else{
+            $info['playground'][$id][$type]--;
+        }
+        
+        $ret = $this->setInfo($info);
+        return [$ret, $info['playground'][$id][$type]];
     }
 
     public function getSideByUserId($userId)

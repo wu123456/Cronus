@@ -610,6 +610,25 @@ class Card extends Component {
 			style['border'] = "3px solid red";
 		}
 
+		let gold = this.state.gold || this.props.gold|| "";
+		if(gold){
+			gold = "金币：" + gold;
+		}
+
+		let power = this.state.power || this.props.power|| "";
+		if(power){
+			power = "标记：" + power;
+		}
+
+		let strength = this.state.strength || this.props.strength || "";
+		if(strength){
+			if(strength > 0 ){
+				strength = "能力：+" + strength;
+			}else{
+				strength = "能力：" + strength;
+			}
+		}
+
 		if(x || y){
 			class_name = 'card2';
 			style.top = y + "px";
@@ -637,6 +656,9 @@ class Card extends Component {
 						style={style}
 						> 
 						{name}
+						<p>{gold}</p>
+						<p>{power}</p>
+						<p>{strength}</p>
 				</div>);
 		}
 
@@ -644,6 +666,9 @@ class Card extends Component {
 						style={style}
 						> 
 						{name}
+						<p>{gold}</p>
+						<p>{power}</p>
+						<p>{strength}</p>
 				</div>);
 	}
 
@@ -789,8 +814,39 @@ class Card extends Component {
 							);
 						}
 					}, 
+					{
+						name: "添加权力标记",
+						event: this.addMark.bind(this, 2, 1)
+					}
 		], event);
 
+	}
+
+	// 添加标记 type 1：金币 2：权力 3：能力
+	// operate 1：添加 ， 2：减少
+	addMark(type, operate) {
+		let typeList = {
+			1 : "gold",
+			2 : "power",
+			3 : "strength"
+		}
+		let self = this;
+		$.post(
+			'/table/change-mark',
+			{
+				id : self.props.id,
+				type : type,
+				operate : operate
+			},
+			function(ret){
+				if (ret.code == 0) {
+					self.setState({
+						power : ret.data
+					});
+				}
+			},
+			'json'
+		);
 	}
 
 	handleMout() {
