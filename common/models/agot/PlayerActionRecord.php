@@ -67,7 +67,7 @@ class PlayerActionRecord extends AgotBase
         } else if ($action == 'table/change-mark') {
             $card = Card::find()->where(['id' => $cards[$params['id']], 'status' => Card::STATUS_ACTIVE])->one();
             $operateList = ['1' => '增加', '2' => '减少'];
-            $typeList = ['1' => '金币', '2' => '权利标记', '3' =>];
+            $typeList = ['1' => '金币', '2' => '权利标记', '3' => '能力标记'];
             $operate = $operateList[$params['operate']];
             $type = $typeList[$params['type']];
             return $userName . "给[" . $card->name . "]" . $operate . "1个" . $type;

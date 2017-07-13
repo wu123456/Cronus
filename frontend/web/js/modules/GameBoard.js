@@ -656,9 +656,9 @@ class Card extends Component {
 						style={style}
 						> 
 						{name}
-						<p>{gold}</p>
-						<p>{power}</p>
-						<p>{strength}</p>
+						<p className="card-mark">{gold}</p>
+						<p className="card-mark">{power}</p>
+						<p className="card-mark">{strength}</p>
 				</div>);
 		}
 
@@ -666,9 +666,9 @@ class Card extends Component {
 						style={style}
 						> 
 						{name}
-						<p>{gold}</p>
-						<p>{power}</p>
-						<p>{strength}</p>
+						<p className="card-mark">{gold}</p>
+						<p className="card-mark">{power}</p>
+						<p className="card-mark">{strength}</p>
 				</div>);
 	}
 
@@ -852,9 +852,9 @@ class Card extends Component {
 			},
 			function(ret){
 				if (ret.code == 0) {
-					self.setState({
-						power : ret.data
-					});
+					var s = {};
+					s[typeList[type]] = ret.data;
+					self.setState(s);
 				}
 			},
 			'json'
