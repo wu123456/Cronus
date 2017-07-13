@@ -180,6 +180,25 @@ class TableController extends JsonBaseController{
         return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
     }
 
+    public function actionRandomDiscard()
+    {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
+
+        $ret = $table->randomDiscard(['side' => $table->getSideByUserId($userId)]);
+
+        if ($ret[0] === true) {
+            return ['code' => self::CODE_SUCCESS, 'data' => []];
+        }
+
+        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
+    }
+
     /**
      * @name  卡牌离场
      * @method POST

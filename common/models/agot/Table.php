@@ -57,7 +57,7 @@ class Table extends Model
     {
 
         // 如果用户已经坐下了，不能再在其他位置坐下
-        if (Yii::$app->redis->get("user::" . $params['user_id']);) {
+        if (Yii::$app->redis->get("user::" . $params['user_id'])) {
             return false;
         }
 
@@ -420,6 +420,25 @@ class Table extends Model
     {
         $opUserId = $this->getOpUserId($userId);
         self::setNeedRefresh($opUserId);
+    }
+
+    public function randomDiscard($params)
+    {
+        $side = $params['side'];
+        $info = $this->info;
+
+        $hands = $info['side'][$side]['hands'];
+        $discard = $info['side'][$side]['discard'];
+        if (empty($hands)) {
+            return [false, '无手牌'];
+        }
+        $randomCardId = array_rand($hands);
+        $discard[$randomCardId] = $hands[$randomCardId];
+        unset($hands[$randomCardId]);
+        $info['side'][$side]['hands'] = $hands;
+        $info['side'][$side]['discard'] = $discard;
+        $ret = $this->setInfo($info);
+        return [$ret];
     }
 
     
