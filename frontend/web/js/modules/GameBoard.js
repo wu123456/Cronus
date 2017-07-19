@@ -3,7 +3,6 @@ import $  from 'jquery'
 import showMessage  from './Dialog' 
 import showMenuWithMouse  from './PopupMenu' 
 import Util from './Util'
-import ChatBox from './ChatBox'
 import SocketClient from './SocketClient'
 
 
@@ -51,7 +50,7 @@ EventManage.on("show_card", function(event, params){
 
 // 禁用系统自带右键菜单
 window.document.oncontextmenu = function(){ 
-	return false;
+	// return false;
 }  
 
 // 定时刷新战场
@@ -320,6 +319,7 @@ class GameBoard extends Component {
 		});
 
 		EventManage.on('refresh_cards', function(){
+			console.log(12134);
 			let my_side = 0;
 			$.getJSON(
 				'/table/table',
@@ -967,6 +967,138 @@ class Block extends Component{
 				{text}
 			</div>)
 	}
+}
+
+class Line extends Component{
+	render() {
+		return (
+				<div className="line"> {this.props.content} </div>
+			)
+	}
+}
+
+class ButtonList extends Component {
+	render() {
+		return (
+				<div className="button-list">
+					<div className="btn btn-default btn-size" onClick={this.discardHand.bind(this)}>随机弃牌</div>
+					<div className="btn btn-default btn-size" onClick={this.throwCoin.bind(this)}>投硬币</div>
+					<div className="btn btn-default btn-size">随机弃牌</div>
+					<div className="btn btn-default btn-size">随机弃牌</div>
+				</div>
+			)
+		
+	}
+
+	discardHand() {
+		let self = this;
+		$.post(
+			'/table/random-discard',
+			{},
+			function(ret){
+				if (ret.code != 0) {
+					alert(ret.msg);
+					return;
+				}
+				EventManage.trigger("refresh_cards");
+				EventManage.trigger("refresh_chat_box");
+			},
+			'json'
+		)
+	}
+
+	throwCoin() {
+
+	}
+}
+
+class ChatBox extends Component {
+
+	constructor(props) {
+		super(props);
+        this.state = {
+            left : 50,
+            bottom : 0
+        }
+
+        this.refresh = function(){
+			let self = this;
+			$.getJSON(
+				'/table/action-records',
+				function(ret){
+					if (ret.code != 0) {
+						return;
+					}
+					self.setState({actions: ret.data});
+				}
+			)
+		}
+    }
+
+	render() {
+		let contents = [];
+		let actions = (this.state && this.state.actions) || [];
+		for(let i in actions){
+			contents.push(<Line key={"l" + i} content={actions[i]} />);
+		}
+		return (
+				<div className="chat-box" 
+					style={{left: this.state.left + "px", bottom: this.state.bottom + "px"}}>
+					<div onDrag={this.handleDrag.bind(this)} 
+						onDragStart={this.handleDragStart.bind(this)}
+						draggable={true}
+						className="title">对话框</div>
+					<ButtonList/>
+					<div className="content">
+						{contents}
+					</div>
+					<input ref={"input"} />
+					<div onClick={this.speak.bind(this)} className="button">发送</div>
+				</div>
+		)
+	}
+
+	speak(){
+		let self = this;
+			$.post(
+				'/table/speak',
+				{
+					content: self.refs.input.value
+				},
+				function(ret){
+					if (ret.code != 0) {
+						alert(ret.msg);
+						return;
+					}
+					self.refresh();
+				},
+				'json'
+			)
+	}
+
+	handleDrag(e){
+		let moveX = e.pageX - this.startX;
+		let moveY = e.pageY - this.startY;
+	    let left = this.state.left + moveX;
+		let bottom = this.state.bottom - moveY;
+		this.startX = e.pageX;
+		this.startY = e.pageY;
+		this.setState({
+			left: left,
+			bottom: bottom
+		});
+	}
+
+	handleDragStart(e){
+		this.startX = e.pageX;
+		this.startY = e.pageY;
+	}
+
+	componentDidMount() {
+		this.refresh();
+	}
+
+	
 }
 
 export default Board

@@ -32,6 +32,7 @@ class PlayerActionRecord extends AgotBase
         'table/flip-card' => '翻转卡牌',
         'table/speak' => '发言',
         'table/change-mark' => '改变标记',
+        'table/random-discard' => '弃牌',
     ];
 
     public static function tableName()
@@ -71,6 +72,8 @@ class PlayerActionRecord extends AgotBase
             $operate = $operateList[$params['operate']];
             $type = $typeList[$params['type']];
             return $userName . "给[" . $card->name . "]" . $operate . "1个" . $type;
+        } else if ($action == 'table/random-discard') {
+            return $userName . "随机弃掉一张手牌";
         }
         return false;
     }
