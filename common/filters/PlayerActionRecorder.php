@@ -28,16 +28,14 @@ class PlayerActionRecorder extends ActionFilter
         $table = new Table($tableId);
         $playId = $table->getPlayId();
         $side = $table->getSideByUserId($userId);
-        
-        $playerActionRecord = new PlayerActionRecord([
+
+        PlayerActionRecord::addRecord([
             'side' => $side,
             'play_id' => $playId,
             'user_id' => $userId,
             'action' => $action->controller->id . "/" .$action->id,
             'params' => json_encode($params),
             ]);
-
-        $playerActionRecord->save();
 
         $table->noticeOp($userId);
         return true;

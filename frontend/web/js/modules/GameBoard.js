@@ -1008,7 +1008,19 @@ class ButtonList extends Component {
 	}
 
 	throwCoin() {
-
+		let self = this;
+		$.post(
+			'/table/throw-coin',
+			{},
+			function(ret){
+				if (ret.code != 0) {
+					alert(ret.msg);
+					return;
+				}
+				EventManage.trigger("refresh_chat_box");
+			},
+			'json'
+		)
 	}
 }
 
@@ -1102,3 +1114,4 @@ class ChatBox extends Component {
 }
 
 export default Board
+

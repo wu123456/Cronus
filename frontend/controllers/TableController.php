@@ -4,6 +4,7 @@ namespace frontend\controllers;
 use Yii;
 use common\models\agot\Table;
 use common\filters\PlayerActionRecorder;
+use common\models\agot\PlayerActionRecord;
 use common\models\agot\PlayRecord;
 
 /**
@@ -123,6 +124,46 @@ class TableController extends JsonBaseController{
         Table::clearNeedRefresh($userId);
 
         return ['code' => self::CODE_SUCCESS, 'data' => $data];
+    }
+
+    /**
+     * @name  投硬币
+     * @method POST
+     * @author wolfbian
+     * @date 2017-07-21
+     */
+    public function actionThrowCoin()
+    {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+        $params = Yii::$app->request->post();
+        $userId = Yii::$app->user->id;
+
+        $tableId = Table::getTableIdByUserId($userId);
+        if (empty($tableId)) {
+            return true;
+        }
+        $table = new Table($tableId);
+        $playId = $table->getPlayId();
+        $side = $table->getSideByUserId($userId);
+
+        $r = mt_rand(0, 1);
+        $params['result'] = $r;
+
+        PlayerActionRecord::addRecord([
+            'side' => $side,
+            'play_id' => $playId,
+            'user_id' => $userId,
+            'action' => $this->module->requestedRoute,
+            'params' => json_encode($params),
+            ]);
+
+        $table->noticeOp($userId);
+
+        return ['code' => self::CODE_SUCCESS, 'data' => $r];
+
     }
 
     /**

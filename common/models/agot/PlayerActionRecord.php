@@ -33,6 +33,7 @@ class PlayerActionRecord extends AgotBase
         'table/speak' => '发言',
         'table/change-mark' => '改变标记',
         'table/random-discard' => '弃牌',
+        'table/throw-coin' => '扔硬币',
     ];
 
     public static function tableName()
@@ -74,6 +75,9 @@ class PlayerActionRecord extends AgotBase
             return $userName . "给[" . $card->name . "]" . $operate . "1个" . $type;
         } else if ($action == 'table/random-discard') {
             return $userName . "随机弃掉一张手牌";
+        } else if ($action == 'table/throw-coin') {
+            $resultList = ['0' => 'head', '1' => 'tail'];
+            return $userName . "投了一枚硬币，结果为" . $resultList[$params['result']];
         }
         return false;
     }
@@ -84,6 +88,13 @@ class PlayerActionRecord extends AgotBase
                     ->all();
         
         return $sourceRecords;
+    }
+
+    public static function addRecord($arr)
+    {
+        $playerActionRecord = new self($arr);
+
+        return $playerActionRecord->save();
     }
 
 }
