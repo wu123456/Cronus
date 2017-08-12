@@ -52,7 +52,7 @@ class Dialog extends Component {
 					<div className="content">
 						<div className="message">{message}</div>
 						<div className="buttons">
-							<button className="btn bg-color-red-dark text-color-white clickable" onClick={this.close.bind(this)}>确认</button>
+							<button className="btn bg-color-red-dark text-color-white clickable" onClick={this.close.bind(this, true)}>确认</button>
 						</div>
 					</div>
 				</div>
@@ -65,7 +65,10 @@ class Dialog extends Component {
 		this.setState({height : this.refs.dialog.offsetHeight});
 	}
 
-	close() {
+	close(confirm) {
+		if (confirm && typeof this.props.confirm === 'function') {
+			this.props.confirm();
+		}
 		return this.props.close();
 	}
 }

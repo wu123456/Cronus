@@ -127,6 +127,51 @@ class TableController extends JsonBaseController{
     }
 
     /**
+     * @name  获取牌库前n张/后n张牌
+     * @method GET
+     * @author wolfbian
+     * @date 2017-08-12
+     * @param    int          type
+     * @param    int          count
+     */
+    public function actionShowLib()
+    {
+
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+
+        $type = intval(Yii::$app->request->get("type", 0));
+        $count = intval(Yii::$app->request->get("count", 1));
+        if ($count <= 0) {
+            $count = 1;
+        }
+
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
+        $info = $table->info;
+        $sides = $info['side'];
+
+        if($sides[0]['user_id'] == $userId){
+            $lib = $sides[0]['library'];
+        }else{
+            $lib = $sides[1]['library'];
+        }
+
+        $result = [];
+        if ($type == 0) {
+            $lib = array_slice($lib, 0, $count);
+        }else{
+            $lib = array_slice($lib, -$count);
+        }
+        
+        Table::clearNeedRefresh($userId);
+
+        return ['code' => self::CODE_SUCCESS, 'data' => $lib];
+    }
+
+    /**
      * @name  投硬币
      * @method POST
      * @author wolfbian

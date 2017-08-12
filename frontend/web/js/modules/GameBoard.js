@@ -983,11 +983,44 @@ class ButtonList extends Component {
 				<div className="button-list">
 					<div className="btn btn-default btn-size" onClick={this.discardHand.bind(this)}>随机弃牌</div>
 					<div className="btn btn-default btn-size" onClick={this.throwCoin.bind(this)}>投硬币</div>
-					<div className="btn btn-default btn-size">随机弃牌</div>
-					<div className="btn btn-default btn-size">随机弃牌</div>
+					<div className="btn btn-default btn-size" onClick={this.showLib.bind(this, 0)}>查看牌库上面</div>
+					<div className="btn btn-default btn-size" onClick={this.showLib.bind(this, 1)}>查看牌库下面</div>
 				</div>
 			)
 		
+	}
+
+	showLib(type) {
+		let title = "";
+		if (type === 0) {
+			title = "牌库前";
+		}else{
+			title = "牌库最后";
+		}
+		let message = [];
+		
+		showMessage({
+			title : "请选择查看数量",
+			message: <div><input id="watch_count_input" name="watch_count" placeholder="1"/></div>,
+			confirm : function(){
+				let inputValue = $("#watch_count_input").val();
+				
+				$.getJSON(
+					'/table/show-lib',
+					{
+						type : type,
+						count : inputValue
+					},
+					function(ret){
+						if (ret.code != 0) {
+							alert(ret.msg);
+							return;
+						}
+						showCards(title + Util.count(ret.data) + "张", ret.data, BLOCK_LIBRARY)
+					}
+				)
+			}
+		});
 	}
 
 	discardHand() {
@@ -1046,6 +1079,7 @@ class ChatBox extends Component {
 			)
 		}
     }
+
 
 	render() {
 		let contents = [];
@@ -1112,6 +1146,21 @@ class ChatBox extends Component {
 
 	
 }
+
+
+// 弹窗形式，展示卡牌列表
+function  showCards(name, cards, blockType) {
+	let message = [];
+	for(let i in cards){
+		message.push(<Card block={blockType} margin="5" key={cards[i]['id']} id={cards[i]['id']} card_id={cards[i]['card_id']}/>);
+	}
+	showMessage({
+		title : name,
+		message: <div>{message}<div className="clearfix"></div></div>,
+		noMask : 1
+	});
+}
+
 
 export default Board
 
