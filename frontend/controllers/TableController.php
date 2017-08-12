@@ -21,7 +21,8 @@ class TableController extends JsonBaseController{
                 'class' => PlayerActionRecorder::className(),  
                 'only'=>['speak', 'shuffle-card', 'move-card', 
                         'leave-card', 'play-onto-board', 'draw-cards', 
-                        'flip-card', 'change-mark', 'random-discard'],  
+                        'flip-card', 'change-mark', 'random-discard',
+                        'show-lib'],  
             ],
         ];  
     }  

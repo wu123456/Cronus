@@ -1016,6 +1016,7 @@ class ButtonList extends Component {
 							alert(ret.msg);
 							return;
 						}
+						EventManage.trigger("refresh_chat_box");
 						showCards(title + Util.count(ret.data) + "张", ret.data, BLOCK_LIBRARY)
 					}
 				)

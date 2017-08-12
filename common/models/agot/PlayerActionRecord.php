@@ -34,6 +34,7 @@ class PlayerActionRecord extends AgotBase
         'table/change-mark' => '改变标记',
         'table/random-discard' => '弃牌',
         'table/throw-coin' => '扔硬币',
+        'table/show-lib' => '查看牌库',
     ];
 
     public static function tableName()
@@ -78,7 +79,15 @@ class PlayerActionRecord extends AgotBase
         } else if ($action == 'table/throw-coin') {
             $resultList = ['0' => 'head', '1' => 'tail'];
             return $userName . "投了一枚硬币，结果为" . $resultList[$params['result']];
-        }
+        } else if ($action == 'table/show-lib') {
+            $typeList = ['0' => '前', '1' => '后'];
+            $type = empty($params['type']) ? 0 : $params['type'];
+            $count = empty($params['count']) ? 0 : intval($params['count']);
+            if ($count < 1) {
+                $count = 1;
+            }
+            return $userName . "查看了牌库" . $typeList[$type] . $count . "张";
+        } 
         return false;
     }
 

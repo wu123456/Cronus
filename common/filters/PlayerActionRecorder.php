@@ -16,7 +16,9 @@ class PlayerActionRecorder extends ActionFilter
 
     public function beforeAction($action)
     {
-        $params = Yii::$app->request->post();
+        $paramsGet = Yii::$app->request->get();
+        $paramsPost = Yii::$app->request->post();
+        $params = array_merge($paramsGet, $paramsPost);
         $userId = Yii::$app->user->id;
         if (empty($userId)) {
             return true;
