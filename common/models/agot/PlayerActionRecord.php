@@ -35,6 +35,7 @@ class PlayerActionRecord extends AgotBase
         'table/random-discard' => '弃牌',
         'table/throw-coin' => '扔硬币',
         'table/show-lib' => '查看牌库',
+        'table/surrender' => '投降',
     ];
 
     public static function tableName()
@@ -87,6 +88,8 @@ class PlayerActionRecord extends AgotBase
                 $count = 1;
             }
             return $userName . "查看了牌库" . $typeList[$type] . $count . "张";
+        } else if ($action == 'table/surrender') {
+            return $userName . "已认输，本场游戏已被记录，游戏资源将被回收，请离开座位。";
         } 
         return false;
     }

@@ -985,6 +985,8 @@ class ButtonList extends Component {
 					<div className="btn btn-default btn-size" onClick={this.throwCoin.bind(this)}>投硬币</div>
 					<div className="btn btn-default btn-size" onClick={this.showLib.bind(this, 0)}>查看牌库上面</div>
 					<div className="btn btn-default btn-size" onClick={this.showLib.bind(this, 1)}>查看牌库下面</div>
+					<div className="btn btn-default btn-size" onClick={shuffleCard}>洗牌</div>
+					<div className="btn btn-default btn-size" onClick={surrender}>认输</div>
 				</div>
 			)
 		
@@ -1150,7 +1152,7 @@ class ChatBox extends Component {
 
 
 // 弹窗形式，展示卡牌列表
-function  showCards(name, cards, blockType) {
+function showCards(name, cards, blockType) {
 	let message = [];
 	for(let i in cards){
 		message.push(<Card block={blockType} margin="5" key={cards[i]['id']} id={cards[i]['id']} card_id={cards[i]['card_id']}/>);
@@ -1160,6 +1162,45 @@ function  showCards(name, cards, blockType) {
 		message: <div>{message}<div className="clearfix"></div></div>,
 		noMask : 1
 	});
+}
+
+function shuffleCard(){
+	$.post(
+		'/table/shuffle-card',
+		{
+			type: BLOCK_LIBRARY
+		},
+		function(ret){
+			if (ret.code != 0) {
+				alert(ret.msg);
+				return;
+			}
+			EventManage.trigger("refresh_chat_box");
+		},
+		'json'
+	)
+}
+
+function surrender(){
+	$.post(
+		'/table/surrender',
+		{
+		},
+		function(ret){
+			if (ret.code != 0) {
+				alert(ret.msg);
+				return;
+			}
+			EventManage.trigger("refresh_chat_box");
+			showMessage({
+				message: "你已投降，该局游戏结束。",
+				close: function(){
+					location.href = "/site/vtables";
+				}
+			});
+		},	
+		'json'
+	)
 }
 
 

@@ -22,7 +22,7 @@ class TableController extends JsonBaseController{
                 'only'=>['speak', 'shuffle-card', 'move-card', 
                         'leave-card', 'play-onto-board', 'draw-cards', 
                         'flip-card', 'change-mark', 'random-discard',
-                        'show-lib'],  
+                        'show-lib', 'surrender'],  
             ],
         ];  
     }  
@@ -87,6 +87,9 @@ class TableController extends JsonBaseController{
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
         }
         $tableId = Table::getTableIdByUserId($userId);
+        if (empty($tableId)) {
+            return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "您的游戏尚未开始或者已结束。"];
+        }
         $table = new Table($tableId);
         $info = $table->info;
         $sides = $info['side'];
@@ -170,6 +173,35 @@ class TableController extends JsonBaseController{
         Table::clearNeedRefresh($userId);
 
         return ['code' => self::CODE_SUCCESS, 'data' => $lib];
+    }
+
+    /**
+     * @name  投降
+     * @method POST
+     * @author wolfbian
+     * @date 2017-08-13
+     */
+    public function actionSurrender()
+    {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+        $params = Yii::$app->request->post();
+        $userId = Yii::$app->user->id;
+
+        $tableId = Table::getTableIdByUserId($userId);
+        if (empty($tableId)) {
+            return true;
+        }
+        $table = new Table($tableId);
+        $playId = $table->getPlayId();
+        $side = $table->getSideByUserId($userId);
+        $table->noticeOp($userId);
+        $table->endGame(['loser' => $side]);
+
+
+        return ['code' => self::CODE_SUCCESS, 'data' => ""];
     }
 
     /**

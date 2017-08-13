@@ -19,11 +19,22 @@ class HelloController extends \yii\console\Controller {
     public function actionIndex() {
         $tables = Yii::$app->params['tables'];
         $game_sides = Yii::$app->params['game_sides'];
-        foreach ($tables as $key => $value) {
-            $table = new Table($value);
-            echo $value . "\t";
-            var_dump($table->start($game_sides));
-        }
+
+        while(true){
+            foreach ($tables as $key => $value) {
+                $table = new Table($value);
+                echo $value . "\t";
+                if ($table->start($game_sides)) {
+                    echo "start";
+                }else{
+                    echo "running or unready";
+                }
+                echo "\r\n";
+            }
+            echo "\r\n";
+            sleep(15);
+        }        
+        
     }
 
     public function actionImportCards($filename){

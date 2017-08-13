@@ -136,6 +136,19 @@ class Table extends Model
     {
         $info = $this->info;
 
+        if (isset($info['end']) && $info['end']) {
+            if ($info['endTime'] >= time()) {
+                $sides = $info['side'];
+                // 双方选手离开桌子
+                foreach ($sides as $key => $side) {
+                    Yii::$app->redis->del("user::" . $side['user_id']);
+                }
+                // 清除战场
+                Yii::$app->redis->del("table" . $this->_table_id);
+            }
+            return false;
+        }
+
         if (isset($info['start']) && $info['start']) {
             return false;
         }
@@ -441,6 +454,17 @@ class Table extends Model
         return [$ret];
     }
 
+    public function endGame($params){
+
+        $info = $this->info;
+        
+
+        $info['end'] = true;
+        $info['endTime'] = time() + 15;
+
+        return $this->setInfo($info);
+        
+    }
     
 
     public static function shuffleAndDivideCards($cards, $l = 7)
