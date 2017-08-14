@@ -101,7 +101,9 @@ class DeckCard extends AgotBase
 
         foreach ($cards as $card) {
             $c = Card::find()->where(['picture_url' => $card[1]])->one();
-            $inserts[] = [$deckId, $c->id, $card[0], self::STATUS_ACTIVE];
+            if (!empty($c)) {
+                $inserts[] = [$deckId, $c->id, $card[0], self::STATUS_ACTIVE];
+            }
         }
 
         //批量插入

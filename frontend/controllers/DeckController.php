@@ -4,6 +4,7 @@ namespace frontend\controllers;
 use Yii;
 use common\models\agot\Deck;
 use common\models\agot\Card;
+use common\models\agot\DeckCard;
 
 /**
  * Deck controller
@@ -165,6 +166,50 @@ class DeckController extends JsonBaseController{
         return ['code' => self::CODE_SUCCESS, 'data' => $id];
     }
 
+    /**
+     * @name  上传牌组
+     * @method POST
+     * @param    file            file       牌组id
+     * @author wolfbian
+     * @date 2017-08-14
+     */
+    public function actionUploadDeck(){
+        $user_id = Yii::$app->user->id;
+        if (empty($user_id)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+
+        try {
+            $filename = $_FILES["file"]['tmp_name'];
+            $str = simplexml_load_file($filename);
+            $section = $str->section;
+            $deckCards = [];
+            foreach ($section as $s) {
+                $cards = $s->card;
+                foreach ($cards as $card) {
+                    $card = json_decode(json_encode($card), true);
+                    $attr = $card['@attributes'];
+                    $deckCards[] = [$attr['qty'], $attr['id']];
+                }
+            }
+            $deckId = Deck::createDeck([
+                    'name' => substr($_FILES["file"]['name'], 0, -4),
+                    'user_id' => $user_id,
+                    'house' => '1',
+                    'agenda' => '1',
+                    'game_id' => '0',
+                ]);
+
+            DeckCard::changeCardsBySourceId($deckId, $deckCards);
+
+            return ['code' => self::CODE_SUCCESS, 'data' => 1];
+
+        } catch (\Exception $e) {
+            return ['code' => self::CODE_SYSTEM_ERROR, 'data' => $e->getMessage() . $e->getFile() . $e->getLine()];
+        }
+
+        
+    }
 
 
 }

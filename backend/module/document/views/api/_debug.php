@@ -9,7 +9,7 @@ use yii\helpers\Url;
 <div class="row">
 	<div class="col-md-4">
 		<h3>路由：<?php echo Html::encode($route); ?></h3>
-		<form role="form">
+		<form role="form" id="debug-form">
 		  <?php if ($model->params): ?>
 		  <?php foreach ($model->params as $param): ?>
 		  <div class="form-group">
@@ -19,7 +19,11 @@ use yii\helpers\Url;
 		    	<a href="javascript:void(0);" id="get-sign"> 点击获取签名</a>
 		    	<?php endif; ?>
 		    </label>
+		    <?php if ($param['type'] == "file"): ?>
+		    <input type="file" class="form-control <?php echo $param['type']; ?>" name="<?php echo trim($param['name'], '$'); ?>" value="<?php echo $model->getParamDefaultValue(trim($param['name'], '$')); ?>">
+		    <?php else: ?>
 		    <input type="text" class="form-control <?php echo $param['type']; ?>" name="<?php echo trim($param['name'], '$'); ?>" value="<?php echo $model->getParamDefaultValue(trim($param['name'], '$')); ?>">
+		    <?php endif; ?>
 		  </div>
 		  <?php endforeach; ?>
 		  <?php else: ?>
@@ -38,20 +42,23 @@ use yii\helpers\Url;
 $(function(){
 	$('#submit-btn').click(function(){
 		var btn = $(this).button('loading');
-		var data = {};
-		$('.form-control').each(function(){
-			if ($(this).val() != '') {
-				if ($(this).hasClass("array") || $(this).hasClass("Array")) {
-					data[$(this).attr('name')] = JSON.parse($(this).val());
-				}else{
-					data[$(this).attr('name')] = $(this).val();
-				}
-			}
-		});
+		// var data = {};
+		// $('.form-control').each(function(){
+		// 	if ($(this).val() != '') {
+		// 		if ($(this).hasClass("array") || $(this).hasClass("Array")) {
+		// 			data[$(this).attr('name')] = JSON.parse($(this).val());
+		// 		}else{
+		// 			data[$(this).attr('name')] = $(this).val();
+		// 		}
+		// 	}
+		// });
+		var data = new FormData(document.getElementById("debug-form"));
 		$.ajax({
 			url: '<?php echo $debugUrl; ?>',
 			type: '<?php echo $model->method; ?>',
 			data: data,
+			processData:false,
+            contentType:false,
 			success: function(retData) {
 				btn.button('reset');
 				if (typeof retData === 'string' && retData.indexOf('content="text/html;') != -1) {
@@ -74,13 +81,14 @@ $(function(){
 	});
 
 	$('#get-sign').click(function(){
-		var data = {};
-		$('.form-control').each(function(){
-			if ($(this).val() != '') {
-				data[$(this).attr('name')] = $(this).val();
-			}
-		});
-		data['<?php echo Yii::$app->getRequest()->csrfParam; ?>'] = '<?php echo Yii::$app->getRequest()->getCsrfToken(); ?>';
+		// var data = {};
+		// $('.form-control').each(function(){
+		// 	if ($(this).val() != '') {
+		// 		data[$(this).attr('name')] = $(this).val();
+		// 	}
+		// });
+		var data = new FormData(document.getElementById("debug-form"));
+		// data['<?php echo Yii::$app->getRequest()->csrfParam; ?>'] = '<?php echo Yii::$app->getRequest()->getCsrfToken(); ?>';
 		$.ajax({
 			url: '<?php echo Url::toRoute('document/get-sign'); ?>',
 			type: 'post',
