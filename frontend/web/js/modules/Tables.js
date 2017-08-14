@@ -7,6 +7,17 @@ const Component = React.Component;
 
 const EventManage = $("<div></div>");
 
+// 检查比赛是否开始
+setInterval(function(){
+	$.getJSON(
+		'/table/is-start',
+		function(ret){
+			if(ret.code == 0 && ret.data){
+				location.href = "/site/vgame";
+			}
+		})
+}, 5000);
+
 class Player extends Component {
 
 	constructor(props) {
@@ -76,8 +87,6 @@ class Player extends Component {
 				'json'
 			)
 		})
-
-		
 	}
 
 }

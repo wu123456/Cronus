@@ -35,13 +35,59 @@ class TableController extends JsonBaseController{
      */
     public function actionTables()
     {
+
         $tables = Yii::$app->params['tables'];
         $data = [];
         foreach ($tables as $key => $value) {
             $t = new Table($value);
-            $data[] =  $t->getTableInfo();
+            $info = $t->getTableInfo();
+
+            // 去掉敏感信息
+            if (isset($info['side'])) {
+                foreach ($info['side'] as $key => $value) {
+                    foreach ($value as $k => $v) {
+                        if (in_array($k, ['user_id', 'deck_id'])) {
+                            // do nothing
+                        }else{
+                            unset($info['side'][$key][$k]);
+                        }
+                    }
+                }
+            }
+            
+            $data[] =  $info;
         }
+
         return ['code' => self::CODE_SUCCESS, 'data' => $data];
+    }
+
+    /**
+     * @name  获取游戏是否开始
+     * @method GET
+     * @author wolfbian
+     * @date 2017-08-14
+     */
+    public function actionIsStart()
+    {
+
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+
+        $tableId = Table::getTableIdByUserId($userId);
+        if (empty($tableId)) {
+            return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "您的游戏尚未开始或者已结束。"];
+        }
+        $table = new Table($tableId);
+        $info = $table->info;
+
+        $start = true;
+        if (empty($info['start'])) {
+            $start = false;
+        }
+
+        return ['code' => self::CODE_SUCCESS, 'data' => $start];
     }
 
     /**
