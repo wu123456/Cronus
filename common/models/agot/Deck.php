@@ -30,6 +30,14 @@ class Deck extends AgotBase{
         return '{{%deck}}';
     }
 
+    public function rules()
+    {
+        return [
+            [['id'], "integer"]
+            // [['username', 'email', 'mobile', 'password_hash', 'password_reset_token', 'auth_key'], 'safe'],
+        ];
+    }
+
     public function getCards(){
         if ($this->_cards === null) {
             $this->_cards = DeckCard::getCards($this->id, DeckCard::DETAIL);
