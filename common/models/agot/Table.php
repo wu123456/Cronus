@@ -137,7 +137,7 @@ class Table extends Model
         $info = $this->info;
 
         if (isset($info['end']) && $info['end']) {
-            if ($info['endTime'] >= time()) {
+            if ($info['endTime'] < time()) {
                 $sides = $info['side'];
                 // 双方选手离开桌子
                 foreach ($sides as $key => $side) {

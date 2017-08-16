@@ -36,6 +36,11 @@ class TableController extends JsonBaseController{
     public function actionTables()
     {
 
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
+            $userId = 0;
+        }
+
         $tables = Yii::$app->params['tables'];
         $data = [];
         foreach ($tables as $key => $value) {
@@ -46,8 +51,10 @@ class TableController extends JsonBaseController{
             if (isset($info['side'])) {
                 foreach ($info['side'] as $key => $value) {
                     foreach ($value as $k => $v) {
-                        if (in_array($k, ['user_id', 'deck_id'])) {
-                            // do nothing
+                        if ($k == 'user_id') {
+                            if ($v == $userId) {
+                                $info['side'][$key]['is_you'] = true;
+                            }
                         }else{
                             unset($info['side'][$key][$k]);
                         }
@@ -569,7 +576,7 @@ class TableController extends JsonBaseController{
      * @author wolfbian
      * @date 2016-08-31
      */
-    public function actionUnReady()
+    public function actionUnready()
     {
         $userId = Yii::$app->user->id;
         if (empty($userId)) {

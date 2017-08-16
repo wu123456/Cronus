@@ -52,6 +52,27 @@ class Player extends Component {
 
 		let self = this;
 
+		// 再点一次离开座位
+		if (this.props.is_you) {
+			return $.post(
+				'/table/unready',
+				{
+					id	 :  self.props.t_id,
+					side :  self.props.side
+				},
+				function(ret){
+					if (ret.code != 0) {
+						return showMessage(ret.msg);
+					}
+
+					return showMessage("离开座位成功").then(function(){
+						EventManage.trigger("tables_change");
+					});
+				},
+				'json'
+			)
+		}
+
 		if (this.props.user_id) {
 			return showMessage("该位置已有玩家");
 		}
@@ -99,7 +120,6 @@ class Table extends Component {
 		let side = this.props.side;
 		let side0 = (side && side[0]) || {};
 		let side1 = (side && side[1]) || {};
-		console.log(side0);
 		return (<div className="ctable">
 			<div className="ctable-top"><Player {...side0} t_id = {this.props.id} side={0} /></div>
 			<div className="ctable-name">{this.props.name}</div>
