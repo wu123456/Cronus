@@ -1,6 +1,7 @@
 <?php
 namespace frontend\models;
 
+use Yii;
 use yii\base\Model;
 use common\models\User;
 
@@ -52,7 +53,16 @@ class SignupForm extends Model
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->generateAuthKey();
+
+        if(!$user->save()){
+            return null;
+        }
         
-        return $user->save() ? $user : null;
+        // 注册立刻有玩家权限，在此处写死
+        $manager = Yii::$app->authManager;
+        $item = $manager->getRole('role_user');
+        $manager->assign($item, $user->id);
+
+        return $user;
     }
 }
