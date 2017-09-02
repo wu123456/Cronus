@@ -1002,6 +1002,7 @@ class ButtonList extends Component {
 					<div className="btn btn-default btn-size" onClick={this.showLib.bind(this, 0)}>查看牌库上面</div>
 					<div className="btn btn-default btn-size" onClick={this.showLib.bind(this, 1)}>查看牌库下面</div>
 					<div className="btn btn-default btn-size" onClick={shuffleCard}>洗牌</div>
+					<div className="btn btn-default btn-size" onClick={resetCard}>重调</div>
 					<div className="btn btn-default btn-size" onClick={surrender}>认输</div>
 				</div>
 			)
@@ -1191,6 +1192,22 @@ function shuffleCard(){
 				alert(ret.msg);
 				return;
 			}
+			EventManage.trigger("refresh_chat_box");
+		},
+		'json'
+	)
+}
+
+function resetCard(){
+	$.post(
+		'/table/reset',
+		{},
+		function(ret){
+			if (ret.code != 0) {
+				alert(ret.msg);
+				return;
+			}
+			EventManage.trigger("refresh_cards");
 			EventManage.trigger("refresh_chat_box");
 		},
 		'json'

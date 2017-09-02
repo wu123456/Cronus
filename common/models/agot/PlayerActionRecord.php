@@ -91,7 +91,7 @@ class PlayerActionRecord extends AgotBase
             return $userName . "查看了牌库" . $typeList[$type] . $count . "张";
         } else if ($action == 'table/surrender') {
             return $userName . "已认输，本场游戏已被记录，游戏资源将被回收，请离开座位。";
-        } else if ($action == 'table/rest') {
+        } else if ($action == 'table/reset') {
             return $userName . "进行了重调。";
         } 
         return false;

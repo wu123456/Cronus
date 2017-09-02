@@ -497,8 +497,16 @@ class Table extends Model
 
         list($hands, $library)= self::shuffleAndDivideCards($library);
 
-        $info['side'][$side]['hands'] = $hands;
-        $info['side'][$side]['library'] = $library;     
+        $info['side'][$side]['hands'] = [];
+        foreach ($hands as $hand) {
+            $info['side'][$side]['hands'][$hand['id']] = $hand;
+        }
+
+        $info['side'][$side]['library'] = [];
+        foreach ($library as $l) {
+            $info['side'][$side]['library'][$l['id']] = $l;
+        }
+
         $info['side'][$side]['plot'] = $plot;     
         $info['side'][$side]['discard'] = [];
         $info['side'][$side]['dead'] = [];
