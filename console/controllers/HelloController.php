@@ -7,6 +7,7 @@ use common\models\agot\Table;
 use common\models\agot\Card;
 use common\models\agot\Deck;
 use common\models\agot\DeckCard;
+use common\helpers\GlobalHelper;
 
 /**
  * 调用方式：./yii hello/index 
@@ -33,6 +34,7 @@ class HelloController extends \yii\console\Controller {
             }
             echo "\r\n";
             sleep(15);
+            GlobalHelper::connectDb();
         }        
         
     }

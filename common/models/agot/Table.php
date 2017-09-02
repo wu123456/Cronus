@@ -4,6 +4,7 @@ namespace common\models\agot;
 use Yii;
 use yii\base\Model;
 
+
 /**
  * author wolfbian
  * date 2016-08-31
@@ -163,6 +164,8 @@ class Table extends Model
             return false;
         } 
 
+        
+
         $cards = [];
 
         foreach ($gameSides[$info['game_id']] as $value) {
@@ -310,7 +313,7 @@ class Table extends Model
      * @name  卡牌进场
      * @param    int            id   卡牌的id
      * @param    int            side    
-     * @param    int            form // (0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌库)
+     * @param    int            from // (0：手牌，1：牌库，2：弃牌区，3：死亡牌区，4：战略牌库)
      * @param    array          to
      * @author wolfbian
      * @date 2016-10-09
@@ -337,6 +340,9 @@ class Table extends Model
         $info['playground'][$id]['x'] = $to['x'];
         $info['playground'][$id]['y'] = $to['y'];
         $info['playground'][$id]['face'] = $face;
+        $info['playground'][$id]['side'] = $side;
+        $info['playground'][$id]['from'] = $from;
+
         $ret = $this->setInfo($info);
         return [$ret, $info['playground'][$id]['card_id']];
     }
@@ -454,16 +460,49 @@ class Table extends Model
         return [$ret];
     }
 
-    public function endGame($params){
+    public function endGame($params)
+    {
 
         $info = $this->info;
-        
-
         $info['end'] = true;
         $info['endTime'] = time() + 15;
-
         return $this->setInfo($info);
         
+    }
+
+    public function reset($params)
+    {
+        $side = $params['side'];
+        $info = $this->info;
+        $hands = $info['side'][$side]['hands'];
+        $plot = $info['side'][$side]['plot'];
+        $dead = $info['side'][$side]['dead'];
+        $discard = $info['side'][$side]['discard'];
+        $playground = $info['playground'];
+        $library = $info['side'][$side]['library'];
+        $library = array_merge($hands, $discard, $dead, $library);
+
+        foreach ($playground as $key => $v) {
+            if (isset($v['side']) && $v['side'] == $side) {
+                // 暂时用from来替代type的区分
+                if (isset($v['from']) &&  $v['from'] == 4) {
+                    $plot[$key] = ['id' => $v['id'], 'card_id' => $v['card_id']];
+                    unset($info['playground'][$key]);
+                }else{
+                    $library[$key] = ['id' => $v['id'], 'card_id' => $v['card_id']];
+                    unset($info['playground'][$key]);
+                }
+            }
+        }
+
+        list($hands, $library)= self::shuffleAndDivideCards($library);
+
+        $info['side'][$side]['hands'] = $hands;
+        $info['side'][$side]['library'] = $library;     
+        $info['side'][$side]['plot'] = $plot;     
+        $info['side'][$side]['discard'] = [];
+        $info['side'][$side]['dead'] = [];
+        return $this->setInfo($info);
     }
     
 

@@ -142,6 +142,7 @@ class Deck extends AgotBase{
         $deck->agenda = $params['agenda'];
         $deck->house = $params['house'];
         $deck->game_id = $params['game_id'];
+        $deck->status = 0;
 
         if (!$deck->save()) {
             return false;

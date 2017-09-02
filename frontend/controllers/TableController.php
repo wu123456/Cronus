@@ -22,7 +22,7 @@ class TableController extends JsonBaseController{
                 'only'=>['speak', 'shuffle-card', 'move-card', 
                         'leave-card', 'play-onto-board', 'draw-cards', 
                         'flip-card', 'change-mark', 'random-discard',
-                        'show-lib', 'surrender'],  
+                        'show-lib', 'surrender','reset'],  
             ],
         ];  
     }  
@@ -595,6 +595,30 @@ class TableController extends JsonBaseController{
         if( !$table->unready(['user_id' => $userId,  'side' => $side]) ){
             return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "系统错误"];
         }
+
+        return ['code' => self::CODE_SUCCESS];
+    }
+
+    /**
+     * @name  重调
+     * @method POST
+     * @author wolfbian
+     * @date 2017-09-01
+     */
+    public function actionReset()
+    {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
+
+        if( !$table->reset(['side' => $table->getSideByUserId($userId)]) ){
+            return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => "系统错误"];
+        }
+        $table->noticeOp($userId);
 
         return ['code' => self::CODE_SUCCESS];
     }

@@ -50,7 +50,7 @@ EventManage.on("show_card", function(event, params){
 
 // 禁用系统自带右键菜单
 window.document.oncontextmenu = function(){ 
-	// return false;
+	return false;
 }  
 
 // 定时刷新战场
@@ -760,6 +760,22 @@ class Card extends Component {
 
 						}
 					},  
+					{
+						name: "返回牌堆",
+						event: function(){
+							EventManage.trigger("card_move", 
+								{
+									id : self.props.id, 
+									from : {
+										block : BLOCK_PLAYGROUND
+									}, 
+									to : {
+										block : BLOCK_LIBRARY
+									}
+								});
+
+						}
+					},
 					{
 						name: "进入死亡牌堆",
 						event: function(){

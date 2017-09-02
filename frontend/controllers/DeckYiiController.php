@@ -18,7 +18,7 @@ class DeckYiiController extends Controller{
 
         $userId = Yii::$app->user->id;
         if (empty($userId)) {
-            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+            return $this->redirect(['/site/signup']);
         }
 
         $searchModel = new DeckSearch();
@@ -63,7 +63,7 @@ class DeckYiiController extends Controller{
                     'user_id' => $user_id,
                     'house' => '1',
                     'agenda' => '1',
-                    'game_id' => '0',
+                    'game_id' => '0'
                 ]);
 
             DeckCard::changeCardsBySourceId($deckId, $deckCards);
