@@ -9,6 +9,7 @@ import SocketClient from './SocketClient'
 const Component = React.Component;
 const EventManage = $("<div></div>");
 let moveElement;
+let inElement;
 
 let board_width = 0;
 let board_high = 700;
@@ -34,6 +35,29 @@ let BLOCK_DISCARD = 2;
 let BLOCK_LIBRARY = 1; 
 let BLOCK_HANDS = 0; 
 let BLOCK_PLAYGROUND = 5;
+
+document.onkeydown=function(event){
+	var e = event || window.event || arguments.callee.caller.arguments[0];
+	// 1，2，3，4 对应 49，50，51，52
+	// 12power，34gold
+	if (inElement) {
+		if(e && e.keyCode==49){
+			inElement.addMark(2, 1);
+		}
+		if(e && e.keyCode==50){
+			inElement.addMark(2, 2)
+		}
+		if(e && e.keyCode==51){
+			inElement.addMark(1, 1)
+		}
+		if(e && e.keyCode==52){
+			inElement.addMark(1, 2)
+		}
+		console.log(e.keyCode);
+	}
+	
+	
+}; 
 
 // 展示卡牌详情
 EventManage.on("show_card", function(event, params){
@@ -411,11 +435,13 @@ class GameBoard extends Component {
 					'json'
 				)
 			}else if(inPlayground(params['from']) && !inPlayground(params['to'])){
+				let toBottom = params['toBottom'] ? 1 : 0;
 				$.post(
 					'/table/leave-card',
 					{
 						id : params['id'],
-						to : getBlockType(params['to'])
+						to : getBlockType(params['to']),
+						toBottom : toBottom
 					},
 					function(ret){
 						self.getCards();
@@ -725,6 +751,7 @@ class Card extends Component {
 	}
 
 	handleMover() {
+		inElement = this;
 		if(this.state && this.state.url){
 			// this.to 为时间计数器变量
 			this.to = setTimeout(function(){
@@ -734,15 +761,59 @@ class Card extends Component {
 	}
 
 	handleContextMenu(event){
+		let self = this;
 		// this.to 为时间计数器变量
 		if(this.to){
 			clearInterval(this.to);
 		}
 
+		if (this.props.block && this.props.block == BLOCK_LIBRARY) {
+			showMenuWithMouse([ 
+					{
+						name: "去顶部",
+						event: function(){
+							$.post(
+								'/table/reorder-card',
+								{
+									id : self.props.id,
+									block : BLOCK_LIBRARY,
+									to: 0 // 0 去顶部
+								},
+								function(ret){
+									if (ret.code == 0) {
+										EventManage.trigger("refresh_chat_box");
+									}
+								},
+								'json'
+							)
+
+						}
+					},{
+						name: "去底部",
+						event: function(){
+							$.post(
+								'/table/reorder-card',
+								{
+									id : self.props.id,
+									block : BLOCK_LIBRARY,
+									to: 1 // 1 去底部
+								},
+								function(ret){
+									if (ret.code == 0) {
+										EventManage.trigger("refresh_chat_box");
+									}
+								},
+								'json'
+							)
+
+						}
+					}], event);
+		}
+
+
 		if (!this.props.inPlayground) {
 			return false;
 		}
-		let self = this;
 		showMenuWithMouse([
 					{
 						name: "返回手牌",
@@ -761,7 +832,7 @@ class Card extends Component {
 						}
 					},  
 					{
-						name: "返回牌堆",
+						name: "返回牌堆顶",
 						event: function(){
 							EventManage.trigger("card_move", 
 								{
@@ -771,7 +842,25 @@ class Card extends Component {
 									}, 
 									to : {
 										block : BLOCK_LIBRARY
-									}
+									},
+									toBottom : 0
+								});
+
+						}
+					},
+					{
+						name: "返回牌堆底",
+						event: function(){
+							EventManage.trigger("card_move", 
+								{
+									id : self.props.id, 
+									from : {
+										block : BLOCK_PLAYGROUND
+									}, 
+									to : {
+										block : BLOCK_LIBRARY
+									},
+									toBottom : 1
 								});
 
 						}
@@ -853,6 +942,9 @@ class Card extends Component {
 	// 添加标记 type 1：金币 2：权力 3：能力
 	// operate 1：添加 ， 2：减少
 	addMark(type, operate) {
+		if(this.to){
+			clearInterval(this.to);
+		}
 		let typeList = {
 			1 : "gold",
 			2 : "power",
@@ -878,6 +970,7 @@ class Card extends Component {
 	}
 
 	handleMout() {
+		inElement = null;
 		// this.to 为时间计数器变量
 		if(this.to){
 			clearInterval(this.to);

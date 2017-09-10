@@ -37,6 +37,7 @@ class PlayerActionRecord extends AgotBase
         'table/show-lib' => '查看牌库',
         'table/surrender' => '投降',
         'table/reset' => '重调',
+        'table/reorder-card' => '重新排序',
     ];
 
     public static function tableName()
@@ -93,6 +94,10 @@ class PlayerActionRecord extends AgotBase
             return $userName . "已认输，本场游戏已被记录，游戏资源将被回收，请离开座位。";
         } else if ($action == 'table/reset') {
             return $userName . "进行了重调。";
+        } else if ($action == 'table/reorder-card') {
+            $act = empty($params['to']) ? "置顶" : "置底";
+            
+            return $userName . "将一张牌"  . $act;
         } 
         return false;
     }

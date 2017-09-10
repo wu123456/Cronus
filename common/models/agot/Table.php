@@ -283,6 +283,7 @@ class Table extends Model
      * @name  卡牌离场
      * @param    string             id   卡牌的id
      * @param    int                to
+     * @param    int                to_bottom 
      * @author wolfbian
      * @date 2016-10-16
      */
@@ -290,6 +291,7 @@ class Table extends Model
     {
         $id = $params['id'];
         $to = $params['to'];
+        $toBottom = $params['to_bottom'];
         $info = $this->info;
         $type2name = Yii::$app->params['type2name'];
         if (!isset($type2name[$to])) {
@@ -302,8 +304,52 @@ class Table extends Model
         }
 
         $cards = $info['side'][$params['side']][$name];
-        $cards[$id] = $info['playground'][$id];
+        // 1 去底部
+        if ($toBottom) {
+            $cards[$id] = $info['playground'][$id];
+        }else{
+            $cards = array_merge([$id => $info['playground'][$id]], $cards);
+        }
         unset($info['playground'][$id]);
+        $info['side'][$params['side']][$name] = $cards;
+        $ret = $this->setInfo($info);
+        return [$ret, $cards];
+    }
+
+    /**
+     * @name  卡牌离场
+     * @param    string             id   卡牌的id
+     * @param    int                to
+     * @param    int                block 
+     * @author wolfbian
+     * @date 2017-09-10
+     */
+    public function reorderCard($params)
+    {
+        $id = $params['id'];
+        $to = $params['to'];
+        $block = $params['block'];
+        $info = $this->info;
+        $type2name = Yii::$app->params['type2name'];
+        if (!isset($type2name[$block])) {
+            return [false, '不存在的类型'];
+        }
+        $name = $type2name[$block];
+
+        if (empty($info['side'][$params['side']][$name][$id])) {
+            return [false, '该牌不在该牌堆中'];
+        }
+
+        
+        $cards = $info['side'][$params['side']][$name];
+        // $to 1 是去底部 ， 0 是去顶部
+        $card = $info['side'][$params['side']][$name][$id];
+        unset($cards[$id]);
+        if ($to) {
+            $cards[$id] = $card;
+        }else{
+            $cards = array_merge([$id => $card], $cards);
+        }
         $info['side'][$params['side']][$name] = $cards;
         $ret = $this->setInfo($info);
         return [$ret, $cards];
@@ -414,7 +460,7 @@ class Table extends Model
         $side = $params['side'];
         $info = $this->info;
         $fromCards = $info['side'][$side]['library'];
-        $card = array_pop($fromCards);
+        $card = array_shift($fromCards);
         $toCards = $info['side'][$side]['hands'];
         $toCards[$card['id']] = $card;
         $info['side'][$side]['library'] = $fromCards;

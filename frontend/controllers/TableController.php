@@ -19,7 +19,7 @@ class TableController extends JsonBaseController{
         return [  
             'access' => [  
                 'class' => PlayerActionRecorder::className(),  
-                'only'=>['speak', 'shuffle-card', 'move-card', 
+                'only'=>['speak', 'shuffle-card', 'move-card', 'reorder-card',
                         'leave-card', 'play-onto-board', 'draw-cards', 
                         'flip-card', 'change-mark', 'random-discard',
                         'show-lib', 'surrender','reset'],  
@@ -331,6 +331,37 @@ class TableController extends JsonBaseController{
      * @author wolfbian
      * @date 2016-10-05
      * @param    string      id   // 本场比赛，卡牌的id
+     * @param    string      block
+     * @param    string      to
+     */
+    public function actionReorderCard()
+    {
+        $userId = Yii::$app->user->id;
+        if (empty($userId)) {
+            return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
+        }
+        $tableId = Table::getTableIdByUserId($userId);
+        $table = new Table($tableId);
+
+        $id = Yii::$app->request->post("id");
+        $block = Yii::$app->request->post("block");
+        $to = Yii::$app->request->post("to");
+
+        $ret = $table->reorderCard(['id' => $id, 'to' => $to, 'block' => $block, 'side' => $table->getSideByUserId($userId)]);
+
+        if ($ret[0] === true) {
+            return ['code' => self::CODE_SUCCESS, 'data' => []];
+        }
+
+        return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
+    }
+
+    /**
+     * @name  卡牌移动
+     * @method POST
+     * @author wolfbian
+     * @date 2016-10-05
+     * @param    string      id   // 本场比赛，卡牌的id
      * @param    array    to
      */
     public function actionMoveCard()
@@ -392,8 +423,9 @@ class TableController extends JsonBaseController{
 
         $id = Yii::$app->request->post("id");
         $to = Yii::$app->request->post("to");
+        $toBottom = Yii::$app->request->post("toBottom" , 0);
 
-        $ret = $table->leaveCard(['id' => $id, 'side' => $table->getSideByUserId($userId), 'to' => $to]);
+        $ret = $table->leaveCard(['id' => $id, 'side' => $table->getSideByUserId($userId), 'to' => $to, 'to_bottom' => $toBottom]);
 
         if ($ret[0] === true) {
             return ['code' => self::CODE_SUCCESS, 'data' => []];
@@ -490,7 +522,8 @@ class TableController extends JsonBaseController{
         return ['code' => self::CODE_SYSTEM_ERROR, 'msg' => $ret[1]];
     }
 
-    public function actionChangeMark(){
+    public function actionChangeMark()
+    {
         $userId = Yii::$app->user->id;
         if (empty($userId)) {
             return ['code' => self::CODE_NOLOGIN, 'msg' => "未登录"];
